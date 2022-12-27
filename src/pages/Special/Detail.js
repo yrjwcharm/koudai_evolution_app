@@ -27,8 +27,10 @@ const SpecialDetail = ({navigation, route}) => {
     const [content, setContent] = useState('');
     const [scrolling, setScrolling] = useState(false);
     const [webviewLoadEnd, setWebviewLoadEnd] = useState();
+    const [floatZIndex, setFloatZIndex] = useState(-1);
 
     const webview = useRef(null);
+    const webview2 = useRef(null);
     const questionModalRef = useRef(null);
     const timeStamp = useRef(Date.now());
     const inputModal = useRef();
@@ -36,6 +38,7 @@ const SpecialDetail = ({navigation, route}) => {
     const navBarRef = useRef();
     const clickRef = useRef(true);
     const identifyParams = useRef();
+    const prevScrolling = useRef();
 
     useEffect(() => {
         const getToken = () => {
@@ -128,25 +131,28 @@ const SpecialDetail = ({navigation, route}) => {
     };
 
     const handlerIdentifyStart = useCallback(async () => {
+        setFloatZIndex(2);
+        prevScrolling.current = scrolling;
+        setScrolling(true);
         // 滚动到顶部，并且滚动时禁止点击
-        webview.current.injectJavaScript(
+        webview2.current.injectJavaScript(
             `document.getElementsByClassName('AppRouter')[0].children[0].style.pointerEvents = 'none';document.getElementById('tab-products').click();`
         );
         await new Promise((resolve) => {
             setTimeout(() => {
                 resolve();
-                webview.current.injectJavaScript(
+                webview2.current.injectJavaScript(
                     `document.getElementsByClassName('AppRouter')[0].children[0].style.pointerEvents = 'auto'`
                 );
             }, 500);
         });
-    }, []);
+    }, [scrolling]);
 
     const timer = useRef();
 
     const handlerIdentify = useCallback(async (done) => {
         // 通知h5发送params
-        webview.current.postMessage(JSON.stringify({action: 'getIdentifyParams'}));
+        webview2.current.postMessage(JSON.stringify({action: 'getIdentifyParams'}));
         // 等待接受params
         let _identifyParams = await new Promise((resolve) => {
             timer.current = setInterval(() => {
@@ -157,15 +163,116 @@ const SpecialDetail = ({navigation, route}) => {
             }, 200);
         });
         // 获得跳转url
-        http.get('products/subject/ocr_btn/20220901', _identifyParams).then((res) => {
-            done();
-            if (res.code === '000000') {
-                jump(res.result.buy_url);
-            } else {
-                Toast.show('识别失败');
-            }
-        });
+        http.get('products/subject/ocr_btn/20220901', _identifyParams)
+            .then((res) => {
+                done();
+                setFloatZIndex(-1);
+                setScrolling(prevScrolling.current);
+                if (res.code === '000000') {
+                    jump(res.result.buy_url);
+                } else {
+                    Toast.show('识别失败');
+                }
+            })
+            .catch((_) => {
+                setFloatZIndex(-1);
+                setScrolling(prevScrolling.current);
+            });
     }, []);
+
+    const genWebView = (androidHardwareAccelerationDisabled) => {
+        return token ? (
+            <RNWebView
+                bounces={false}
+                ref={androidHardwareAccelerationDisabled ? webview2 : webview}
+                androidHardwareAccelerationDisabled={androidHardwareAccelerationDisabled}
+                onMessage={(event) => {
+                    const data = event.nativeEvent.data;
+                    if (data?.indexOf('url=') > -1) {
+                        const url = JSON.parse(data.split('url=')[1]);
+                        jump(url);
+                    } else if (data?.indexOf('scrolling=') > -1) {
+                        const _scrolling = JSON.parse(data.split('scrolling=')[1]);
+                        setScrolling(_scrolling == 1);
+                    } else if (data?.indexOf('logParams=') > -1) {
+                        const logParams = JSON.parse(data?.split('logParams=')[1] || []);
+                        global.LogTool(logParams);
+                    } else if (data?.indexOf('writeComment=') > -1) {
+                        writeComment();
+                    } else if (data?.indexOf('showTest=') > -1) {
+                        const config = JSON.parse(data?.split('showTest=')[1] || []);
+                        console.log('config:', config);
+                        questionModalRef.current?.show(config);
+                    } else if (data?.indexOf('loadEnd') > -1) {
+                        // h5加载完毕
+                        setWebviewLoadEnd(true);
+                    } else if (data?.indexOf('identifyParams=') > -1) {
+                        const _identifyParams = JSON.parse(data?.split('identifyParams=')[1] || []);
+                        identifyParams.current = _identifyParams;
+                    }
+                }}
+                originWhitelist={['*']}
+                onHttpError={(syntheticEvent) => {
+                    const {nativeEvent} = syntheticEvent;
+                    console.warn('WebView received error status code: ', nativeEvent.statusCode);
+                }}
+                javaScriptEnabled={true}
+                injectedJavaScript={`window.sessionStorage.setItem('token','${token}');`}
+                // injectedJavaScriptBeforeContentLoaded={`window.sessionStorage.setItem('token','${token}');`}
+                onLoadEnd={async (e) => {
+                    const loginStatus = await Storage.get('loginStatus');
+                    // console.log('loginStatus:', loginStatus);
+                    const loginStatusStr = JSON.stringify({
+                        ...loginStatus,
+                        did: global.did,
+                        timeStamp: timeStamp.current + '',
+                        ver: global.ver,
+                        navBarHeight: navBarRef.current.navBarHeight,
+                    });
+                    webview.current?.injectJavaScript(`localStorage.setItem('loginStatus','${loginStatusStr}')`);
+                    webview2.current?.injectJavaScript(`localStorage.setItem('loginStatus','${loginStatusStr}')`);
+                    console.log(
+                        JSON.stringify({
+                            ...loginStatus,
+                            did: global.did,
+                            timeStamp: timeStamp.current + '',
+                            ver: global.ver,
+                        })
+                    );
+                    webview.current.postMessage(
+                        JSON.stringify({
+                            ...loginStatus,
+                            did: global.did,
+                            timeStamp: timeStamp.current + '',
+                            ver: global.ver,
+                            navBarHeight: navBarRef.current.navBarHeight,
+                        })
+                    );
+                    webview2.current.postMessage(
+                        JSON.stringify({
+                            ...loginStatus,
+                            did: global.did,
+                            timeStamp: timeStamp.current + '',
+                            ver: global.ver,
+                            navBarHeight: navBarRef.current.navBarHeight,
+                        })
+                    );
+                }}
+                renderLoading={Platform.OS === 'android' ? () => <Loading /> : undefined}
+                startInLoadingState={true}
+                style={{opacity: 0.99, flex: 1}}
+                source={{
+                    uri: URI(route.params.link)
+                        .addQuery({
+                            timeStamp: timeStamp.current,
+                            ...route.params.params,
+                        })
+                        .valueOf(),
+                }}
+                textZoom={100}
+            />
+        ) : null;
+    };
 
     useEffect(() => {
         return () => timer.current && clearInterval(timer.current);
@@ -241,90 +348,13 @@ const SpecialDetail = ({navigation, route}) => {
                     zIndex: 9,
                 }}
             />
-
-            {token ? (
-                <RNWebView
-                    bounces={false}
-                    ref={webview}
-                    onMessage={(event) => {
-                        const data = event.nativeEvent.data;
-                        if (data?.indexOf('url=') > -1) {
-                            const url = JSON.parse(data.split('url=')[1]);
-                            jump(url);
-                        } else if (data?.indexOf('scrolling=') > -1) {
-                            const _scrolling = JSON.parse(data.split('scrolling=')[1]);
-                            setScrolling(_scrolling == 1);
-                        } else if (data?.indexOf('logParams=') > -1) {
-                            const logParams = JSON.parse(data?.split('logParams=')[1] || []);
-                            global.LogTool(logParams);
-                        } else if (data?.indexOf('writeComment=') > -1) {
-                            writeComment();
-                        } else if (data?.indexOf('showTest=') > -1) {
-                            const config = JSON.parse(data?.split('showTest=')[1] || []);
-                            console.log('config:', config);
-                            questionModalRef.current?.show(config);
-                        } else if (data?.indexOf('loadEnd') > -1) {
-                            // h5加载完毕
-                            setWebviewLoadEnd(true);
-                        } else if (data?.indexOf('identifyParams=') > -1) {
-                            const _identifyParams = JSON.parse(data?.split('identifyParams=')[1] || []);
-                            identifyParams.current = _identifyParams;
-                        }
-                    }}
-                    originWhitelist={['*']}
-                    onHttpError={(syntheticEvent) => {
-                        const {nativeEvent} = syntheticEvent;
-                        console.warn('WebView received error status code: ', nativeEvent.statusCode);
-                    }}
-                    javaScriptEnabled={true}
-                    injectedJavaScript={`window.sessionStorage.setItem('token','${token}');`}
-                    // injectedJavaScriptBeforeContentLoaded={`window.sessionStorage.setItem('token','${token}');`}
-                    onLoadEnd={async (e) => {
-                        const loginStatus = await Storage.get('loginStatus');
-                        // console.log('loginStatus:', loginStatus);
-                        const loginStatusStr = JSON.stringify({
-                            ...loginStatus,
-                            did: global.did,
-                            timeStamp: timeStamp.current + '',
-                            ver: global.ver,
-                            navBarHeight: navBarRef.current.navBarHeight,
-                        });
-                        webview.current?.injectJavaScript(`localStorage.setItem('loginStatus','${loginStatusStr}')`);
-                        console.log(
-                            JSON.stringify({
-                                ...loginStatus,
-                                did: global.did,
-                                timeStamp: timeStamp.current + '',
-                                ver: global.ver,
-                            })
-                        );
-                        webview.current.postMessage(
-                            JSON.stringify({
-                                ...loginStatus,
-                                did: global.did,
-                                timeStamp: timeStamp.current + '',
-                                ver: global.ver,
-                                navBarHeight: navBarRef.current.navBarHeight,
-                            })
-                        );
-                    }}
-                    renderLoading={Platform.OS === 'android' ? () => <Loading /> : undefined}
-                    startInLoadingState={true}
-                    style={{opacity: 0.9999, flex: 1}}
-                    source={{
-                        uri: URI(route.params.link)
-                            .addQuery({
-                                timeStamp: timeStamp.current,
-                                ...route.params.params,
-                            })
-                            .valueOf(),
-                    }}
-                    textZoom={100}
-                />
-            ) : null}
+            {genWebView()}
+            <View style={{position: 'absolute', width: '100%', height: '100%', top: 0, left: 0, zIndex: floatZIndex}}>
+                {genWebView(true)}
+            </View>
 
             {data ? (
-                <View style={[styles.footer, Style.flexRow]}>
+                <View style={[styles.footer, Style.flexRow, {opacity: floatZIndex < 0 ? 1 : 0}]}>
                     <TouchableOpacity style={styles.footer_content} activeOpacity={0.9} onPress={writeComment}>
                         <Text style={{fontSize: px(12), color: '#9AA0B1'}}>{data?.comment_placeholder}</Text>
                     </TouchableOpacity>
@@ -407,6 +437,10 @@ const SpecialDetail = ({navigation, route}) => {
                 <IdentifyToTrade
                     onStart={handlerIdentifyStart}
                     onIdentify={handlerIdentify}
+                    onError={() => {
+                        setFloatZIndex(-1);
+                        setScrolling(prevScrolling.current);
+                    }}
                     style={{bottom: px(109)}}
                 />
             ) : null}
