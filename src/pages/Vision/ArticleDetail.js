@@ -562,7 +562,7 @@ const ArticleDetail = ({navigation, route}) => {
                                 }}
                                 scalesPageToFit={Platform.select({ios: true, android: false})}
                                 source={{
-                                    uri: `http://192.168.190.32:3000/article/9859?timeStamp=${timeStamp.current}`,
+                                    uri: `${SERVER_URL[global.env].H5}/article/9859?timeStamp=${timeStamp.current}`,
                                 }}
                                 onError={(err) => {
                                     console.log(err, 'object111');
