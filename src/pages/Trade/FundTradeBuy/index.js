@@ -806,7 +806,7 @@ const Index = ({navigation, route}) => {
                 } else if (act === 'back') {
                     navigation.goBack();
                 } else if (act === 'report') {
-                    http.post(url, {fund_code: code});
+                    http.post(url, {fund_code: sale_fund_codes || code});
                 }
             },
             confirmText: confirm.text,
