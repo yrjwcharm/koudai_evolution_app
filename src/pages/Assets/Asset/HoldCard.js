@@ -19,7 +19,7 @@ import Icon from 'react-native-vector-icons/Entypo';
 import AssetCard from '../components/AssetCard';
 const ClassCard = ({data = {}, showEye, expand}) => {
     const jump = useJump();
-    const {name, number, remind_info, tag_info, indicators, icon, right_top_tag, url, child, child_header_list} = data;
+    const {name, number, remind_info, tag_info, indicators, icon, url, child, child_header_list} = data;
     return (
         <>
             <TouchableOpacity
@@ -86,13 +86,6 @@ const ClassCard = ({data = {}, showEye, expand}) => {
                     ))}
                 </View>
                 {!!remind_info && <RenderAlert alert={remind_info} />}
-                {right_top_tag ? (
-                    <Icon
-                        name="chevron-thin-right"
-                        color={Colors.lightBlackColor}
-                        style={{position: 'absolute', right: px(16), top: px(16)}}
-                    />
-                ) : null}
             </TouchableOpacity>
             {child?.length > 0 && expand && (
                 <>

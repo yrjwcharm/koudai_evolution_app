@@ -634,6 +634,7 @@ const Index = ({navigation, route}) => {
         period_info,
         ratio_detail,
         rule_button,
+        sale_fund_codes,
         sub_title,
         tip,
     } = data;
@@ -917,14 +918,16 @@ const Index = ({navigation, route}) => {
                         {period_info ? (
                             <FixedInvestCycle {...period_info} onChange={onChangeDate} setShowMask={setShowMask} />
                         ) : null}
-                        <PayMethod
-                            bankCardModal={bankCardModal}
-                            isLarge={isLarge}
-                            large_pay_show_type={large_pay_show_type}
-                            large_pay_method={large_pay_method ? {...large_pay_method, large_pay_tip} : undefined}
-                            pay_method={isLarge ? large_pay_method : pay_methods[bankSelectIndex]}
-                            setIsLarge={setIsLarge}
-                        />
+                        {pay_methods?.length > 0 && (
+                            <PayMethod
+                                bankCardModal={bankCardModal}
+                                isLarge={isLarge}
+                                large_pay_show_type={large_pay_show_type}
+                                large_pay_method={large_pay_method ? {...large_pay_method, large_pay_tip} : undefined}
+                                pay_method={isLarge ? large_pay_method : pay_methods[bankSelectIndex]}
+                                setIsLarge={setIsLarge}
+                            />
+                        )}
                         {ratio_detail ? (
                             <TradeDetail
                                 amount={amount}
@@ -968,7 +971,7 @@ const Index = ({navigation, route}) => {
                         heightChange={(height) => setDeltaHeight(height)}
                         onPress={buyClick}
                         otherAgreement={agreement}
-                        otherParam={{fund_codes: code, type}}
+                        otherParam={{fund_codes: sale_fund_codes || code, type}}
                         suffix={agreement_bottom.agree_text}
                         title={button.text}
                     />
@@ -1173,6 +1176,7 @@ const styles = StyleSheet.create({
         color: Colors.defaultColor,
         fontFamily: Font.numFontFamily,
         minWidth: 2,
+        textAlign: 'right',
     },
     percentUnit: {
         fontSize: Font.textH3,
