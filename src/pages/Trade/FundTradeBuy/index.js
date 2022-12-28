@@ -456,7 +456,7 @@ const TradeDetail = ({amount, data = {}, listRef = {}, setCanBuy}) => {
     }, [canBuy]);
 
     useEffect(() => {
-        listRef.current = list;
+        listRef.current = list.filter((item) => item.select);
     }, [list]);
 
     useEffect(() => {
