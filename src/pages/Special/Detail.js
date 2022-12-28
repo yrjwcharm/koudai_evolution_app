@@ -39,6 +39,7 @@ const SpecialDetail = ({navigation, route}) => {
     const clickRef = useRef(true);
     const identifyParams = useRef();
     const prevScrolling = useRef();
+    const proTabIndex = useRef(-1);
 
     useEffect(() => {
         const getToken = () => {
@@ -131,20 +132,21 @@ const SpecialDetail = ({navigation, route}) => {
     };
 
     const handlerIdentifyStart = useCallback(async () => {
-        setFloatZIndex(2);
-        prevScrolling.current = scrolling;
-        setScrolling(true);
+        let injectJavaScript = `document.getElementById('tab-products').click();`;
+        // 同步webview1的tab选中
+        if (proTabIndex.current > -1) {
+            injectJavaScript += `document.getElementById('prdTabs').children[${proTabIndex.current}].click();`;
+        }
         // 滚动到顶部，并且滚动时禁止点击
-        webview2.current.injectJavaScript(
-            `document.getElementsByClassName('AppRouter')[0].children[0].style.pointerEvents = 'none';document.getElementById('tab-products').click();`
-        );
+        webview2.current.injectJavaScript(injectJavaScript);
+
         await new Promise((resolve) => {
             setTimeout(() => {
                 resolve();
-                webview2.current.injectJavaScript(
-                    `document.getElementsByClassName('AppRouter')[0].children[0].style.pointerEvents = 'auto'`
-                );
-            }, 500);
+                setFloatZIndex(2);
+                prevScrolling.current = scrolling;
+                setScrolling(true);
+            }, 430);
         });
     }, [scrolling]);
 
@@ -209,6 +211,9 @@ const SpecialDetail = ({navigation, route}) => {
                     } else if (data?.indexOf('identifyParams=') > -1) {
                         const _identifyParams = JSON.parse(data?.split('identifyParams=')[1] || []);
                         identifyParams.current = _identifyParams;
+                    } else if (data?.indexOf('proTabIndex=') > -1) {
+                        const _proTabIndex = JSON.parse(data?.split('proTabIndex=')[1] || []);
+                        proTabIndex.current = _proTabIndex;
                     }
                 }}
                 originWhitelist={['*']}
