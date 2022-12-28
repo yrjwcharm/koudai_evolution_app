@@ -140,6 +140,19 @@ const InputBox = ({buy_info, errTip, feeData, onChange, rule_button, value = ''}
     const {type} = route.params || {};
     const {hidden_text, title} = buy_info;
     const {date_text, fee_text, origin_fee} = feeData;
+    const input = useRef();
+
+    const keyboardHide = () => {
+        input.current?.blur?.();
+    };
+
+    useEffect(() => {
+        Keyboard.addListener('keyboardDidHide', keyboardHide);
+        return () => {
+            Keyboard.removeAllListeners('keyboardDidHide');
+        };
+    }, []);
+
     return (
         <View style={[styles.partBox, {paddingVertical: Space.padding}]}>
             <View style={[Style.flexBetween, {alignItems: 'flex-end'}]}>
@@ -159,6 +172,7 @@ const InputBox = ({buy_info, errTip, feeData, onChange, rule_button, value = ''}
                         global.LogTool({event: 'EnterAmount', oid: value});
                     }}
                     onChangeText={onChange}
+                    ref={input}
                     style={styles.input}
                     value={`${value}`}
                 />
@@ -399,9 +413,9 @@ const TradeDetail = ({amount, data = {}, listRef = {}, setCanBuy}) => {
     const canBuy = useMemo(() => {
         return (
             list?.every?.((item) => {
-                const {max_amount, min_amount, percent} = item;
+                const {max_amount, min_amount, percent, select} = item;
                 const _amount = (amount * percent) / 100;
-                return _amount >= min_amount && (max_amount ? _amount <= max_amount : true);
+                return select ? _amount >= min_amount && (max_amount ? _amount <= max_amount : true) : true;
             }) && totalPercent === 100
         );
     }, [amount, list, totalPercent]);
@@ -508,8 +522,9 @@ const TradeDetail = ({amount, data = {}, listRef = {}, setCanBuy}) => {
                     {list?.map?.((item, index) => {
                         const {code, max_amount, min_amount, name, percent, select} = item;
                         const _amount = (amount * percent) / 100;
+                        const hasAmount = `${amount}`.length > 0;
                         const errTip =
-                            _amount && select
+                            hasAmount && select
                                 ? _amount < min_amount
                                     ? `小于最低起购金额${min_amount}元`
                                     : max_amount && _amount > max_amount
@@ -562,7 +577,7 @@ const TradeDetail = ({amount, data = {}, listRef = {}, setCanBuy}) => {
                                                             : Colors.lightGrayColor,
                                                 },
                                             ]}>
-                                            {_amount && select ? _amount.toFixed(2) : `最低${min_amount}元`}
+                                            {hasAmount && select ? _amount.toFixed(2) : `最低${min_amount}元`}
                                         </Text>
                                     </View>
                                 </View>
@@ -867,9 +882,11 @@ const Index = ({navigation, route}) => {
             });
         }, [])
     );
+
     useEffect(() => {
         isFocusedRef.current = isFocused;
     }, [isFocused]);
+
     useEffect(() => {
         if (pay_methods.length > 0) {
             onInput();
