@@ -1,11 +1,11 @@
 /*
  * @Date: 2022-10-11 13:04:34
  * @LastEditors: lizhengfeng lizhengfeng@licaimofang.com
- * @LastEditTime: 2022-11-07 19:16:25
+ * @LastEditTime: 2022-12-29 15:27:09
  * @FilePath: /koudai_evolution_app/src/pages/CreatorCenter/Special/Modify/SpecialModifyProductInfo.js
  * @Description: 修改专题推荐-产品推荐信息
  */
-import React, {useRef, useState} from 'react';
+import React, {useState} from 'react';
 import {
     View,
     StyleSheet,
@@ -24,7 +24,6 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Toast from '~/components/Toast';
 import {useJump} from '~/components/hooks';
 import RenderHtml from '~/components/RenderHtml';
-import RichTextInputModal from '../../components/RichTextInputModal.js';
 /** 列表每行的key */
 const ListKeys = {
     Product: 'Product',
@@ -115,7 +114,6 @@ const getProductTemplate = (item) => [
 export default function SpecialModifyProductInfo({navigation, route}) {
     const {items = [], subject_id, fix_id, onBack} = route.params || {};
     const insets = useSafeAreaInsets();
-    const richTextModalRef = useRef(null);
     // 当前选择行的产品推荐语
     const jump = useJump();
     console.log('items from before page:', items);
@@ -196,10 +194,7 @@ export default function SpecialModifyProductInfo({navigation, route}) {
         setList([...list]);
     };
     const handleCellPress = (item, section) => {
-        // TODOL
-        console.log('handleCellPress:', item);
         if (item.key === ListKeys.Recommend) {
-            // richTextModalRef.current?.show(item.value, item);
             jump({
                 path: 'RichTextInputPage',
                 params: {
@@ -284,7 +279,6 @@ export default function SpecialModifyProductInfo({navigation, route}) {
                     stickySectionHeadersEnabled={false}
                 />
             </KeyboardAvoidingView>
-            <RichTextInputModal ref={richTextModalRef} onChangeText={handleRichTextChange} />
         </View>
     );
 }
