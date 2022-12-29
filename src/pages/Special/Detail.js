@@ -167,14 +167,17 @@ const SpecialDetail = ({navigation, route}) => {
         // 获得跳转url
         http.get('products/subject/ocr_btn/20220901', _identifyParams)
             .then((res) => {
-                done();
-                setFloatZIndex(-1);
-                setScrolling(prevScrolling.current);
-                if (res.code === '000000') {
-                    jump(res.result.buy_url);
-                } else {
-                    Toast.show('识别失败');
-                }
+                // 故意延时1s
+                setTimeout(() => {
+                    done();
+                    setFloatZIndex(-1);
+                    setScrolling(prevScrolling.current);
+                    if (res.code === '000000') {
+                        jump(res.result.buy_url);
+                    } else {
+                        Toast.show('识别失败');
+                    }
+                }, 1000);
             })
             .catch((_) => {
                 setFloatZIndex(-1);
