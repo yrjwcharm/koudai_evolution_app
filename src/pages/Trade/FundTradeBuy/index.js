@@ -381,6 +381,59 @@ const PayMethod = ({
     );
 };
 
+/** @name 基金增值服务 */
+const FundService = ({body, head, onChange}) => {
+    const {content, duration, icon, price, price_discount, title: bodyTitle} = body;
+    const {acquire, selected, title: headTitle} = head;
+    const {pop, text} = acquire;
+    const [select, setSelect] = useState(selected);
+
+    useEffect(() => {
+        onChange?.(select);
+    }, [select]);
+
+    return (
+        <View style={[styles.partBox, {marginTop: px(12), paddingVertical: px(12)}]}>
+            <View style={Style.flexBetween}>
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => setSelect((prev) => Number(!prev))}
+                    style={Style.flexRow}>
+                    <Image source={select ? checked : notChecked} style={styles.checkIcon} />
+                    <HTML html={headTitle} style={styles.title} />
+                </TouchableOpacity>
+                <Text
+                    onPress={() => Modal.show({confirmText: pop.button?.text, content: pop.content})}
+                    style={[styles.desc, {color: Colors.brandColor}]}>
+                    {text}
+                </Text>
+            </View>
+            <View style={{marginTop: px(12), flexDirection: 'row'}}>
+                <Image source={{uri: icon}} style={styles.serviceImg} />
+                <View style={{flex: 1}}>
+                    <HTML html={bodyTitle} style={styles.bodyTitle} />
+                    <HTML html={content} nativeProps={{containerStyle: {marginTop: px(4)}}} style={styles.smText} />
+                    <View style={[Style.flexRow, {alignItems: 'flex-end', marginTop: px(8)}]}>
+                        <Text
+                            style={[styles.desc, {marginBottom: 1, color: Colors.red, fontWeight: Font.weightMedium}]}>
+                            ￥
+                        </Text>
+                        <HTML
+                            html={price_discount}
+                            nativeProps={{containerStyle: {marginHorizontal: px(2)}}}
+                            style={styles.priceDiscount}
+                        />
+                        <Text style={[styles.desc, {marginBottom: 1, color: Colors.descColor}]}>
+                            <Text style={{textDecorationLine: 'line-through'}}>{price}</Text>
+                            {duration}
+                        </Text>
+                    </View>
+                </View>
+            </View>
+        </View>
+    );
+};
+
 const Index = ({navigation, route}) => {
     const jump = useJump();
     const {amount: _amount = '', code, type = 0, append = ''} = route.params;
@@ -400,6 +453,7 @@ const Index = ({navigation, route}) => {
         agreement_bottom,
         button,
         buy_info,
+        fund_service,
         large_pay_method,
         large_pay_show_type, // 1为显示在内层列表 2为显示在外层
         large_pay_tip,
@@ -410,6 +464,7 @@ const Index = ({navigation, route}) => {
         sub_title,
     } = data;
     const timer = useRef();
+    const selectFundService = useRef();
     const userInfo = useSelector((state) => state.userInfo)?.toJS?.() || {};
 
     const onChange = (val) => {
@@ -495,7 +550,15 @@ const Index = ({navigation, route}) => {
     const onSubmit = (password) => {
         const method = isLarge ? large_pay_method : pay_methods[bankSelectIndex];
         const toast = Toast.showLoading();
-        const params = {amount, fund_code: code, password, pay_method: method.pay_method, poid: data.poid, append};
+        const params = {
+            amount,
+            fund_code: code,
+            fund_service: selectFundService.current,
+            password,
+            pay_method: method.pay_method,
+            poid: data.poid,
+            append,
+        };
         if (type === 1) {
             params.cycle = period_info.current_date[0];
             params.need_buy = false;
@@ -605,6 +668,7 @@ const Index = ({navigation, route}) => {
                     const {risk_pop, title = '买入'} = res.result;
                     risk_pop && showRiskPop(risk_pop);
                     navigation.setOptions({title});
+                    selectFundService.current = res.result.fund_service?.selected || 0;
                     setData(res.result);
                 }
             });
@@ -671,6 +735,9 @@ const Index = ({navigation, route}) => {
                             pay_method={isLarge ? large_pay_method : pay_methods[bankSelectIndex]}
                             setIsLarge={setIsLarge}
                         />
+                        {fund_service ? (
+                            <FundService {...fund_service} onChange={(val) => (selectFundService.current = val)} />
+                        ) : null}
                         <BottomDesc />
                     </ScrollView>
                     <BankCardModal
@@ -883,6 +950,34 @@ const styles = StyleSheet.create({
         paddingVertical: px(12),
         paddingHorizontal: Space.padding,
         backgroundColor: '#fff',
+    },
+    checkIcon: {
+        marginRight: px(8),
+        width: px(16),
+        height: px(16),
+    },
+    serviceImg: {
+        marginRight: px(12),
+        borderRadius: px(4),
+        width: px(110),
+        height: px(92),
+    },
+    bodyTitle: {
+        fontSize: px(15),
+        lineHeight: px(21),
+        color: Colors.defaultColor,
+        fontWeight: Font.weightMedium,
+    },
+    smText: {
+        fontSize: Font.textSm,
+        lineHeight: px(16),
+        color: Colors.descColor,
+    },
+    priceDiscount: {
+        fontSize: px(24),
+        lineHeight: px(28),
+        color: Colors.defaultColor,
+        fontFamily: Font.numMedium,
     },
 });
 
