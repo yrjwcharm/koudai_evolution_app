@@ -243,7 +243,7 @@ const PortfolioAssetList = ({route, navigation}) => {
                 </StickyHeader>
                 {hold?.holding_info?.product ? (
                     hold?.holding_info?.product?.map((product, index) => {
-                        return <AssetCard data={product} showEye={showEye} key={product?.log_id + index} />;
+                        return <AssetCard data={product} showEye={showEye} type={type} key={product?.log_id + index} />;
                     })
                 ) : (
                     <View style={[Style.flexCenter, styles.portCard, {height: px(220)}]}>

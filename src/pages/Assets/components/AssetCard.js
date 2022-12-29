@@ -7,7 +7,7 @@ import {px} from '~/utils/appUtil';
 import {useJump} from '~/components/hooks';
 import Icon from 'react-native-vector-icons/Entypo';
 import TagInfo from './TagInfo';
-const AssetCard = ({data = {}, showEye, style, borderStyle}) => {
+const AssetCard = ({data = {}, showEye, style, borderStyle, type}) => {
     const jump = useJump();
     const {
         log_id,
@@ -75,7 +75,7 @@ const AssetCard = ({data = {}, showEye, style, borderStyle}) => {
 
                 <View style={Style.flexRow}>
                     {/* 基金 */}
-                    {log_id == 10 ? (
+                    {type == 10 ? (
                         <View style={{flex: 1.4}}>
                             <Text style={styles.holdingDays}>{code}</Text>
                             {holding_days && right_top_tag ? (

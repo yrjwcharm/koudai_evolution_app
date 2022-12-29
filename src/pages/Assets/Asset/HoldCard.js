@@ -118,6 +118,7 @@ const ClassCard = ({data = {}, showEye, expand}) => {
                             data={item}
                             key={index}
                             showEye={showEye}
+                            type={data?.log_id}
                             style={{
                                 marginBottom: index == arr.length - 1 && arr.length >= number ? px(12) : 0,
                                 borderRadius: 0,
