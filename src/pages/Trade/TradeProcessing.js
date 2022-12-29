@@ -1,11 +1,6 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /*
- * @Author: dx
  * @Date: 2021-01-20 17:33:06
- * @LastEditTime: 2022-12-27 19:16:20
- * @LastEditors: Please set LastEditors
  * @Description: 交易确认页
- * @FilePath: /koudai_evolution_app/src/pages/TradeState/TradeProcessing.js
  */
 import React, {useState, useCallback, useRef} from 'react';
 import {StyleSheet, ScrollView, View, Text, BackHandler} from 'react-native';
@@ -166,9 +161,9 @@ const TradeProcessing = ({navigation, route}) => {
                     <View style={[styles.buy_table, {borderTopWidth: item?.children?.head ? 0.5 : 0}]}>
                         {item?.children?.head && (
                             <View style={[Style.flexBetween, {height: px(30)}]}>
-                                {item?.children?.head.map((text, key) => (
+                                {item?.children?.head.map((val, key) => (
                                     <Text key={key} style={[styles.light_text, {textAlign: 'left', width: px(113)}]}>
-                                        {text}
+                                        {val}
                                     </Text>
                                 ))}
                             </View>

@@ -147,10 +147,7 @@ const InputBox = ({buy_info, errTip, feeData, onChange, rule_button, value = ''}
     };
 
     useEffect(() => {
-        Keyboard.addListener('keyboardDidHide', keyboardHide);
-        return () => {
-            Keyboard.removeAllListeners('keyboardDidHide');
-        };
+        Platform.OS === 'android' && Keyboard.addListener('keyboardDidHide', keyboardHide);
     }, []);
 
     return (
@@ -173,7 +170,7 @@ const InputBox = ({buy_info, errTip, feeData, onChange, rule_button, value = ''}
                     }}
                     onChangeText={onChange}
                     ref={input}
-                    style={styles.input}
+                    style={[styles.input, `${value}`.length > 0 ? {fontFamily: Font.numMedium} : {}]}
                     value={`${value}`}
                 />
                 {`${value}`.length > 0 && (
@@ -460,10 +457,7 @@ const TradeDetail = ({amount, data = {}, listRef = {}, setCanBuy}) => {
     }, [list]);
 
     useEffect(() => {
-        Keyboard.addListener('keyboardDidHide', keyboardHide);
-        return () => {
-            Keyboard.removeAllListeners('keyboardDidHide');
-        };
+        Platform.OS === 'android' && Keyboard.addListener('keyboardDidHide', keyboardHide);
     }, []);
 
     return (
@@ -892,6 +886,12 @@ const Index = ({navigation, route}) => {
             onInput();
         }
     }, [amount, bankSelectIndex, code, isLarge, large_pay_method, pay_methods]);
+
+    useEffect(() => {
+        return () => {
+            Keyboard.removeAllListeners('keyboardDidHide');
+        };
+    }, []);
 
     return (
         <KeyboardAvoidingView
