@@ -393,6 +393,59 @@ const PayMethod = ({
     );
 };
 
+/** @name 基金增值服务 */
+const FundService = ({body, head, onChange}) => {
+    const {content, duration, icon, price, price_discount, title: bodyTitle} = body;
+    const {acquire, selected, title: headTitle} = head;
+    const {pop, text} = acquire;
+    const [select, setSelect] = useState(selected);
+
+    useEffect(() => {
+        onChange?.(select);
+    }, [select]);
+
+    return (
+        <View style={[styles.partBox, {marginTop: px(12), paddingVertical: px(12)}]}>
+            <View style={Style.flexBetween}>
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => setSelect((prev) => Number(!prev))}
+                    style={Style.flexRow}>
+                    <Image source={select ? checked : notChecked} style={styles.checkIcon} />
+                    <HTML html={headTitle} style={styles.title} />
+                </TouchableOpacity>
+                <Text
+                    onPress={() => Modal.show({confirmText: pop.button?.text, content: pop.content})}
+                    style={[styles.desc, {color: Colors.brandColor}]}>
+                    {text}
+                </Text>
+            </View>
+            <View style={{marginTop: px(12), flexDirection: 'row'}}>
+                <Image source={{uri: icon}} style={styles.serviceImg} />
+                <View style={{flex: 1}}>
+                    <HTML html={bodyTitle} style={styles.bodyTitle} />
+                    <HTML html={content} nativeProps={{containerStyle: {marginTop: px(4)}}} style={styles.smText} />
+                    <View style={[Style.flexRow, {alignItems: 'flex-end', marginTop: px(8)}]}>
+                        <Text
+                            style={[styles.desc, {marginBottom: 1, color: Colors.red, fontWeight: Font.weightMedium}]}>
+                            ￥
+                        </Text>
+                        <HTML
+                            html={price_discount}
+                            nativeProps={{containerStyle: {marginHorizontal: px(2)}}}
+                            style={styles.priceDiscount}
+                        />
+                        <Text style={[styles.desc, {marginBottom: 1, color: Colors.descColor}]}>
+                            <Text style={{textDecorationLine: 'line-through'}}>{price}</Text>
+                            {duration}
+                        </Text>
+                    </View>
+                </View>
+            </View>
+        </View>
+    );
+};
+
 /** @name 买入/卖出明细 */
 const TradeDetail = ({amount, data = {}, listRef = {}, setCanBuy}) => {
     const {disable_info, header, items, title, total_info} = data;
@@ -648,6 +701,7 @@ const Index = ({navigation, route}) => {
         agreement_bottom,
         button,
         buy_info,
+        fund_service,
         large_pay_method,
         large_pay_show_type, // 1为显示在内层列表 2为显示在外层
         large_pay_tip,
@@ -661,6 +715,7 @@ const Index = ({navigation, route}) => {
         tip,
     } = data;
     const timer = useRef();
+    const selectFundService = useRef();
     const userInfo = useSelector((state) => state.userInfo)?.toJS?.() || {};
 
     const onChange = (val) => {
@@ -749,9 +804,10 @@ const Index = ({navigation, route}) => {
         const params = {
             amount,
             fund_code: code,
+            fund_service: selectFundService.current,
             password,
             pay_method: method.pay_method,
-            poid: data.poid || '',
+            poid: data.poid,
             append,
         };
         if (type === 1) {
@@ -871,6 +927,7 @@ const Index = ({navigation, route}) => {
                     const {risk_pop, title = '买入'} = res.result;
                     risk_pop && isFocusedRef.current && showRiskPop(risk_pop);
                     navigation.setOptions({title});
+                    selectFundService.current = res.result.fund_service?.selected || 0;
                     setData(res.result);
                 }
             });
@@ -965,6 +1022,9 @@ const Index = ({navigation, route}) => {
                                 listRef={tradeDetailList}
                                 setCanBuy={setCanBuy}
                             />
+                        ) : null}
+                        {fund_service ? (
+                            <FundService {...fund_service} onChange={(val) => (selectFundService.current = val)} />
                         ) : null}
                         <BottomDesc />
                     </ScrollView>
@@ -1280,6 +1340,29 @@ const styles = StyleSheet.create({
         paddingVertical: px(12),
         paddingHorizontal: Space.padding,
         backgroundColor: '#fff',
+    },
+    serviceImg: {
+        marginRight: px(12),
+        borderRadius: px(4),
+        width: px(110),
+        height: px(92),
+    },
+    bodyTitle: {
+        fontSize: px(15),
+        lineHeight: px(21),
+        color: Colors.defaultColor,
+        fontWeight: Font.weightMedium,
+    },
+    smText: {
+        fontSize: Font.textSm,
+        lineHeight: px(16),
+        color: Colors.descColor,
+    },
+    priceDiscount: {
+        fontSize: px(24),
+        lineHeight: px(28),
+        color: Colors.defaultColor,
+        fontFamily: Font.numMedium,
     },
 });
 
