@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-23 16:31:24
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-09-02 14:34:36
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-12-29 16:58:03
  * @Description: 找回交易密码下一步
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -20,7 +20,7 @@ import {getUserInfo} from '../../redux/actions/userInfo';
 const ForgotTradePwdNext = ({navigation, route}) => {
     const dispatch = useDispatch();
     const [msg] = useState(route.params?.msg);
-    const [second, setSecond] = useState(0);
+    const [, setSecond] = useState(0);
     const [codeText, setCodeText] = useState('60秒后可重发');
     const btnClick = useRef(true);
     const timerRef = useRef('');
@@ -157,7 +157,12 @@ const ForgotTradePwdNext = ({navigation, route}) => {
                 title={'确认密码'}
                 value={confirmPwd}
             />
-            <Button onPress={submit} style={styles.btn} title={'确认'} />
+            <Button
+                disabled={newPwd.length < 6 || confirmPwd.length < 6}
+                onPress={submit}
+                style={styles.btn}
+                title={'确认'}
+            />
         </ScrollView>
     );
 };
