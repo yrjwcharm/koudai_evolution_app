@@ -44,11 +44,6 @@ const AssetCard = ({data = {}, showEye, style, borderStyle}) => {
                 jump(url);
             }}>
             <View style={[{paddingTop: borderStyle ? px(12) : 0}, borderStyle]}>
-                {profit_title ? (
-                    <View style={styles.portCardUpdateHint}>
-                        <Text style={styles.portCardUpdateHintText}>{profit_title}</Text>
-                    </View>
-                ) : null}
                 <View style={[Style.flexBetween, {marginBottom: px(5)}]}>
                     <View style={Style.flexRow}>
                         <Text style={[styles.name, {marginBottom: 0}]}>{name}</Text>
@@ -68,6 +63,11 @@ const AssetCard = ({data = {}, showEye, style, borderStyle}) => {
                         ))}
                     </View>
                     <View style={Style.flexRow}>
+                        {profit_title ? (
+                            <View style={styles.portCardUpdateHint}>
+                                <Text style={styles.portCardUpdateHintText}>{profit_title}</Text>
+                            </View>
+                        ) : null}
                         {!!open_tip && <Text style={{fontSize: px(10), color: Colors.lightGrayColor}}>{open_tip}</Text>}
                         <Icon name="chevron-thin-right" color={Colors.lightBlackColor} size={px(10)} />
                     </View>
@@ -166,13 +166,11 @@ const styles = StyleSheet.create({
         marginBottom: px(8),
     },
     portCardUpdateHint: {
-        position: 'absolute',
-        right: 0,
-        top: 0,
         backgroundColor: '#F1F6FF',
         paddingVertical: px(2),
         paddingHorizontal: px(3),
         borderRadius: px(4),
+        marginRight: px(8),
     },
     portCardUpdateHintText: {
         fontSize: px(10),
