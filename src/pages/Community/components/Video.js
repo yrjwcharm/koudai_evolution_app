@@ -136,6 +136,7 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
                                     onLoad={customerOnload}
                                     onProgress={customerOnprogress}
                                     resizeMode="contain"
+                                    ignoreSilentSwitch={'ignore'}
                                     style={{
                                         height: height,
                                         width: WIDTH,
