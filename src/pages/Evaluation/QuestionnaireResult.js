@@ -2,7 +2,7 @@
  * @Date: 2021-07-05 18:09:25
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-23 15:46:03
+ * @LastEditTime: 2022-12-30 16:40:06
  * @Description: 传统风险评测结果页
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -105,7 +105,7 @@ const QuestionnaireResult = () => {
                             )}
                             <TouchableOpacity
                                 activeOpacity={0.8}
-                                onPress={() => buttonJump(data?.open_account?.strong_btn?.url)}
+                                onPress={() => handleJump(data?.open_account?.strong_btn?.url)}
                                 style={[styles.open_account_btn]}>
                                 <Text style={{fontSize: px(12), color: '#fff'}}>
                                     {data?.open_account?.strong_btn?.text}
