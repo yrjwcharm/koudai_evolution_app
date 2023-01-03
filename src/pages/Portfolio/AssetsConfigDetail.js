@@ -1,7 +1,7 @@
 /*
  * @Author: dx
  * @Date: 2021-01-15 18:29:42
- * @LastEditTime: 2022-07-12 18:47:50
+ * @LastEditTime: 2023-01-03 16:47:25
  * @LastEditors: Please set LastEditors
  * @Description: 资产配置详情
  * @FilePath: /koudai_evolution_app/src/pages/Detail/AssetsConfigDetail.js
@@ -122,8 +122,10 @@ export class AssetsConfigDetail extends Component {
                                 key={item.code}
                                 onPress={() => this.props.navigation.navigate('FundDetail', {code: item.code})}
                                 style={[styles.assets_l2, Style.flexBetween]}>
-                                <View>
-                                    <Text style={[styles.assets_l2_name]}>{item.name}</Text>
+                                <View style={{flex: 1, marginRight: text(12)}}>
+                                    <Text style={[styles.assets_l2_name]} numberOfLines={1}>
+                                        {item.name}
+                                    </Text>
                                     <Text style={[styles.assets_l2_code]}>{item.code}</Text>
                                 </View>
                                 <View style={[styles.assets_l2_right, {flexDirection: 'row'}]}>
