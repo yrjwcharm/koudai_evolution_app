@@ -57,6 +57,7 @@ const OptionalPage = ({
                     <ScrollableTabView
                         prerenderingSiblingsNumber={followTabs?.follow?.tabs?.length}
                         locked={true}
+                        initialPage={followTabs?.follow?.init_selected}
                         renderTabBar={() => <ScrollableTabBar />}
                         onChangeTab={onChangeOptionalTab}
                         ref={optionalTabRef}>
