@@ -439,6 +439,8 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: '50%',
         bottom: px(36),
+        width: px(79),
+        height: px(30),
     },
 });
 
