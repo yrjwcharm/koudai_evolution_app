@@ -35,7 +35,6 @@ const Index = ({navigation, route}) => {
     const clickRef = useRef(true);
     const timeStamp = useRef(Date.now());
     const playTime = useRef();
-    const tipImgArr = useRef([]);
     const [data, setData] = useState({});
     const {bottom_btns: {icon_btns = [], simple_btns = []} = {}, share_button: {share_info} = {}} = data;
     const [webviewHeight, setHeight] = useState(deviceHeight - headerHeight);
@@ -309,26 +308,7 @@ const Index = ({navigation, route}) => {
                                           }
                                         : {},
                                 ]}>
-                                {tip_img ? (
-                                    <Image
-                                        onLoad={(e) => {
-                                            const {
-                                                nativeEvent: {width, height},
-                                            } = e;
-                                            tipImgArr.current[i] &&
-                                                tipImgArr.current[i].setNativeProps({
-                                                    style: {
-                                                        width: px(width / 3),
-                                                        height: px(height / 3),
-                                                        transform: [{translateX: px(width / 6)}],
-                                                    },
-                                                });
-                                        }}
-                                        ref={(ref) => (tipImgArr.current[i] = ref)}
-                                        source={{uri: tip_img}}
-                                        style={styles.tipImg}
-                                    />
-                                ) : null}
+                                {tip_img ? <Image source={{uri: tip_img}} style={styles.tipImg} /> : null}
                                 <Text
                                     style={[
                                         styles.rightBtnText,
@@ -441,6 +421,7 @@ const styles = StyleSheet.create({
         bottom: px(36),
         width: px(79),
         height: px(30),
+        transform: [{translateX: px(79) / 2}],
     },
 });
 
