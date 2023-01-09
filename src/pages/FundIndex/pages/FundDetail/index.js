@@ -280,7 +280,7 @@ const Index = ({navigation, route}) => {
                 </View>
                 <View style={[Style.flexRow, styles.rightBtns]}>
                     {simple_btns?.map((btn, i, arr) => {
-                        const {avail, event_id, text, url} = btn;
+                        const {avail, event_id, text, tip_img, url} = btn;
                         return (
                             <TouchableOpacity
                                 activeOpacity={0.8}
@@ -293,11 +293,22 @@ const Index = ({navigation, route}) => {
                                 style={[
                                     Style.flexCenter,
                                     styles.rightBtn,
-                                    i === 0 ? {backgroundColor: avail === 0 ? '#ddd' : '#E6F0FF'} : {},
+                                    i === 0
+                                        ? {
+                                              backgroundColor: avail === 0 ? '#ddd' : '#E6F0FF',
+                                              borderTopLeftRadius: Space.borderRadius,
+                                              borderBottomLeftRadius: Space.borderRadius,
+                                          }
+                                        : {},
                                     i === arr.length - 1
-                                        ? {backgroundColor: avail === 0 ? '#ddd' : Colors.brandColor}
+                                        ? {
+                                              backgroundColor: avail === 0 ? '#ddd' : Colors.brandColor,
+                                              borderTopRightRadius: Space.borderRadius,
+                                              borderBottomRightRadius: Space.borderRadius,
+                                          }
                                         : {},
                                 ]}>
+                                {tip_img ? <Image source={{uri: tip_img}} style={styles.tipImg} /> : null}
                                 <Text
                                     style={[
                                         styles.rightBtnText,
@@ -341,10 +352,8 @@ const styles = StyleSheet.create({
         color: Colors.defaultColor,
     },
     rightBtns: {
-        borderRadius: Space.borderRadius,
         width: px(210),
         height: px(44),
-        overflow: 'hidden',
     },
     rightBtn: {
         flex: 1,
@@ -405,6 +414,14 @@ const styles = StyleSheet.create({
         fontSize: px(13),
         lineHeight: px(18),
         color: Colors.defaultColor,
+    },
+    tipImg: {
+        position: 'absolute',
+        right: '50%',
+        bottom: px(36),
+        width: px(79),
+        height: px(30),
+        transform: [{translateX: px(79) / 2}],
     },
 });
 

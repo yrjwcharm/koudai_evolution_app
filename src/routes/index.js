@@ -33,7 +33,7 @@ import PrivateOrder from '../pages/PE/PrivateOrder'; //私募预约页面
 import Agreement from '../pages/Common/Agreement'; // 用户协议
 import TradeAgreements from '../pages/Common/TradeAgreements'; // 基金组合协议
 import OpenPdf from '../pages/Common/OpenPdf'; // 阅读PDF
-import AssetsConfigDetail from '../pages/Portfolio/AssetsConfigDetail'; // 资产配置详情
+import AssetsConfigDetail from '../pages/Portfolio/AssetsConfigDetail'; // 资产配置详情 持仓分布
 import TradeFixedConfirm from '../pages/FixedPortfolio/TradeFixedConfirm'; //定投确认页面
 import TradeBuy from '../pages/Trade/TradeBuy'; //购买定投  此名称在WalletAutoRechargeDetail有判断
 import TradeRules from '../pages/Trade/TradeRules'; // 交易须知

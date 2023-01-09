@@ -50,12 +50,14 @@ const TradeRecordDetail = (props) => {
                 setData(res.result);
                 props.navigation.setOptions({
                     headerRight: () => {
-                        return res.result?.button?.text ? (
+                        const {button} = res.result;
+                        return button?.text ? (
                             <TouchableOpacity
                                 onPress={() => {
-                                    handleCancel(res.result?.button?.popup?.content);
-                                }}>
-                                <Text style={styles.header_right}>{res.result?.button?.text}</Text>
+                                    button.url ? jump(button.url) : handleCancel(button?.popup?.content);
+                                }}
+                                style={{marginRight: Space.marginAlign}}>
+                                <Text style={styles.header_right}>{button.text}</Text>
                             </TouchableOpacity>
                         ) : null;
                     },
@@ -69,7 +71,6 @@ const TradeRecordDetail = (props) => {
             .finally(() => {
                 props.setLoading(false);
             });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [txn_id, type, sub_type, poid]);
     useEffect(() => {
         getData();
@@ -614,7 +615,7 @@ const styles = StyleSheet.create({
     },
     header_right: {
         fontSize: px(14),
-        width: px(48),
+        lineHeight: px(20),
         color: Colors.defaultColor,
     },
 

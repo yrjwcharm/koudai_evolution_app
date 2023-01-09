@@ -525,61 +525,68 @@ const ArticleDetail = ({navigation, route}) => {
                         scrollIndicatorInsets={{right: 1}}
                         scrollEventThrottle={100}>
                         <View style={{backgroundColor: '#fff'}}>
-                            <RNWebView
-                                javaScriptEnabled
-                                onMessage={onMessage}
-                                allowsFullscreenVideo={false}
-                                allowsInlineMediaPlayback={true}
-                                ref={webviewRef}
-                                onLoadEnd={async () => {
-                                    setTimeout(() => {
-                                        if (isCurrentArticleAudio.current && position) {
-                                            if (isPlaying) {
-                                                webviewRef.current?.injectJavaScript(
-                                                    `window.changeAudioTime(${position},'rn');window.audioPlay();true;`
-                                                );
-                                            } else {
-                                                webviewRef.current?.injectJavaScript(
-                                                    `window.changeAudioTime(${position},'rn');true;`
-                                                );
-                                            }
-                                        }
-                                    }, 500);
-                                    const loginStatus = await Storage.get('loginStatus');
-                                    webviewRef.current.postMessage(
-                                        JSON.stringify({
-                                            ...loginStatus,
-                                            did: global.did,
-                                            timeStamp: timeStamp.current + '',
-                                            ver: global.ver,
-                                        })
-                                    );
-                                    if (data.feedback_status == 1) {
+                            {userInfo.is_login ? (
+                                <RNWebView
+                                    javaScriptEnabled
+                                    onMessage={onMessage}
+                                    allowsFullscreenVideo={false}
+                                    allowsInlineMediaPlayback={true}
+                                    ref={webviewRef}
+                                    onLoadEnd={async () => {
                                         setTimeout(() => {
-                                            webviewRef.current?.injectJavaScript('window.onVoiceData();true;');
-                                        }, 800);
-                                    }
-                                }}
-                                scalesPageToFit={Platform.select({ios: true, android: false})}
-                                source={{
-                                    uri: `${SERVER_URL[global.env].H5}/article/${route.params?.article_id}?timeStamp=${
-                                        timeStamp.current
-                                    }`,
-                                }}
-                                onError={(err) => {
-                                    console.log(err, 'object111');
-                                }}
-                                onHttpError={(err) => {
-                                    console.log(err, 'object');
-                                }}
-                                renderLoading={Platform.OS === 'android' ? () => <Loading /> : undefined}
-                                startInLoadingState
-                                style={{
-                                    height: webviewHeight,
-                                    opacity: compareVersion(global.systemVersion, '12') >= 0 ? 0.99 : 0.9999,
-                                }}
-                                textZoom={100}
-                            />
+                                            if (isCurrentArticleAudio.current && position) {
+                                                if (isPlaying) {
+                                                    webviewRef.current?.injectJavaScript(
+                                                        `window.changeAudioTime(${position},'rn');window.audioPlay();true;`
+                                                    );
+                                                } else {
+                                                    webviewRef.current?.injectJavaScript(
+                                                        `window.changeAudioTime(${position},'rn');true;`
+                                                    );
+                                                }
+                                            }
+                                        }, 500);
+                                        const loginStatus = await Storage.get('loginStatus');
+                                        webviewRef.current.postMessage(
+                                            JSON.stringify({
+                                                ...(loginStatus || {}),
+                                                did: global.did,
+                                                timeStamp: timeStamp.current + '',
+                                                ver: global.ver,
+                                            })
+                                        );
+                                        if (data.feedback_status == 1) {
+                                            setTimeout(() => {
+                                                webviewRef.current?.injectJavaScript('window.onVoiceData();true;');
+                                            }, 800);
+                                        }
+                                    }}
+                                    scalesPageToFit={Platform.select({ios: true, android: false})}
+                                    source={{
+                                        uri: `${SERVER_URL[global.env].H5}/article/${
+                                            route.params?.article_id
+                                        }?timeStamp=${timeStamp.current}`,
+                                    }}
+                                    onError={(err) => {
+                                        console.log(err, 'object111');
+                                    }}
+                                    onHttpError={(err) => {
+                                        console.log(err, 'object');
+                                    }}
+                                    renderLoading={Platform.OS === 'android' ? () => <Loading /> : undefined}
+                                    startInLoadingState
+                                    style={{
+                                        height: webviewHeight,
+                                        opacity: compareVersion(global.systemVersion, '12') >= 0 ? 0.99 : 0.9999,
+                                    }}
+                                    textZoom={100}
+                                />
+                            ) : (
+                                <Image
+                                    source={require('~/assets/img/article/loadingBg.png')}
+                                    style={styles.loadingBg}
+                                />
+                            )}
                         </View>
 
                         {finishLoad && Object.keys(data).length > 0 && (
@@ -997,6 +1004,11 @@ const styles = StyleSheet.create({
         fontSize: Font.textH3,
         lineHeight: px(17),
         color: Colors.brandColor,
+    },
+    loadingBg: {
+        marginLeft: Space.marginAlign,
+        width: px(343),
+        height: px(718),
     },
 });
 

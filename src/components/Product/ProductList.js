@@ -172,14 +172,7 @@ const ProductList = ({data = [], logParams, slideLogParams, style, drag, type = 
                                             </View>
                                             {profit ? (
                                                 <View style={{marginLeft: px(12), alignItems: 'flex-start'}}>
-                                                    <HTML
-                                                        html={
-                                                            '<span style="font-size:16px;line-height:19px">' +
-                                                            profit +
-                                                            '</span>'
-                                                        }
-                                                        style={styles.bigProfit}
-                                                    />
+                                                    <HTML html={profit} style={styles.bigProfit} />
                                                     <Text style={styles.profitLabel}>{profit_desc}</Text>
                                                 </View>
                                             ) : null}
@@ -208,14 +201,7 @@ const ProductList = ({data = [], logParams, slideLogParams, style, drag, type = 
                                         {profit ? (
                                             <View
                                                 style={{marginLeft: px(12), alignItems: 'flex-start', width: px(102)}}>
-                                                <HTML
-                                                    html={
-                                                        '<span style="font-size:16px;line-height:19px;">' +
-                                                        profit +
-                                                        '</span>'
-                                                    }
-                                                    style={styles.bigProfit}
-                                                />
+                                                <HTML html={profit} style={styles.bigProfit} />
                                                 <Text style={styles.profitLabel}>{profit_desc}</Text>
                                             </View>
                                         ) : null}

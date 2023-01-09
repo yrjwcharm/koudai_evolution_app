@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, StyleSheet, Text, Platform, TouchableOpacity, TextInput, DeviceEventEmitter} from 'react-native';
 import NavBar from '~/components/NavBar';
-import {isIphoneX, px} from '~/utils/appUtil';
+import {compareVersion, isIphoneX, px} from '~/utils/appUtil';
 import {WebView as RNWebView} from 'react-native-webview';
 import Storage from '~/utils/storage';
 import http from '~/services';
@@ -268,7 +268,7 @@ const SpecialDetail = ({navigation, route}) => {
                 }}
                 renderLoading={Platform.OS === 'android' ? () => <Loading /> : undefined}
                 startInLoadingState={true}
-                style={{opacity: 0.99, flex: 1}}
+                style={{opacity: compareVersion(global.systemVersion, '12') >= 0 ? 0.99 : 0.9999, flex: 1}}
                 source={{
                     uri: URI(route.params.link)
                         .addQuery({
