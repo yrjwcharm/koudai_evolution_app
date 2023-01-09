@@ -18,24 +18,18 @@ import {
 } from 'react-native';
 import {deviceWidth, px, isEmpty} from '../../../utils/appUtil';
 import {Colors, Font, Style} from '../../../common/commonStyle';
-import BottomDesc from '../../../components/BottomDesc';
 import {FixedButton} from '../../../components/Button';
 import InvestHeader from './components/InvestHeader';
 import Loading from '../../Portfolio/components/PageLoading';
 import RenderItem from './components/RenderItem';
-import Empty from '../../../components/EmptyTip';
-import {BoxShadow} from 'react-native-shadow';
-import {callFixedHeadDataApi, callHistoryDataApi, callTerminatedFixedApi} from './services';
+import {callFixedHeadDataApi, callHistoryDataApi} from './services';
 import {useFocusEffect} from '@react-navigation/native';
 import {isIPhoneX} from '../../../components/IM/app/chat/utils';
 import {useJump} from '../../../components/hooks';
 import EmptyData from './components/EmptyData';
-const image = require('../../../assets/img/emptyTip/empty.png');
 const {width} = Dimensions.get('window');
 const FixedInvestManage = ({navigation, route}) => {
     const jump = useJump();
-    const [showEmpty, setShowEmpty] = useState(false);
-    const [emptyMsg, setEmptyMsg] = useState('');
     const [terminateUrl, setTerminateUrl] = useState({});
     const [data, setData] = useState({});
     const [headList, setHeadList] = useState([]);
@@ -56,7 +50,7 @@ const FixedInvestManage = ({navigation, route}) => {
                     const {title = '', detail = {}, head_list = [], tabs = []} = res[0].result || {};
                     const {terminate_url} = res[1].result;
                     navigation.setOptions({title});
-                    let tabList = tabs.map((el, index) => {
+                    let tabList = tabs.map((el) => {
                         return {...el, checked: el.type == unitType ? true : false};
                     });
                     setTabList(tabList);
@@ -79,9 +73,6 @@ const FixedInvestManage = ({navigation, route}) => {
         });
         setTabList([...tabList]);
     };
-    const renderEmpty = useCallback(() => {
-        return showEmpty ? <Empty text={emptyMsg || '暂无数据'} /> : null;
-    }, [emptyMsg, showEmpty]);
     const executeSort = useCallback(
         (data) => {
             if (data.sort_key) {
@@ -169,6 +160,7 @@ const FixedInvestManage = ({navigation, route}) => {
                                     {tabList.map((el, index) => {
                                         return (
                                             <TouchableOpacity
+                                                activeOpacity={0.8}
                                                 key={el + ' ' + index}
                                                 onPress={() => {
                                                     global.LogTool(
@@ -234,6 +226,7 @@ const FixedInvestManage = ({navigation, route}) => {
                             <>
                                 {Object.keys(terminateUrl).length > 0 && (
                                     <TouchableOpacity
+                                        activeOpacity={0.8}
                                         style={{marginTop: px(20)}}
                                         onPress={() => {
                                             global.LogTool('click', 'terminatedFixedInvest');
