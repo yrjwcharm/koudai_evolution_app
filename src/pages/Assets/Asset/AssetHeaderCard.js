@@ -180,6 +180,7 @@ const styles = StyleSheet.create({
     profitContainer: {
         marginTop: px(12),
         alignItems: 'flex-start',
+        minHeight: px(40),
     },
     profitKey: {
         fontSize: Font.textH3,
