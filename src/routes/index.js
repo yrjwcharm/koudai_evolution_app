@@ -316,6 +316,7 @@ import RichTextInputPage from '~/pages/CreatorCenter/Special/Modify/RichTextInpu
 import AdvisorTransfer from '~/pages/Assets/AdvisorTransfer'; // 转换投顾机构
 import CommunityProSort from '../pages/Community/CommunityHome/CommunityProSort'; //社区作品内容管理
 import Popularize from '~/pages/Popularize'; // 产品推广
+import SignalManage from '~/pages/Assets/Signal/SignalManage'; //信号管理
 
 const Stack = createStackNavigator();
 
@@ -1330,6 +1331,7 @@ export default function AppStack() {
                         },
                     }}
                 />
+                <Stack.Screen name="SignalManage" component={SignalManage} options={{title: '信号管理'}} />
             </Stack.Navigator>
         </>
     );

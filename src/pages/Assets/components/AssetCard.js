@@ -136,15 +136,15 @@ const AssetCard = ({data = {}, showEye, style, borderStyle, type}) => {
                     <View style={{alignItems: 'flex-end', flex: 1}}>
                         {log_id == 10 ? (
                             <Text style={styles.card_amount}>
-                                {showEye === 'true' ? <RenderHtml html={profit} style={styles.card_amount} /> : '****'}
+                                {showEye === 'true'
+                                    ? profit && <RenderHtml html={profit} style={styles.card_amount} />
+                                    : '****'}
                             </Text>
                         ) : (
                             <Text style={styles.card_amount}>
-                                {showEye === 'true' ? (
-                                    <RenderHtml html={profit_acc} style={styles.card_amount} />
-                                ) : (
-                                    '****'
-                                )}
+                                {showEye === 'true'
+                                    ? profit_acc && <RenderHtml html={profit_acc} style={styles.card_amount} />
+                                    : '****'}
                             </Text>
                         )}
                     </View>

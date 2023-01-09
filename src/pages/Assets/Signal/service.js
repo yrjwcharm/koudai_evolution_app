@@ -5,5 +5,5 @@
 import http from '~/services';
 
 export const getSignalInfo = (params) => {
-    http.get('signal/manager/info/20220106', params);
+    return http.get('signal/manage/info/20230106', params);
 };
