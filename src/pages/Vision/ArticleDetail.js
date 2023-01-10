@@ -1,37 +1,36 @@
-/* eslint-disable radix */
 /*
  * @Date: 2021-03-18 10:57:45
  * @Description: 文章详情
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Platform, StyleSheet, Text, TouchableOpacity, View, TextInput, DeviceEventEmitter} from 'react-native';
+import {Platform, StyleSheet, Text, TouchableOpacity, View, DeviceEventEmitter} from 'react-native';
 import {useHeaderHeight} from '@react-navigation/stack';
 import {WebView as RNWebView} from 'react-native-webview';
 import Image from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/AntDesign';
-import {px as text, deviceHeight, px, isIphoneX, compareVersion} from '../../utils/appUtil.js';
-import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import http from '../../services/index.js';
-import Toast from '../../components/Toast';
-import {Modal, PageModal, ShareModal} from '../../components/Modal';
-import {SERVER_URL} from '../../services/config';
+import {px as text, deviceHeight, px, isIphoneX, compareVersion} from '~/utils/appUtil.js';
+import {Colors, Font, Space, Style} from '~/common/commonStyle';
+import http from '~/services/index.js';
+import Toast from '~/components/Toast';
+import {Modal, ShareModal} from '~/components/Modal';
+import {SERVER_URL} from '~/services/config';
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
-import Empty from '../../components/EmptyTip';
-import {Button} from '../../components/Button';
-import LoginMask from '../../components/LoginMask';
+import Empty from '~/components/EmptyTip';
+import {Button} from '~/components/Button';
+import LoginMask from '~/components/LoginMask';
 import {useSelector, useDispatch} from 'react-redux';
-import {updateVision} from '../../redux/actions/visionData.js';
+import {updateVision} from '~/redux/actions/visionData';
 import _ from 'lodash';
 import RenderCate from './components/RenderCate.js';
 import Picker from 'react-native-picker';
-import Mask from '../../components/Mask.js';
+import Mask from '~/components/Mask.js';
 import FastImage from 'react-native-fast-image';
 import LottieView from 'lottie-react-native';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import Loading from '../Portfolio/components/PageLoading';
 import RenderInteract from './components/RenderInteract';
 import CommentItem from './components/CommentItem.js';
-import useJump from '../../components/hooks/useJump.js';
+import useJump from '~/components/hooks/useJump.js';
 import TrackPlayer, {useProgress, Event} from 'react-native-track-player';
 import {useOnTogglePlayback} from '../Community/components/audioService/useOnTogglePlayback.js';
 import {startAudio} from '../Community/components/audioService/StartAudioService.js';
@@ -42,12 +41,14 @@ import {CommunityCard} from '../Community/components/CommunityCard';
 import Storage from '~/utils/storage.js';
 import {useIsFocused} from '@react-navigation/native';
 import LogView from '~/components/LogView';
+import {CommentModal} from '~/pages/Vision/ArticleCommentList';
 const options = {
     enableVibrateFallback: true,
     ignoreAndroidSystemSettings: false,
 };
 
 const ArticleDetail = ({navigation, route}) => {
+    const {article_id, comment_id, fr, link, type} = route.params || {};
     const dispatch = useDispatch();
     const userInfo = useSelector((store) => store.userInfo)?.toJS();
     const visionData = useSelector((store) => store.vision).toJS();
@@ -74,14 +75,10 @@ const ArticleDetail = ({navigation, route}) => {
     const [collect_status, setCollectStatus] = useState(false);
     const [collect_num, setCollectNum] = useState(0);
     const [commentData, setCommentData] = useState({});
-    const inputModal = useRef();
-    const inputRef = useRef();
-    const [content, setContent] = useState('');
+    const commentModal = useRef();
     const zanRef = useRef(null);
     const collectRef = useRef(null);
-    const fr = route.params?.fr;
     const post_progress = useRef(false);
-    const inputMaxLength = 500;
     const jump = useJump();
     const {position} = useProgress();
     const {isPlaying} = useOnTogglePlayback();
@@ -93,7 +90,7 @@ const ArticleDetail = ({navigation, route}) => {
     const [canUp, setCanUp] = useState(1);
     const setAudio = async (audioList) => {
         let current_track = await TrackPlayer.getTrack(0);
-        let tmp = audioList.filter((audio) => audio.media_id == current_track.media_id);
+        let tmp = audioList.filter((audio) => audio.media_id === current_track.media_id);
         if (tmp.length > 0) {
             isCurrentArticleAudio.current = true;
             dispatch(updateUserInfo({showAudioModal: ''}));
@@ -118,8 +115,8 @@ const ArticleDetail = ({navigation, route}) => {
         const y = event.nativeEvent.contentOffset.y;
         setScrollY(y);
     }, []);
-    const init = useCallback((type) => {
-        http.get('/community/article/status/20210101', {article_id: route.params?.article_id, fr}).then((res) => {
+    const init = useCallback(() => {
+        http.get('/community/article/status/20210101', {article_id: article_id, fr}).then((res) => {
             if (res.code === '000000') {
                 setCanUp(res.result?.keep_top_info?.can_up);
                 setCollectNum(res.result.collect_num);
@@ -131,44 +128,42 @@ const ArticleDetail = ({navigation, route}) => {
             }
         });
         http.get('/community/article/20210101', {
-            article_id: route.params?.article_id,
+            article_id: article_id,
             fr,
         }).then((res) => {
             if (res.code === '000000') {
                 const {media_list = [], current_article_url} = res?.result;
                 current_artic_url.current = current_article_url;
-                audioMedia.current = media_list.filter((audio) => audio.media_type == 'audio');
+                audioMedia.current = media_list.filter((audio) => audio.media_type === 'audio');
                 setAudio(audioMedia.current);
             }
         });
-        http.get('/community/article/recommend/20210524', {id: route.params?.article_id, fr}).then((result) => {
+        http.get('/community/article/recommend/20210524', {id: article_id, fr}).then((result) => {
             setRecommendData(result.result);
         });
         userInfo.is_login &&
-            http
-                .get('/community/article/comment/list/20210101', {article_id: route.params?.article_id, page: 1})
-                .then((res) => {
-                    setCommentData(res.result);
-                });
+            http.get('/community/article/comment/list/20210101', {article_id: article_id, page: 1}).then((res) => {
+                setCommentData(res.result);
+            });
     }, []);
     const onMessage = (event) => {
         const eventData = event.nativeEvent.data;
         if (eventData.indexOf('audioPlay') > -1 && audioMedia.current.length > 0 && focus) {
             let media_id = eventData.split('+')[1];
             let currentAudioMedia =
-                audioMedia.current.find((audio) => audio.media_id == media_id) || audioMedia.current[0];
+                audioMedia.current.find((audio) => audio.media_id === media_id) || audioMedia.current[0];
             if (currentAudioMedia) {
                 startAudio(currentAudioMedia);
                 if (userInfo?.showAudioModal) {
                     dispatch(updateUserInfo({showAudioModal: ''}));
                 }
             }
-        } else if (eventData == 'audioPause') {
+        } else if (eventData === 'audioPause') {
             TrackPlayer.pause();
         } else if (eventData.indexOf('changeAudioTime') > -1) {
             let _posi = eventData.split(':')[1];
             if (_posi) {
-                TrackPlayer.seekTo(parseInt(_posi));
+                TrackPlayer.seekTo(parseInt(_posi, 10));
             }
         } else if (eventData?.indexOf?.('url=') > -1) {
             const url = JSON.parse(eventData.split('url=')[1] || '{}');
@@ -180,21 +175,21 @@ const ArticleDetail = ({navigation, route}) => {
         } else {
             if (eventData) {
                 setFinishLoad(true);
-                if (eventData == 'VoiceHearOut' && !finishRead) {
+                if (eventData === 'VoiceHearOut' && !finishRead) {
                     setFinishRead(true);
                     //听完音频
                     postProgress({
-                        article_id: route.params?.article_id,
+                        article_id: article_id,
                         latency: Date.now() - timeRef.current,
                         done_status: 1,
                         article_progress: 100,
                     });
                     dispatch(
                         updateVision({
-                            albumListendList: _.uniq(visionData?.albumListendList?.concat([route.params?.article_id])),
+                            albumListendList: _.uniq(visionData?.albumListendList?.concat([article_id])),
                         })
                     );
-                } else if (eventData == 'AudioError') {
+                } else if (eventData === 'AudioError') {
                     setShowMask(true);
                     Picker.init({
                         pickerTitleColor: [31, 36, 50, 1],
@@ -213,12 +208,12 @@ const ArticleDetail = ({navigation, route}) => {
                         onPickerCancel: () => setShowMask(false),
                         onPickerConfirm: (pickedValue, pickedIndex) => {
                             http.post('/community/feedback/20210701', {
-                                resource_id: route.params?.article_id,
+                                resource_id: article_id,
                                 resource_type: 1,
                                 option: parseInt(pickedIndex, 10) + 1,
                             }).then((res) => {
                                 Toast.show(res.message);
-                                if (res.code == '000000') {
+                                if (res.code === '000000') {
                                     webviewRef.current?.injectJavaScript('window.onVoiceData();true;');
                                 }
                             });
@@ -233,95 +228,64 @@ const ArticleDetail = ({navigation, route}) => {
             }
         }
     };
-    const onFavor = useCallback(
-        (type) => {
-            if (!btnClick.current) {
-                return false;
-            }
-            global.LogTool({event: favor_status ? 'cancel_like' : 'content_thumbs', oid: data?.id});
-            !favor_status && ReactNativeHapticFeedback.trigger('impactLight', options);
-            setFavorNum((preNum) => {
-                return favor_status ? --preNum : ++preNum;
-            });
-            setFavorStatus((pre_status) => {
-                zanRef.current.play();
-                return !pre_status;
-            });
-
-            btnClick.current = false;
-            http.post('/community/favor/20210101', {
-                resource_id: data?.id,
-                resource_cate: 'article',
-                action_type: favor_status ? 0 : 1,
-            }).then((res) => {
-                if (type !== 'normal') {
-                    shareModal.current.toastShow(res.message);
-                }
-                setTimeout(() => {
-                    btnClick.current = true;
-                }, 100);
-                if (res.code !== '000000') {
+    const onStatusChange = (opType, clickType) => {
+        if (!btnClick.current) return false;
+        const isFavor = clickType === 'favor';
+        (isFavor ? setFavorStatus : setCollectStatus)((pre_status) => {
+            if (btnClick.current) {
+                btnClick.current = false;
+                global.LogTool({
+                    event: pre_status
+                        ? isFavor
+                            ? 'cancel_like'
+                            : 'cancel_collection'
+                        : isFavor
+                        ? 'content_thumbs'
+                        : 'content_collection',
+                    oid: data?.id,
+                });
+                !pre_status && ReactNativeHapticFeedback.trigger('impactLight', options);
+                http.post(`/community/${clickType}/20210101`, {
+                    action_type: pre_status ? 0 : 1,
+                    resource_cate: 'article',
+                    resource_id: data?.id,
+                }).then((res) => {
                     setTimeout(() => {
-                        shareModal.current?.hide();
-                    }, 1000);
-                }
-            });
-        },
-        [data, favor_status]
-    );
-    const onCollect = useCallback(
-        (type) => {
-            if (!btnClick.current) {
-                return false;
+                        btnClick.current = true;
+                    }, 100);
+                    if (opType !== 'normal') {
+                        shareModal.current.toastShow(res.message);
+                    }
+                    if (res.code !== '000000') {
+                        setTimeout(() => {
+                            shareModal.current?.hide();
+                        }, 1000);
+                    }
+                });
+                (isFavor ? setFavorNum : setCollectNum)((preNum) => {
+                    return pre_status ? --preNum : ++preNum;
+                });
             }
-            global.LogTool({event: collect_status ? 'cancel_collection' : 'content_collection', oid: data?.id});
-            !collect_status && ReactNativeHapticFeedback.trigger('impactLight', options);
-            setCollectNum((preNum) => {
-                return collect_status ? --preNum : ++preNum;
-            });
-            setCollectStatus((pre_status) => {
-                return !pre_status;
-            });
-            btnClick.current = false;
-            http.post('/community/collect/20210101', {
-                resource_id: data?.id,
-                resource_cate: 'article',
-                action_type: collect_status ? 0 : 1,
-            }).then((res) => {
-                if (type !== 'normal') {
-                    shareModal.current.toastShow(res.message);
-                }
-                setTimeout(() => {
-                    btnClick.current = true;
-                }, 100);
-                if (res.code !== '000000') {
-                    setTimeout(() => {
-                        shareModal.current?.hide();
-                    }, 1000);
-                }
-            });
-        },
-        [data, collect_status]
-    );
-    //文章置顶
-    const onArticeUp = () => {
-        setCanUp((pre) => {
-            return pre == 0 ? 1 : 0;
+            return !pre_status;
         });
-        http.post('community/article/keep_top/20221215', {article_id: route.params?.article_id, can_up: canUp}).then(
-            (res) => {
-                if (res.code === '000000') {
-                    setTimeout(() => {
-                        DeviceEventEmitter.emit('articel_up_change');
-                    }, 800);
-                    shareModal.current.toastShow(canUp == 0 ? '取消置顶' : '置顶成功');
-                }
+    };
+    //文章置顶
+    const onArticleUp = () => {
+        setCanUp((pre) => {
+            return Number(pre) === 0 ? 1 : 0;
+        });
+        http.post('community/article/keep_top/20221215', {article_id: article_id, can_up: canUp}).then((res) => {
+            if (res.code === '000000') {
+                setTimeout(() => {
+                    DeviceEventEmitter.emit('articel_up_change');
+                }, 800);
+                shareModal.current.toastShow(Number(canUp) === 0 ? '取消置顶' : '置顶成功');
             }
-        );
+        });
     };
     const postProgress = useCallback(async (params) => {
         http.post('/community/article/progress/20210101', params || {}).then((res) => {
-            if (res.code == '000000' && res.result?.add_rational_num > 0) {
+            if (res.code === '000000' && res.result?.add_rational_num > 0) {
                 Toast.show('理性值+' + res.result.add_rational_num);
             }
         });
@@ -338,9 +302,9 @@ const ArticleDetail = ({navigation, route}) => {
         });
         let progress = parseInt((scrollY / (webviewHeight - deviceHeight + headerHeight)) * 100, 10);
         progress = progress > 100 ? 100 : progress;
-        if (route?.params?.type !== 5 && route?.params?.type !== 2) {
+        if (type !== 5 && type !== 2) {
             postProgress({
-                article_id: route.params?.article_id,
+                article_id: article_id,
                 latency: Date.now() - timeRef.current,
                 done_status: data?.read_info?.done_status || +finishRead,
                 article_progress: progress,
@@ -348,9 +312,9 @@ const ArticleDetail = ({navigation, route}) => {
             });
         }
         // 提示弹窗
-        if (route?.params?.type !== 5) {
+        if (type !== 5) {
             http.get('/community/article/popup/20220406', {
-                article_id: route.params?.article_id,
+                article_id: article_id,
                 done_status: data?.read_info?.done_status || +finishRead,
                 article_progress: progress,
             }).then((res) => {
@@ -391,26 +355,26 @@ const ArticleDetail = ({navigation, route}) => {
                     <TouchableOpacity
                         activeOpacity={0.8}
                         onPress={() => {
-                            setMore(route?.params?.type !== 5 ? true : false);
+                            setMore(type !== 5);
                             shareModal.current.show();
                         }}
                         style={[Style.flexCenter, styles.topRightBtn]}>
-                        <Image source={require('../../assets/img/article/more.png')} style={styles.moreImg} />
+                        <Image source={require('~/assets/img/article/more.png')} style={styles.moreImg} />
                     </TouchableOpacity>
                 ) : null;
             },
         });
-        if (route?.params?.comment_id) {
+        if (comment_id) {
             setTimeout(() => {
                 navigation.navigate('ArticleCommentList', {
-                    comment_id: route?.params?.comment_id,
-                    article_id: route?.params?.article_id,
+                    comment_id: comment_id,
+                    article_id: article_id,
                 });
             }, 500);
         }
     }, [navigation, hasNet, route]);
     useEffect(() => {
-        if (route?.params?.type !== 5) {
+        if (type !== 5) {
             if (scrollY > 80) {
                 navigation.setOptions({title: '文章内容'});
             } else {
@@ -425,11 +389,11 @@ const ArticleDetail = ({navigation, route}) => {
         } else {
             setShowGoTop(false);
         }
-        if (scrollY > webviewHeight - deviceHeight + headerHeight && finishLoad && route?.params?.type !== 2) {
+        if (scrollY > webviewHeight - deviceHeight + headerHeight && finishLoad && type !== 2) {
             setFinishRead(true);
-            if (route.params?.article_id && !post_progress.current) {
+            if (article_id && !post_progress.current) {
                 postProgress({
-                    article_id: route.params?.article_id,
+                    article_id: article_id,
                     latency: Date.now() - timeRef.current,
                     done_status: 1,
                     article_progress: 100,
@@ -455,7 +419,7 @@ const ArticleDetail = ({navigation, route}) => {
         return () => listener();
     }, [back, navigation]);
     const goTop = () => {
-        global.LogTool('articleBackToTop', route.params?.article_id);
+        global.LogTool('articleBackToTop', article_id);
         scrollRef?.current?.scrollTo({x: 0, y: 0, animated: true});
     };
     const hidePicker = () => {
@@ -463,25 +427,7 @@ const ArticleDetail = ({navigation, route}) => {
         setShowMask(false);
     };
     const handelComment = (show_modal) => {
-        navigation.navigate('ArticleCommentList', {article_id: route.params?.article_id, show_modal});
-    };
-    //发布评论
-    const publish = () => {
-        http.post('/community/article/comment/add/20210101', {article_id: route.params?.article_id, content}).then(
-            (res) => {
-                if (res.code == '000000') {
-                    global.LogTool({event: 'content_comment', oid: route.params?.article_id});
-                    inputModal.current.cancel();
-                    setContent('');
-                    Modal.show({
-                        title: '提示',
-                        content: res.result.message,
-                    });
-                } else {
-                    Toast.show(res.message);
-                }
-            }
-        );
+        navigation.navigate('ArticleCommentList', {article_id: article_id, show_modal});
     };
 
     return (
@@ -492,16 +438,16 @@ const ArticleDetail = ({navigation, route}) => {
                     {showGoTop ? (
                         <TouchableOpacity onPress={goTop} activeOpacity={1} style={styles.goTop}>
                             <FastImage
-                                source={require('../../assets/img/article/goTop.png')}
+                                source={require('~/assets/img/article/goTop.png')}
                                 style={{width: text(44), height: text(44)}}
                             />
                         </TouchableOpacity>
                     ) : null}
                     <ShareModal
-                        ctrl={route?.params?.type !== 5 ? `/article/${route.params?.article_id}` : route.params?.link}
-                        likeCallback={onFavor}
-                        collectCallback={onCollect}
-                        articelUpCallback={onArticeUp}
+                        ctrl={type !== 5 ? `/article/${article_id}` : link}
+                        likeCallback={() => onStatusChange('', 'favor')}
+                        collectCallback={() => onStatusChange('', 'collect')}
+                        articelUpCallback={onArticleUp}
                         ref={shareModal}
                         more={more}
                         shareCallback={(share_to) =>
@@ -555,7 +501,7 @@ const ArticleDetail = ({navigation, route}) => {
                                                 ver: global.ver,
                                             })
                                         );
-                                        if (data.feedback_status == 1) {
+                                        if (Number(data.feedback_status) === 1) {
                                             setTimeout(() => {
                                                 webviewRef.current?.injectJavaScript('window.onVoiceData();true;');
                                             }, 800);
@@ -592,7 +538,7 @@ const ArticleDetail = ({navigation, route}) => {
                         {finishLoad && Object.keys(data).length > 0 && (
                             <>
                                 <View style={{backgroundColor: '#fff'}}>
-                                    {route?.params?.type !== 5 ? (
+                                    {type !== 5 ? (
                                         <>
                                             <Text style={[styles.footnote, {marginBottom: text(2)}]}>
                                                 本文更新于{data?.edit_time}
@@ -600,18 +546,18 @@ const ArticleDetail = ({navigation, route}) => {
                                             <Text style={styles.footnote}>{data?.copyright_str}</Text>
                                         </>
                                     ) : null}
-                                    {route?.params?.type !== 5 ? (
+                                    {type !== 5 ? (
                                         finishRead ? (
                                             <View style={[Style.flexCenter, styles.finishBox]}>
                                                 <Image
-                                                    source={require('../../assets/img/article/finish.gif')}
+                                                    source={require('~/assets/img/article/finish.gif')}
                                                     style={styles.finishImg}
                                                 />
                                                 <Text style={styles.finishText}>
-                                                    {route.params.type == 2 ? '您已听完' : '您已阅读完本篇文章'}
+                                                    {Number(type) === 2 ? '您已听完' : '您已阅读完本篇文章'}
                                                 </Text>
                                             </View>
-                                        ) : route.params.type == 2 ? (
+                                        ) : Number(type) === 2 ? (
                                             <View style={{height: text(120)}} />
                                         ) : (
                                             <View style={{height: text(161)}} />
@@ -663,7 +609,7 @@ const ArticleDetail = ({navigation, route}) => {
                                                     ) : null}
                                                 </View>
                                                 {portfolios.list.map?.((item, index) => {
-                                                    return portfolios.product_type === '3' ? (
+                                                    return Number(portfolios.product_type) === 3 ? (
                                                         <View key={index} style={{marginTop: px(12)}}>
                                                             <AlbumCard {...item} rec_json={portfolios.rec_json} />
                                                         </View>
@@ -734,10 +680,7 @@ const ArticleDetail = ({navigation, route}) => {
                                 ) : null}
                                 {/* 问答 */}
                                 {userInfo.is_login && (
-                                    <RenderInteract
-                                        article_id={route.params.article_id}
-                                        style={{marginVertical: px(24)}}
-                                    />
+                                    <RenderInteract article_id={article_id} style={{marginVertical: px(24)}} />
                                 )}
                                 {/* 评论 */}
                                 <View style={[styles.titleBox, {paddingHorizontal: Space.padding}]}>
@@ -746,7 +689,7 @@ const ArticleDetail = ({navigation, route}) => {
                                 <View style={{padding: px(16)}}>
                                     {commentData?.list?.length > 0 ? (
                                         <>
-                                            {commentData?.list?.map((item, index) => (
+                                            {commentData?.list?.map((item) => (
                                                 <View key={item.id}>
                                                     <CommentItem data={item} style={{marginBottom: px(9)}} />
                                                 </View>
@@ -772,10 +715,7 @@ const ArticleDetail = ({navigation, route}) => {
                                                 <Text
                                                     style={{color: Colors.btnColor}}
                                                     onPress={() => {
-                                                        inputModal.current.show();
-                                                        setTimeout(() => {
-                                                            inputRef?.current?.focus();
-                                                        }, 100);
+                                                        commentModal.current?.show?.();
                                                     }}>
                                                     我来写一条
                                                 </Text>
@@ -786,43 +726,14 @@ const ArticleDetail = ({navigation, route}) => {
                             </>
                         )}
                     </LogView.Wrapper>
-                    <PageModal ref={inputModal} title="写评论" style={{height: px(360)}} backButtonClose={true}>
-                        <TextInput
-                            ref={inputRef}
-                            value={content}
-                            multiline={true}
-                            style={styles.input}
-                            onChangeText={(value) => {
-                                setContent(value);
-                            }}
-                            maxLength={inputMaxLength}
-                            textAlignVertical="top"
-                            placeholder="我来聊两句..."
-                        />
-                        <View style={{alignItems: 'flex-end', marginRight: px(20)}}>
-                            <View style={Style.flexRow}>
-                                <Text style={{color: '#9AA1B2', fontSize: px(14)}}>
-                                    {content.length}/{inputMaxLength}
-                                </Text>
-                                <Button
-                                    title="发布"
-                                    disabled={content.length <= 0}
-                                    style={styles.button}
-                                    onPress={publish}
-                                />
-                            </View>
-                        </View>
-                    </PageModal>
+                    <CommentModal article_id={article_id} _ref={commentModal} />
                     {/* footer */}
                     <View style={[styles.footer, Style.flexRow]}>
                         <TouchableOpacity
                             style={styles.footer_content}
                             activeOpacity={0.9}
                             onPress={() => {
-                                inputModal.current.show();
-                                setTimeout(() => {
-                                    inputRef?.current?.focus();
-                                }, 100);
+                                commentModal.current?.show?.();
                             }}>
                             <Text style={{fontSize: px(12), color: '#9AA1B2'}}>我来聊两句...</Text>
                         </TouchableOpacity>
@@ -834,13 +745,13 @@ const ArticleDetail = ({navigation, route}) => {
                             style={[Style.flexCenter, {flex: 1, marginBottom: px(-7), left: px(4)}]}>
                             <FastImage
                                 style={{height: px(22), width: px(22)}}
-                                source={require('../../assets/img/vision/commentIcon.png')}
+                                source={require('~/assets/img/vision/commentIcon.png')}
                             />
                             <Text style={styles.iconText}>{data.comment_num >= 0 ? data.comment_num : 0}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             activeOpacity={0.8}
-                            onPress={() => onFavor('normal')}
+                            onPress={() => onStatusChange('normal', 'favor')}
                             style={[Style.flexCenter, {flex: 1}]}>
                             <LottieView
                                 ref={zanRef}
@@ -848,8 +759,8 @@ const ArticleDetail = ({navigation, route}) => {
                                 autoPlay
                                 source={
                                     favor_status
-                                        ? require('../../assets/animation/zanActive.json')
-                                        : require('../../assets/animation/zan.json')
+                                        ? require('~/assets/animation/zanActive.json')
+                                        : require('~/assets/animation/zan.json')
                                 }
                                 style={{height: px(36), width: px(36), marginBottom: px(-4)}}
                             />
@@ -858,7 +769,7 @@ const ArticleDetail = ({navigation, route}) => {
                         </TouchableOpacity>
                         <TouchableOpacity
                             activeOpacity={0.8}
-                            onPress={() => onCollect('normal')}
+                            onPress={() => onStatusChange('normal', 'collect')}
                             style={[Style.flexCenter, {flex: 1}]}>
                             <LottieView
                                 ref={collectRef}
@@ -866,8 +777,8 @@ const ArticleDetail = ({navigation, route}) => {
                                 autoPlay
                                 source={
                                     collect_status
-                                        ? require('../../assets/animation/collectActive.json')
-                                        : require('../../assets/animation/collect.json')
+                                        ? require('~/assets/animation/collectActive.json')
+                                        : require('~/assets/animation/collect.json')
                                 }
                                 style={{height: px(36), width: px(36), marginBottom: px(-4)}}
                             />
@@ -893,7 +804,7 @@ const ArticleDetail = ({navigation, route}) => {
             ) : (
                 <>
                     <Empty
-                        img={require('../../assets/img/emptyTip/noNetwork.png')}
+                        img={require('~/assets/img/emptyTip/noNetwork.png')}
                         text={'哎呀！网络出问题了'}
                         desc={'网络不给力，请检查您的网络设置'}
                         style={{paddingVertical: text(60)}}
@@ -983,7 +894,7 @@ const styles = StyleSheet.create({
     },
     input: {
         paddingHorizontal: px(20),
-        marginVertical: Platform.OS == 'ios' ? px(10) : px(16),
+        marginVertical: Platform.OS === 'ios' ? px(10) : px(16),
         height: px(215),
         fontSize: px(14),
         lineHeight: px(20),

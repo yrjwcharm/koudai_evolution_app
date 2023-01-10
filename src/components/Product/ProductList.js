@@ -422,6 +422,7 @@ const ProductList = ({data = [], logParams, slideLogParams, style, drag, type = 
         const {
             bg_img,
             button,
+            custom_info,
             desc,
             name,
             product_id = '',
@@ -479,6 +480,22 @@ const ProductList = ({data = [], logParams, slideLogParams, style, drag, type = 
                             })}
                         </View>
                     )}
+                    {custom_info ? (
+                        <View style={styles.professionalBox}>
+                            <HTML html={custom_info.title} style={styles.cardDesc} />
+                            {custom_info.sub_items?.map((_item, _index) => {
+                                const {icon, text} = _item;
+                                return (
+                                    <View
+                                        key={text + _index}
+                                        style={[Style.flexRow, {marginTop: _index === 0 ? px(8) : px(4)}]}>
+                                        {icon ? <Image source={{uri: icon}} style={styles.descIcon} /> : null}
+                                        <HTML html={text} style={styles.desc} />
+                                    </View>
+                                );
+                            })}
+                        </View>
+                    ) : null}
                     {button?.text ? (
                         <TouchableOpacity
                             activeOpacity={0.8}
@@ -728,6 +745,22 @@ const styles = StyleSheet.create({
         fontSize: px(10),
         lineHeight: px(14),
         color: '#B38051',
+    },
+    professionalBox: {
+        paddingTop: Space.padding,
+        paddingBottom: px(4),
+        paddingLeft: px(20),
+        width: '100%',
+    },
+    descIcon: {
+        marginRight: px(8),
+        width: px(12),
+        height: px(12),
+    },
+    desc: {
+        fontSize: Font.textH3,
+        lineHeight: px(17),
+        color: Colors.descColor,
     },
     cardBtn: {
         marginTop: px(12),

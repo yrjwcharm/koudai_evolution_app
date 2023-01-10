@@ -3,21 +3,80 @@
  * @Description:文章评论列表
  */
 import {StyleSheet, Text, TextInput, View, ActivityIndicator, TouchableOpacity, Platform, FlatList} from 'react-native';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Modal, PageModal} from '../../components/Modal';
-import Header from '../../components/NavBar';
+import React, {useCallback, useEffect, useImperativeHandle, useRef, useState} from 'react';
+import {Modal, PageModal} from '~/components/Modal';
+import Header from '~/components/NavBar';
 import Icon from 'react-native-vector-icons/AntDesign';
-import {isIphoneX, px} from '../../utils/appUtil';
-import {Button} from '../../components/Button';
-import {Colors, Style} from '../../common/commonStyle';
+import {isIphoneX, px} from '~/utils/appUtil';
+import {Button} from '~/components/Button';
+import {Colors, Style} from '~/common/commonStyle';
 import CommentItem from './components/CommentItem';
-import http from '../../services';
-import Toast from '../../components/Toast';
+import http from '~/services';
+import Toast from '~/components/Toast';
+
 const inputMaxLength = 500;
-const ArticleCommentList = ({navigation, route}) => {
+
+export const CommentModal = ({article_id = '', modalProps = {}, params = {}, postMethod, _ref}) => {
     const inputModal = useRef();
     const inputRef = useRef();
     const [content, setContent] = useState('');
+
+    //发布评论
+    const publish = () => {
+        (postMethod
+            ? postMethod({...params, content})
+            : http.post('/community/article/comment/add/20210101', {article_id, ...params, content})
+        ).then((res) => {
+            if (res.code === '000000') {
+                global.LogTool({event: 'content_comment', oid: article_id});
+                inputModal.current?.cancel?.();
+                setContent('');
+                Modal.show({
+                    title: '提示',
+                    content: res.result.message,
+                });
+            } else {
+                Toast.show(res.message);
+            }
+        });
+    };
+
+    useImperativeHandle(_ref, () => ({
+        show: () => {
+            inputModal.current?.show?.();
+            setTimeout(() => {
+                inputRef?.current?.focus();
+            }, 100);
+        },
+    }));
+
+    return (
+        <PageModal ref={inputModal} title="写评论" style={{height: px(360)}} backButtonClose={true} {...modalProps}>
+            <TextInput
+                ref={inputRef}
+                value={content}
+                multiline={true}
+                style={styles.input}
+                onChangeText={(value) => {
+                    setContent(value);
+                }}
+                maxLength={inputMaxLength}
+                textAlignVertical="top"
+                placeholder="我来聊两句..."
+            />
+            <View style={{alignItems: 'flex-end', marginRight: px(20)}}>
+                <View style={Style.flexRow}>
+                    <Text style={{color: '#9AA1B2', fontSize: px(14)}}>
+                        {content.length}/{inputMaxLength}
+                    </Text>
+                    <Button title="发布" disabled={content.length <= 0} style={styles.button} onPress={publish} />
+                </View>
+            </View>
+        </PageModal>
+    );
+};
+const ArticleCommentList = ({navigation, route}) => {
+    const commentModal = useRef();
     const [commentList, setCommentList] = useState([]);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(false);
@@ -33,7 +92,7 @@ const ArticleCommentList = ({navigation, route}) => {
             setLoading(false);
             setRefreshing(false);
             setHasMore(res.result.has_more);
-            if (page != 1) {
+            if (page !== 1) {
                 setCommentList((prevData) => {
                     return prevData.concat(res.result?.list || []);
                 });
@@ -41,7 +100,6 @@ const ArticleCommentList = ({navigation, route}) => {
                 setCommentList(res.result?.list || []);
             }
         });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [page]);
     useEffect(() => {
         getData();
@@ -52,11 +110,10 @@ const ArticleCommentList = ({navigation, route}) => {
                 commentInput();
             }, 500);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     const onRefresh = () => {
         setRefreshing(true);
-        if (page == 1) {
+        if (page === 1) {
             getData();
         } else {
             setPage(1);
@@ -64,26 +121,7 @@ const ArticleCommentList = ({navigation, route}) => {
     };
     //commentInput
     const commentInput = () => {
-        inputModal?.current?.show();
-        setTimeout(() => {
-            inputRef?.current?.focus();
-        }, 100);
-    };
-    //发布评论
-    const publish = () => {
-        http.post('/community/article/comment/add/20210101', {article_id, content}).then((res) => {
-            if (res.code == '000000') {
-                global.LogTool({event: 'content_comment', oid: article_id});
-                inputModal.current.cancel();
-                setContent('');
-                Modal.show({
-                    title: '提示',
-                    content: res.result.message,
-                });
-            } else {
-                Toast.show(res.message);
-            }
-        });
+        commentModal?.current?.show();
     };
     const ListFooterComponent = () => {
         return (
@@ -141,28 +179,7 @@ const ArticleCommentList = ({navigation, route}) => {
                 keyExtractor={(item, index) => index.toString()}
             />
 
-            <PageModal ref={inputModal} title="写评论" style={{height: px(360)}} backButtonClose={true}>
-                <TextInput
-                    ref={inputRef}
-                    value={content}
-                    multiline={true}
-                    style={styles.input}
-                    onChangeText={(value) => {
-                        setContent(value);
-                    }}
-                    maxLength={inputMaxLength}
-                    textAlignVertical="top"
-                    placeholder="我来聊两句..."
-                />
-                <View style={{alignItems: 'flex-end', marginRight: px(20)}}>
-                    <View style={Style.flexRow}>
-                        <Text style={{color: '#9AA1B2', fontSize: px(14)}}>
-                            {content.length}/{inputMaxLength}
-                        </Text>
-                        <Button title="发布" disabled={content.length <= 0} style={styles.button} onPress={publish} />
-                    </View>
-                </View>
-            </PageModal>
+            <CommentModal article_id={article_id} _ref={commentModal} />
             {/* footer */}
             <TouchableOpacity style={styles.footer} activeOpacity={0.9} onPress={commentInput}>
                 <View style={styles.footer_content}>
@@ -179,7 +196,7 @@ const styles = StyleSheet.create({
     con: {flex: 1, backgroundColor: '#fff', padding: px(16), paddingRight: px(18)},
     input: {
         paddingHorizontal: px(20),
-        marginVertical: Platform.OS == 'ios' ? px(10) : px(16),
+        marginVertical: Platform.OS === 'ios' ? px(10) : px(16),
         height: px(215),
         fontSize: px(14),
         lineHeight: px(20),
