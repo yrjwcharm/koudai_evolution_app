@@ -2,29 +2,19 @@
  * @Date: 2023-01-10 14:03:06
  * @Description:信号终止列表
  */
-import {ScrollView, StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
-import React, {useCallback, useRef, useState} from 'react';
+import {ScrollView, StyleSheet} from 'react-native';
+import React, {useCallback, useState} from 'react';
 import {useFocusEffect} from '@react-navigation/native';
-import {getSignalInfo} from './service';
-import ScrollableTabView from 'react-native-scrollable-tab-view';
 import {px} from '~/utils/appUtil';
-import {Colors, Style, Font} from '~/common/commonStyle';
-import sortImg from '~/assets/img/attention/sort.png';
-import sortUp from '~/assets/img/attention/sortUp.png';
-import sortDown from '~/assets/img/attention/sortDown.png';
-import Tab from '../components/Tab';
+import {Colors} from '~/common/commonStyle';
 import SignalCard from '../components/SignalCard';
-import Icon from 'react-native-vector-icons/AntDesign';
-import {useJump} from '~/components/hooks';
 import {getStopSignal} from './service';
 import SortHeader from '../components/SortHeader';
 
 const SignalStopList = (props) => {
     const [data, setData] = useState({});
     const routeParams = props.route?.params;
-    const scrollTab = useRef();
-    const jump = useJump();
-    const {top_info, tab_list, product_headers, product_list = [], stop_info} = data;
+    const {product_headers, product_list = []} = data;
     const getData = async (params) => {
         let res = await getStopSignal({...routeParams, ...params});
         setData(res.result);
