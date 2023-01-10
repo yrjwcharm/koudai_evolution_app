@@ -76,22 +76,29 @@ const SignalManage = (props) => {
                     }}
                 />
             )}
-            <SortHeader data={product_headers} onSort={(head) => handleSort(head)} style={{marginVertical: px(12)}} />
+            <SortHeader data={product_headers} onSort={(head) => handleSort(head)} style={{marginTop: px(12)}} />
             {product_list?.length > 0 && (
                 <ScrollableTabView
                     initialPage={0}
-                    onChangeTab={({i}) => setCurrent(i)}
+                    onChangeTab={({i}) => {
+                        getData({type: tab_list[i]?.type});
+                        setCurrent(i);
+                    }}
                     renderTabBar={false}
                     ref={scrollTab}
                     style={{flex: 1}}>
-                    {product_list?.map((_data, index) => (
-                        <SignalCard data={_data} key={index} />
+                    {tab_list?.map(() => (
+                        <View>
+                            {product_list?.map((_data, index) => (
+                                <SignalCard data={_data} key={index} />
+                            ))}
+                        </View>
                     ))}
                 </ScrollableTabView>
             )}
             {stop_info ? (
                 <TouchableOpacity
-                    style={[Style.flexCenter, {marginTop: px(20), flexDirection: 'row'}]}
+                    style={[Style.flexCenter, {marginTop: px(20), flexDirection: 'row', marginBottom: px(50)}]}
                     activeOpacity={0.8}
                     onPress={() => jump(stop_info?.url)}>
                     <Text style={{color: Colors.lightBlackColor}}>{stop_info?.text}</Text>

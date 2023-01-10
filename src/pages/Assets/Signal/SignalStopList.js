@@ -35,7 +35,7 @@ const SignalStopList = (props) => {
     );
     return (
         <ScrollView style={styles.con}>
-            <SortHeader onSort={(head) => handleSort(head)} data={product_headers} style={{marginBottom: px(16)}} />
+            <SortHeader onSort={(head) => handleSort(head)} data={product_headers} />
             {product_list?.map((_data, index) => (
                 <SignalCard data={_data} key={index} />
             ))}

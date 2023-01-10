@@ -2,7 +2,7 @@
  * @Date: 2023-01-09 18:25:18
  * @Description:
  */
-import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, View, Image, TouchableOpacity, TouchableWithoutFeedback} from 'react-native';
 import React from 'react';
 
 import {px} from '~/utils/appUtil';
@@ -15,79 +15,81 @@ const SignalCard = ({data}) => {
     const jump = useJump();
     return (
         <View tabLabel={name}>
-            {!!name && <Text style={{fontSize: px(14), fontWeight: '700', marginBottom: px(8)}}>{name}</Text>}
+            {!!name && (
+                <Text style={{fontSize: px(14), fontWeight: '700', marginBottom: px(8), marginTop: px(12)}}>
+                    {name}
+                </Text>
+            )}
             {signals?.map((signal, index) => (
-                <TouchableOpacity
-                    key={index}
-                    style={[styles.card]}
-                    onPress={() => jump(signal?.url)}
-                    activeOpacity={0.8}>
-                    {!!signal?.tag && (
-                        <View style={[styles.tag, {backgroundColor: signal?.tag_bg_color || '#fff'}]}>
-                            <Text style={{fontSize: px(10), color: signal?.tag_color}}>{signal.tag}</Text>
-                        </View>
-                    )}
-                    <View style={Style.flexBetween}>
-                        <View style={{flex: 1.4}}>
-                            <View style={[styles.nameCon]}>
-                                <Image
-                                    source={{uri: signal.icon}}
-                                    style={{marginRight: px(3), width: px(17), height: px(17)}}
-                                />
-                                <Text style={{fontSize: px(12)}}>{signal?.name}</Text>
+                <TouchableWithoutFeedback key={index} onPress={() => jump(signal?.url)}>
+                    <View style={[styles.card, {opacity: signal?.status == 3 ? 0.65 : 1}]}>
+                        {!!signal?.tag && (
+                            <View style={[styles.tag, {backgroundColor: signal?.tag_bg_color || '#fff'}]}>
+                                <Text style={{fontSize: px(10), color: signal?.tag_color}}>{signal.tag}</Text>
                             </View>
+                        )}
+                        <View style={Style.flexBetween}>
+                            <View style={{flex: 1.4}}>
+                                <View style={[styles.nameCon]}>
+                                    <Image
+                                        source={{uri: signal.icon}}
+                                        style={{marginRight: px(3), width: px(17), height: px(17)}}
+                                    />
+                                    <Text style={{fontSize: px(12)}}>{signal?.name}</Text>
+                                </View>
+                            </View>
+                            {/* 目标盈 */}
+                            {signal?.target_indicators
+                                ? signal?.target_indicators?.map((target, _index) => (
+                                      <View key={_index} style={{marginVertical: px(12), flex: 1}}>
+                                          <RenderHtml
+                                              html={target?.value}
+                                              style={{
+                                                  fontSize: px(14),
+                                                  fontFamily: Font.numFontFamily,
+                                                  textAlign: index == 0 ? 'center' : 'right',
+                                              }}
+                                          />
+                                          <Text
+                                              style={{
+                                                  ...styles.lightText,
+                                                  marginTop: px(5),
+                                                  textAlign: index == 0 ? 'center' : 'right',
+                                              }}>
+                                              {target?.text}
+                                          </Text>
+                                      </View>
+                                  ))
+                                : null}
                         </View>
-                        {/* 目标盈 */}
-                        {signal?.target_indicators
-                            ? signal?.target_indicators?.map((target, index) => (
-                                  <View key={index} style={{marginVertical: px(12), flex: 1}}>
-                                      <RenderHtml
-                                          html={target?.value}
-                                          style={{
-                                              fontSize: px(14),
-                                              fontFamily: Font.numFontFamily,
-                                              textAlign: index == 0 ? 'center' : 'right',
-                                          }}
-                                      />
-                                      <Text
-                                          style={{
-                                              ...styles.lightText,
-                                              marginTop: px(5),
-                                              textAlign: index == 0 ? 'center' : 'right',
-                                          }}>
-                                          {target?.text}
-                                      </Text>
-                                  </View>
-                              ))
-                            : null}
+                        {!signal?.target_indicators ? (
+                            <View style={[Style.flexBetween, {marginBottom: px(10), paddingLeft: px(12)}]}>
+                                <Text style={{...styles.num, flex: 1.4}}>{signal?.amount}</Text>
+                                <Text
+                                    style={{
+                                        ...styles.num,
+                                        flex: 1,
+                                        textAlign: 'center',
+                                    }}>
+                                    {signal?.count}
+                                </Text>
+                                <Text
+                                    style={{
+                                        flex: 1,
+                                        textAlign: 'right',
+                                        ...styles.num,
+                                    }}>
+                                    {signal?.total_amount}
+                                </Text>
+                            </View>
+                        ) : null}
+                        {!!signal?.reminder && (
+                            <View style={styles.cardDesc}>
+                                <RenderHtml html={signal?.reminder} style={styles.lightText} />
+                            </View>
+                        )}
                     </View>
-                    {!signal?.target_indicators ? (
-                        <View style={[Style.flexBetween, {marginBottom: px(10), paddingLeft: px(12)}]}>
-                            <Text style={{...styles.num, flex: 1.4}}>{signal?.amount}</Text>
-                            <Text
-                                style={{
-                                    ...styles.num,
-                                    flex: 1,
-                                    textAlign: 'center',
-                                }}>
-                                {signal?.count}
-                            </Text>
-                            <Text
-                                style={{
-                                    flex: 1,
-                                    textAlign: 'right',
-                                    ...styles.num,
-                                }}>
-                                {signal?.total_amount}
-                            </Text>
-                        </View>
-                    ) : null}
-                    {!!signal?.reminder && (
-                        <View style={styles.cardDesc}>
-                            <RenderHtml html={signal?.reminder} style={styles.lightText} />
-                        </View>
-                    )}
-                </TouchableOpacity>
+                </TouchableWithoutFeedback>
             ))}
         </View>
     );

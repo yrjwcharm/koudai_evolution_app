@@ -59,7 +59,7 @@ const FixedInvestDetail = ({navigation, route}) => {
         passwordModal?.current?.show();
     };
     const init = async () => {
-        const res = await callFixedInvestDetailApi({plan_id, fund_code, poid});
+        const res = await callFixedInvestDetailApi({...route?.params, plan_id, fund_code, poid});
         if (res.code === '000000') {
             const {
                 title = '',

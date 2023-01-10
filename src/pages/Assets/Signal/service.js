@@ -10,3 +10,6 @@ export const getSignalInfo = (params) => {
 export const getStopSignal = (params) => {
     return http.get('signal/manage/stop/list/20230106', params);
 };
+export const modifySignal = (params) => {
+    return http.get('signal/product/modify/info/20230106', params);
+};
