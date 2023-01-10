@@ -1,8 +1,8 @@
 /*
  * @Date: 2022-05-17 15:46:02
  * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2022-06-24 16:43:13
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-01-10 14:02:47
  * @Description: 投资者证明材料上传
  */
 import React, {useCallback, useMemo, useRef, useState} from 'react';
@@ -40,6 +40,8 @@ import {
     tokenCloudIdentityInit,
 } from '../CreateAccount/Account/TokenCloudBridge';
 import {debounce} from 'lodash';
+import DocumentPicker from 'react-native-document-picker';
+import RNFetchBlob from 'rn-fetch-blob';
 
 export default ({navigation, route}) => {
     const [data, setData] = useState({});
@@ -130,6 +132,7 @@ export default ({navigation, route}) => {
             console.warn(err);
         }
     };
+
     // 打开相册或相机
     const openPicker = (action) => {
         setTimeout(() => {
@@ -172,7 +175,9 @@ export default ({navigation, route}) => {
     const blockCal = (action) => {
         Modal.show({
             title: '权限申请',
-            content: `${action === 'gallery' ? '相册' : '相机'}权限没打开,请前往手机的“设置”选项中,允许该权限`,
+            content: `${
+                action === 'gallery' ? '相册' : action === 'doc' ? '文档' : '相机'
+            }权限没打开,请前往手机的“设置”选项中,允许该权限`,
             confirm: true,
             confirmText: '前往',
             confirmCallBack: () => {
@@ -180,6 +185,7 @@ export default ({navigation, route}) => {
             },
         });
     };
+
     // 上传图片
     const uploadImage = (file) => {
         const toast = Toast.showLoading('正在上传');
@@ -203,10 +209,12 @@ export default ({navigation, route}) => {
                     if (type === 'id_card') {
                         _data.id_info[clickIndexRef.current] = res.result.url;
                     } else {
+                        // 图片的name为空
+                        let obj = {type: 'img', url: res.result.url, name: ''};
                         if (_data?.materials[clickIndexRef.current]?.images) {
-                            _data.materials[clickIndexRef.current].images.push(res.result.url);
+                            _data.materials[clickIndexRef.current].images.push(obj);
                         } else {
-                            _data.materials[clickIndexRef.current].images = [res.result.url];
+                            _data.materials[clickIndexRef.current].images = [obj];
                         }
                     }
                     setData(_data);
@@ -219,6 +227,43 @@ export default ({navigation, route}) => {
                 Toast.show('上传失败');
             }
         );
+    };
+
+    // 上传pdf
+    const takePdf = () => {
+        DocumentPicker.pickSingle({
+            type: [DocumentPicker.types.pdf],
+            copyTo: 'cachesDirectory',
+        }).then((file) => {
+            const toast = Toast.showLoading('正在上传');
+            const _data = {...data};
+            const _file = {fileName: file.name, type: 'application/pdf', uri: file.fileCopyUri};
+            upload(
+                '/private_fund/upload_material/20220510',
+                _file,
+                [],
+                (res) => {
+                    Toast.hide(toast);
+                    if (res?.code === '000000') {
+                        Toast.show('上传成功');
+
+                        let obj = {type: 'pdf', url: res.result.url, name: file.name};
+                        if (_data?.materials[clickIndexRef.current]?.images) {
+                            _data.materials[clickIndexRef.current].images.push(obj);
+                        } else {
+                            _data.materials[clickIndexRef.current].images = [obj];
+                        }
+                        setData(_data);
+                    } else {
+                        Toast.show(res?.message || '上传失败');
+                    }
+                },
+                () => {
+                    Toast.hide(toast);
+                    Toast.show('上传失败');
+                }
+            );
+        });
     };
 
     // 读卡成功，获取到ReqID
@@ -450,7 +495,7 @@ export default ({navigation, route}) => {
                     </View>
                 ) : null}
                 {materials.map((item, index, arr) => {
-                    const {desc, images = [], max = 6, title} = item;
+                    const {desc, images = [], max = 6, title, type} = item;
                     return (
                         <View
                             key={item + index}
@@ -460,9 +505,45 @@ export default ({navigation, route}) => {
                             <View style={styles.uploadBoxWrap}>
                                 {images.map((img, i) => {
                                     return (
-                                        <View key={img + i} style={[styles.uploadBox, {justifyContent: 'center'}]}>
-                                            <View style={styles.displayBox}>
-                                                <Image source={{uri: img}} style={styles.displayImg} />
+                                        <View key={img.url + i} style={[styles.uploadBox, {justifyContent: 'center'}]}>
+                                            <View
+                                                style={[
+                                                    img.type === 'img'
+                                                        ? {width: px(108), height: '100%'}
+                                                        : styles.displayBox,
+                                                ]}>
+                                                {img.type === 'img' ? (
+                                                    <Image source={{uri: img.url}} style={styles.displayImg} />
+                                                ) : (
+                                                    <View
+                                                        style={[
+                                                            styles.displayImg,
+                                                            {justifyContent: 'center', marginTop: px(2)},
+                                                        ]}>
+                                                        <View
+                                                            style={[
+                                                                {
+                                                                    backgroundColor: '#fff',
+                                                                    width: '100%',
+                                                                    height: px(68),
+                                                                },
+                                                                Style.flexCenter,
+                                                            ]}>
+                                                            <Image
+                                                                source={{
+                                                                    uri:
+                                                                        'https://static.licaimofang.com/wp-content/uploads/2023/01/pdf-icon.png',
+                                                                }}
+                                                                style={[{width: px(40), height: px(40)}]}
+                                                            />
+                                                        </View>
+                                                        <Text
+                                                            style={[styles.uploadTips, {marginTop: px(10)}]}
+                                                            numberOfLines={1}>
+                                                            {img.name}
+                                                        </Text>
+                                                    </View>
+                                                )}
                                                 {button.avail !== 0 && (
                                                     <TouchableOpacity
                                                         activeOpacity={0.8}
@@ -490,7 +571,9 @@ export default ({navigation, route}) => {
                                             activeOpacity={0.8}
                                             onPress={() => {
                                                 clickIndexRef.current = index;
-                                                setSelectData(['从相册中获取', '拍照']);
+                                                let opt = ['从相册中获取', '拍照'];
+                                                if (type === 2) opt.push('上传文件（pdf）');
+                                                setSelectData(opt);
                                                 setVisible(true);
                                             }}
                                             style={styles.imgBox}>
@@ -526,10 +609,11 @@ export default ({navigation, route}) => {
                     } else if (index === 1) {
                         takePic();
                     } else if (index === 2) {
-                        setTimeout(() => {
-                            // 进入读卡页面
-                            enterToReadCardPage(JSON.stringify(uiconfig));
-                        }, 1000);
+                        // setTimeout(() => {
+                        //     // 进入读卡页面
+                        //     enterToReadCardPage(JSON.stringify(uiconfig));
+                        // }, 1000);
+                        takePdf();
                     }
                 }}
                 closeModal={() => setVisible(false)}
