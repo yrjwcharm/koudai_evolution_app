@@ -367,7 +367,10 @@ export default ({navigation, route}) => {
                 const params = {materials: {}, order_id: route.params.order_id || ''};
                 const {id_info: _id_info, materials: _materials = []} = data;
                 _materials.forEach((item) => (params.materials[item.type] = item.images));
-                params.materials[1] = [_id_info.front, _id_info.back];
+                params.materials[1] = [
+                    {type: 'img', url: _id_info.front, name: ''},
+                    {type: 'img', url: _id_info.back, name: ''},
+                ];
                 params.materials = JSON.stringify(params.materials);
                 http.post('/private_fund/submit_certification_material/20220510', params)
                     .then((res) => {
