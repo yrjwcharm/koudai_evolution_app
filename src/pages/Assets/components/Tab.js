@@ -7,9 +7,9 @@ import React from 'react';
 import {Colors, Font, Style} from '~/common/commonStyle';
 import {px} from '~/utils/appUtil';
 
-const Tab = ({tabs = [], onPress, current}) => {
+const Tab = ({tabs = [], onPress, current, style}) => {
     return (
-        <ScrollView bounces={false} horizontal showsHorizontalScrollIndicator={false}>
+        <ScrollView bounces={false} horizontal showsHorizontalScrollIndicator={false} style={style}>
             <View style={[Style.flexRow]}>
                 {tabs?.length > 0
                     ? tabs?.map((tab, i) => {

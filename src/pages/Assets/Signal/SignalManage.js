@@ -9,30 +9,32 @@ import {getSignalInfo} from './service';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import {px} from '~/utils/appUtil';
 import {Colors, Style, Font} from '~/common/commonStyle';
-import sortImg from '~/assets/img/attention/sort.png';
-import sortUp from '~/assets/img/attention/sortUp.png';
-import sortDown from '~/assets/img/attention/sortDown.png';
+
 import Tab from '../components/Tab';
 import SignalCard from '../components/SignalCard';
+import Icon from 'react-native-vector-icons/AntDesign';
+import {useJump} from '~/components/hooks';
+import SortHeader from '../components/SortHeader';
 const SignalManage = (props) => {
     const [data, setData] = useState({});
     const [current, setCurrent] = useState(0);
     const routeParams = props.route?.params;
     const scrollTab = useRef();
-    const {top_info, tab_list, product_headers, product_list = []} = data;
-    const getData = async () => {
-        let res = await getSignalInfo(routeParams);
+    const jump = useJump();
+    const {top_info, tab_list, product_headers, product_list = [], stop_info} = data;
+    const getData = async (params) => {
+        let res = await getSignalInfo({...routeParams, ...params});
+        props.navigation.setOptions({title: res.result.title});
         setData(res.result);
     };
     const handleSort = (_data) => {
-        // global.LogTool('order', _data.sort_key);
-        // if (_data.sort_key) {
-        //     getHoldData({
-        //         type,
-        //         sort_key: _data?.sort_key,
-        //         sort_type: _data?.sort_type == 'asc' ? '' : _data?.sort_type == 'desc' ? 'asc' : 'desc',
-        //     });
-        // }
+        global.LogTool('order', _data.sort_key);
+        if (_data.sort_key) {
+            getData({
+                sort_key: _data?.sort_key,
+                sort_type: _data?.sort_type == 'asc' ? '' : _data?.sort_type == 'desc' ? 'asc' : 'desc',
+            });
+        }
     };
     useFocusEffect(
         useCallback(() => {
@@ -41,56 +43,61 @@ const SignalManage = (props) => {
     );
     return (
         <ScrollView style={styles.con}>
-            <View style={[styles.card, Style.flexBetween, {marginBottom: px(16)}]}>
-                {top_info?.indicators?.map((item, index) => {
-                    return (
-                        <View key={index} style={Style.flexCenter}>
-                            <Text style={{fontFamily: Font.numMedium, fontSize: px(16), marginBottom: px(4)}}>
-                                {item.value}
-                            </Text>
-                            <Text style={{color: Colors.lightBlackColor, fontSize: px(11)}}>{item.text}</Text>
-                        </View>
-                    );
-                })}
-            </View>
-            <Tab
-                tabs={tab_list}
-                current={current}
-                onPress={(i) => {
-                    scrollTab.current.goToPage(i);
-                }}
-            />
-            <View style={[styles.portCard, Style.flexRow]}>
-                {product_headers?.map((head, index) => (
-                    <TouchableOpacity
-                        activeOpacity={0.8}
-                        key={index}
-                        onPress={() => handleSort(head)}
-                        style={{
-                            flex: index == 0 ? 1.4 : 1,
-                            ...Style.flexRow,
-                            justifyContent: index == 0 ? 'flex-start' : 'flex-end',
-                        }}>
-                        <Text style={{color: Colors.lightGrayColor, fontSize: px(11)}}>{head.text}</Text>
-                        {head?.sort_key && (
-                            <Image
-                                source={head?.sort_type == '' ? sortImg : head?.sort_type == 'asc' ? sortUp : sortDown}
-                                style={styles.sortImg}
-                            />
+            {/* 组合顶部 */}
+            <View style={[styles.card, {paddingTop: 0}]}>
+                {routeParams?.poid && (
+                    <View style={{paddingBottom: px(10), paddingTop: px(16), ...Style.borderBottom}}>
+                        <Text style={{fontSize: px(14), fontWeight: '700', marginBottom: px(6)}}>{top_info?.name}</Text>
+                        {!!top_info?.code && (
+                            <Text style={{fontSize: px(11), color: Colors.lightBlackColor}}>{top_info?.code}</Text>
                         )}
-                    </TouchableOpacity>
-                ))}
+                    </View>
+                )}
+                <View style={[Style.flexBetween, {paddingTop: px(12)}]}>
+                    {top_info?.indicators?.map((item, index) => {
+                        return (
+                            <View key={index} style={Style.flexCenter}>
+                                <Text style={{fontFamily: Font.numMedium, fontSize: px(16), marginBottom: px(4)}}>
+                                    {item.value}
+                                </Text>
+                                <Text style={{color: Colors.lightBlackColor, fontSize: px(11)}}>{item.text}</Text>
+                            </View>
+                        );
+                    })}
+                </View>
             </View>
-            <ScrollableTabView
-                initialPage={0}
-                onChangeTab={({i}) => setCurrent(i)}
-                renderTabBar={false}
-                ref={scrollTab}
-                style={{flex: 1}}>
-                {product_list?.map((_data, index) => (
-                    <SignalCard data={_data} key={index} />
-                ))}
-            </ScrollableTabView>
+            {tab_list?.length > 0 && (
+                <Tab
+                    tabs={tab_list}
+                    current={current}
+                    style={{marginTop: px(16)}}
+                    onPress={(i) => {
+                        scrollTab.current.goToPage(i);
+                    }}
+                />
+            )}
+            <SortHeader data={product_headers} onSort={(head) => handleSort(head)} style={{marginVertical: px(12)}} />
+            {product_list?.length > 0 && (
+                <ScrollableTabView
+                    initialPage={0}
+                    onChangeTab={({i}) => setCurrent(i)}
+                    renderTabBar={false}
+                    ref={scrollTab}
+                    style={{flex: 1}}>
+                    {product_list?.map((_data, index) => (
+                        <SignalCard data={_data} key={index} />
+                    ))}
+                </ScrollableTabView>
+            )}
+            {stop_info ? (
+                <TouchableOpacity
+                    style={[Style.flexCenter, {marginTop: px(20), flexDirection: 'row'}]}
+                    activeOpacity={0.8}
+                    onPress={() => jump(stop_info?.url)}>
+                    <Text style={{color: Colors.lightBlackColor}}>{stop_info?.text}</Text>
+                    <Icon name="right" color={Colors.lightBlackColor} />
+                </TouchableOpacity>
+            ) : null}
         </ScrollView>
     );
 };
@@ -104,16 +111,4 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.bgColor,
     },
     card: {paddingVertical: px(16), paddingHorizontal: px(20), backgroundColor: '#fff', borderRadius: px(6)},
-    sortImg: {
-        width: px(6),
-        height: px(10),
-        marginLeft: px(1),
-        marginBottom: px(-2),
-    },
-    portCard: {
-        backgroundColor: '#fff',
-        padding: px(12),
-        borderRadius: px(6),
-        marginVertical: px(12),
-    },
 });

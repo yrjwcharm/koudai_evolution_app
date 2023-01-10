@@ -185,4 +185,12 @@ export const Style = StyleSheet.create({
         lineHeight: px(18),
         color: '#545968',
     },
+    borderBottom: {
+        borderBottomColor: '#E9EAEF',
+        borderBottomWidth: 0.5,
+    },
+    borderTop: {
+        borderTopColor: '#E9EAEF',
+        borderTopWidth: 0.5,
+    },
 });

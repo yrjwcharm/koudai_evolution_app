@@ -317,7 +317,8 @@ import AdvisorTransfer from '~/pages/Assets/AdvisorTransfer'; // 转换投顾机
 import CommunityProSort from '../pages/Community/CommunityHome/CommunityProSort'; //社区作品内容管理
 import Popularize from '~/pages/Popularize'; // 产品推广
 import SignalManage from '~/pages/Assets/Signal/SignalManage'; //信号管理
-
+import SignalStopList from '~/pages/Assets/Signal/SignalStopList'; //信号终止列表
+import SignalTarget from '~/pages/Assets/Signal/SignalTarget'; //信号目标修改
 const Stack = createStackNavigator();
 
 export default function AppStack() {
@@ -1332,6 +1333,8 @@ export default function AppStack() {
                     }}
                 />
                 <Stack.Screen name="SignalManage" component={SignalManage} options={{title: '信号管理'}} />
+                <Stack.Screen name="SignalStopList" component={SignalStopList} options={{title: '已终止的信号'}} />
+                <Stack.Screen name="SignalTarget" component={SignalTarget} options={{title: '我的目标'}} />
             </Stack.Navigator>
         </>
     );
