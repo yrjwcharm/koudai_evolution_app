@@ -2,7 +2,7 @@
  * @Date: 2022-05-17 15:46:02
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-10 14:02:47
+ * @LastEditTime: 2023-01-10 14:50:58
  * @Description: 投资者证明材料上传
  */
 import React, {useCallback, useMemo, useRef, useState} from 'react';
@@ -572,7 +572,9 @@ export default ({navigation, route}) => {
                                             onPress={() => {
                                                 clickIndexRef.current = index;
                                                 let opt = ['从相册中获取', '拍照'];
-                                                if (type === 2) opt.push('上传文件（pdf）');
+                                                if (type === 2) {
+                                                    opt.push('上传文件（pdf）');
+                                                }
                                                 setSelectData(opt);
                                                 setVisible(true);
                                             }}
