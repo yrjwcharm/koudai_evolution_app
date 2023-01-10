@@ -140,102 +140,98 @@ const FixedInvestDetail = ({navigation, route}) => {
             ) : (
                 <View style={styles.container}>
                     {/*定投*/}
-                    <ScrollView showsVerticalScrollIndicator={false}>
-                        <BoxShadow setting={{...shadow, width: deviceWidth - px(32), height: px(123)}}>
-                            <View style={styles.investHeader}>
-                                <View style={styles.headerTop}>
-                                    <View style={styles.headerTopWrap}>
-                                        <View style={Style.flexBetween}>
-                                            <Text style={styles.fundName}>{state.header?.name}</Text>
-                                            <TouchableOpacity onPress={() => jump(state.header?.url?.url)}>
-                                                <Text style={styles.detail}>{state.header?.url?.text}</Text>
-                                            </TouchableOpacity>
-                                        </View>
-                                        {!isEmpty(state.header?.code) && (
-                                            <Text style={styles.fundCode}>{state.header?.code}</Text>
-                                        )}
+                    <ScrollView showsVerticalScrollIndicator={false} style={{flex: 1}}>
+                        <View style={styles.investHeader}>
+                            <View style={styles.headerTop}>
+                                <View style={styles.headerTopWrap}>
+                                    <View style={Style.flexBetween}>
+                                        <Text style={styles.fundName}>{state.header?.name}</Text>
+                                        <TouchableOpacity onPress={() => jump(state.header?.url?.url)}>
+                                            <Text style={styles.detail}>{state.header?.url?.text}</Text>
+                                        </TouchableOpacity>
                                     </View>
+                                    {!isEmpty(state.header?.code) && (
+                                        <Text style={styles.fundCode}>{state.header?.code}</Text>
+                                    )}
                                 </View>
-                                <View style={styles.headerBottom}>
-                                    <View style={styles.headerBottomWrap}>
-                                        <View style={styles.headerBottomWrapItem}>
-                                            <Text style={styles.itemValue}>{state.header?.head_list[0]?.value}</Text>
-                                            <Text style={styles.itemLabel}>{state.header?.head_list[0]?.text}</Text>
-                                        </View>
-                                        <View style={styles.headerBottomWrapItem}>
-                                            <Text style={styles.itemValue}>{state.header?.head_list[1]?.value}</Text>
-                                            <Text style={styles.itemLabel}>{state.header?.head_list[1]?.text}</Text>
-                                        </View>
-                                        <View style={styles.headerBottomWrapItem}>
-                                            <Text style={styles.itemValue}>{state.header?.head_list[2]?.value}</Text>
-                                            <Text style={styles.itemLabel}>{state.header?.head_list[2]?.text}</Text>
-                                        </View>
+                            </View>
+                            <View style={styles.headerBottom}>
+                                <View style={styles.headerBottomWrap}>
+                                    <View style={styles.headerBottomWrapItem}>
+                                        <Text style={styles.itemValue}>{state.header?.head_list[0]?.value}</Text>
+                                        <Text style={styles.itemLabel}>{state.header?.head_list[0]?.text}</Text>
+                                    </View>
+                                    <View style={styles.headerBottomWrapItem}>
+                                        <Text style={styles.itemValue}>{state.header?.head_list[1]?.value}</Text>
+                                        <Text style={styles.itemLabel}>{state.header?.head_list[1]?.text}</Text>
+                                    </View>
+                                    <View style={styles.headerBottomWrapItem}>
+                                        <Text style={styles.itemValue}>{state.header?.head_list[2]?.value}</Text>
+                                        <Text style={styles.itemLabel}>{state.header?.head_list[2]?.text}</Text>
                                     </View>
                                 </View>
                             </View>
-                        </BoxShadow>
+                        </View>
 
                         <View style={{marginTop: px(12)}}>
-                            <BoxShadow setting={{...shadow, width: deviceWidth - px(32), height: px(176)}}>
-                                <View style={[styles.section, {height: px(176)}]}>
-                                    <View
+                            <View style={[styles.section, {height: px(176)}]}>
+                                <View
+                                    style={[
+                                        styles.status,
+                                        {
+                                            backgroundColor:
+                                                state.pay_info?.btn_type == 20
+                                                    ? '#EDF7EC'
+                                                    : state.pay_info?.btn_type == 30
+                                                    ? '#FDEFE4'
+                                                    : '#E9EAEF',
+                                        },
+                                    ]}>
+                                    <Text
                                         style={[
-                                            styles.status,
+                                            styles.statusText,
                                             {
-                                                backgroundColor:
+                                                color:
                                                     state.pay_info?.btn_type == 20
-                                                        ? '#EDF7EC'
+                                                        ? Colors.green
                                                         : state.pay_info?.btn_type == 30
-                                                        ? '#FDEFE4'
-                                                        : '#E9EAEF',
+                                                        ? '#FF7D41'
+                                                        : Colors.lightGrayColor,
                                             },
                                         ]}>
-                                        <Text
-                                            style={[
-                                                styles.statusText,
-                                                {
-                                                    color:
-                                                        state.pay_info?.btn_type == 20
-                                                            ? Colors.green
-                                                            : state.pay_info?.btn_type == 30
-                                                            ? '#FF7D41'
-                                                            : Colors.lightGrayColor,
-                                                },
-                                            ]}>
-                                            {state.pay_info?.status}
+                                        {state.pay_info?.status}
+                                    </Text>
+                                </View>
+                                <Text style={styles.title}>{state.pay_info?.title}</Text>
+                                <View style={styles.bankcard}>
+                                    <Image
+                                        resizeMode={'cover'}
+                                        style={{width: px(25), height: px(27)}}
+                                        source={{uri: state.pay_info?.bank_icon}}
+                                    />
+                                    <View style={{marginLeft: px(8)}}>
+                                        <Text style={styles.card}>{state.pay_info?.bank_name}</Text>
+                                        {!isEmpty(state.pay_info?.limit_desc) && (
+                                            <Text style={[styles.transfer, {marginTop: px(2)}]}>
+                                                {state.pay_info?.limit_desc}
+                                            </Text>
+                                        )}
+                                        <Text style={[styles.schedule, {marginTop: px(12)}]}>
+                                            {state.pay_info?.text}
                                         </Text>
                                     </View>
-                                    <Text style={styles.title}>{state.pay_info?.title}</Text>
-                                    <View style={styles.bankcard}>
-                                        <Image
-                                            resizeMode={'cover'}
-                                            style={{width: px(25), height: px(27)}}
-                                            source={{uri: state.pay_info?.bank_icon}}
-                                        />
-                                        <View style={{marginLeft: px(8)}}>
-                                            <Text style={styles.card}>{state.pay_info?.bank_name}</Text>
-                                            {!isEmpty(state.pay_info?.limit_desc) && (
-                                                <Text style={[styles.transfer, {marginTop: px(2)}]}>
-                                                    {state.pay_info?.limit_desc}
-                                                </Text>
-                                            )}
-                                            <Text style={[styles.schedule, {marginTop: px(12)}]}>
-                                                {state.pay_info?.text}
-                                            </Text>
+                                </View>
+                                {!isEmpty(state.pay_info?.remind) && (
+                                    <View style={styles.payInfo}>
+                                        <View style={[Style.flexRow, {flexWrap: 'wrap'}]}>
+                                            <HTML
+                                                html={state.pay_info?.remind}
+                                                style={{fontSize: px(12), lineHeight: px(14)}}
+                                            />
                                         </View>
                                     </View>
-                                    {!isEmpty(state.pay_info?.remind) && (
-                                        <View style={styles.payInfo}>
-                                            <View style={[Style.flexRow, {flexWrap: 'wrap'}]}>
-                                                <HTML
-                                                    html={state.pay_info?.remind}
-                                                    style={{fontSize: px(13), lineHeight: px(20)}}
-                                                />
-                                            </View>
-                                        </View>
-                                    )}
-                                </View>
-                            </BoxShadow>
+                                )}
+                            </View>
                         </View>
                         {state.records?.data_list?.length > 0 && (
                             <View style={styles.footer}>
@@ -441,8 +437,9 @@ const styles = StyleSheet.create({
         color: Colors.lightBlackColor,
     },
     container: {
-        marginHorizontal: px(16),
-        marginTop: px(12),
+        paddingHorizontal: px(16),
+        paddingTop: px(12),
+        flex: 1,
         backgroundColor: Colors.bgColor,
     },
     rowTitle: {
@@ -476,8 +473,8 @@ const styles = StyleSheet.create({
         top: 0,
         alignItems: 'center',
         justifyContent: 'center',
-        width: px(46),
-        height: px(19),
+        paddingVertical: px(2),
+        paddingHorizontal: px(8),
         borderBottomLeftRadius: px(4),
         borderTopRightRadius: px(6),
     },
