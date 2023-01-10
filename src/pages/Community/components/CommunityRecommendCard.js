@@ -215,10 +215,12 @@ const CommunityRecommendCard = (props) => {
                                     {view_suffix}
                                 </Text>
                             )}
-                            <Text style={styles.viewNum}>
-                                {favor_num}
-                                点赞
-                            </Text>
+                            {favor_num != undefined && (
+                                <Text style={styles.viewNum}>
+                                    {favor_num}
+                                    点赞
+                                </Text>
+                            )}
                         </View>
                     )}
                 </View>
