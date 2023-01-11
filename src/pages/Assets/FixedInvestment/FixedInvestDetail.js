@@ -137,10 +137,25 @@ const FixedInvestDetail = ({navigation, route}) => {
                             </View>
                             <View style={styles.headerBottom}>
                                 <View style={styles.headerBottomWrap}>
-                                    <View style={styles.headerBottomWrapItem}>
-                                        <Text style={styles.itemValue}>{state.header?.head_list[0]?.value}</Text>
-                                        <Text style={styles.itemLabel}>{state.header?.head_list[0]?.text}</Text>
-                                    </View>
+                                    {route?.params?.fr == 'signal_manage' ? (
+                                        <View style={styles.headerBottomWrapItem}>
+                                            <View style={[styles.nameCon]}>
+                                                <Image
+                                                    source={{uri: state.header?.head_list[0]?.icon}}
+                                                    style={{marginRight: px(3), width: px(17), height: px(17)}}
+                                                />
+                                                <Text style={{fontSize: px(12)}}>
+                                                    {state.header?.head_list[0]?.text}
+                                                </Text>
+                                            </View>
+                                            <Text style={styles.itemValue}>{state.header?.head_list[0]?.value}</Text>
+                                        </View>
+                                    ) : (
+                                        <View style={styles.headerBottomWrapItem}>
+                                            <Text style={styles.itemValue}>{state.header?.head_list[0]?.value}</Text>
+                                            <Text style={styles.itemLabel}>{state.header?.head_list[0]?.text}</Text>
+                                        </View>
+                                    )}
                                     <View style={styles.headerBottomWrapItem}>
                                         <Text style={styles.itemValue}>{state.header?.head_list[1]?.value}</Text>
                                         <Text style={styles.itemLabel}>{state.header?.head_list[1]?.text}</Text>
@@ -154,7 +169,7 @@ const FixedInvestDetail = ({navigation, route}) => {
                         </View>
 
                         <View style={{marginTop: px(12)}}>
-                            <View style={[styles.section, {height: px(176)}]}>
+                            <View style={[styles.section]}>
                                 <View
                                     style={[
                                         styles.status,
@@ -564,5 +579,14 @@ const styles = StyleSheet.create({
     topRightBtn: {
         flex: 1,
         marginRight: Space.marginAlign,
+    },
+    nameCon: {
+        backgroundColor: Colors.bgColor,
+        ...Style.flexRow,
+        borderRadius: px(287),
+        padding: px(4),
+        flexShrink: 1,
+        marginBottom: px(4),
+        width: px(80),
     },
 });

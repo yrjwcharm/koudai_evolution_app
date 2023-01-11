@@ -189,16 +189,20 @@ const Index = ({route, navigation}) => {
                     index: routes.length - 1,
                 });
             });
-            jump(
-                {
-                    path: res.result?.url?.path,
-                    params: {
-                        ...res.result?.url?.params,
-                        password,
+            if (res?.result?.url) {
+                jump(
+                    {
+                        path: res.result?.url?.path,
+                        params: {
+                            ...res.result?.url?.params,
+                            password,
+                        },
                     },
-                },
-                'replace'
-            );
+                    'replace'
+                );
+            } else {
+                navigation.goBack();
+            }
         }
     };
     // 定投周期
@@ -302,7 +306,7 @@ const Index = ({route, navigation}) => {
             'slide'
         );
     };
-    const {buy_info, money_safe} = data;
+    const {buy_info, money_safe, tool_info} = data;
     return (
         <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
             {route?.params?.fr != 'signal_manage' && (
@@ -333,7 +337,20 @@ const Index = ({route, navigation}) => {
                     </TouchableOpacity>
                 ) : null}
                 <View style={styles.buyCon}>
-                    <Text style={{fontSize: px(16), marginVertical: px(4), fontWeight: '700'}}>{buy_info?.title}</Text>
+                    <View style={Style.flexRow}>
+                        <Text style={{fontSize: px(16), marginVertical: px(4), fontWeight: '700'}}>
+                            {buy_info?.title}
+                        </Text>
+                        {tool_info ? (
+                            <View style={[styles.nameCon]}>
+                                <Image
+                                    source={{uri: tool_info?.icon}}
+                                    style={{marginRight: px(3), width: px(17), height: px(17)}}
+                                />
+                                <Text style={{fontSize: px(12)}}>{tool_info?.name}</Text>
+                            </View>
+                        ) : null}
+                    </View>
                     <View style={styles.buyInput}>
                         <Text style={{fontSize: px(26), fontFamily: Font.numFontFamily}}>¥</Text>
                         <TextInput
@@ -480,5 +497,14 @@ const styles = StyleSheet.create({
         width: px(8),
         height: px(8),
         marginRight: px(2),
+    },
+    nameCon: {
+        backgroundColor: Colors.bgColor,
+        ...Style.flexRow,
+        borderRadius: px(287),
+        padding: px(4),
+        flexShrink: 1,
+        marginLeft: px(4),
+        width: px(80),
     },
 });
