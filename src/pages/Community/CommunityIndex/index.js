@@ -47,6 +47,8 @@ import {
 import {followAdd, followCancel} from '~/pages/Attention/Index/service';
 import actionTypes from '~/redux/actionTypes';
 import {debounce, groupBy, isEqual, sortBy} from 'lodash';
+import hintIcon from '~/assets/img/hint-icon.png';
+import * as Animatable from 'react-native-animatable';
 
 /** @name 社区头部 */
 const Header = ({active, isLogin, message_url, newsData, refresh, search_url, setActive, tabs, userInfo = {}}) => {
@@ -800,6 +802,37 @@ export const PublishContent = forwardRef(({community_id = 0, muid = 0, history_i
     ) : null;
 });
 
+const UpdateHint = forwardRef((props, ref) => {
+    const [visible, setVisible] = useState(false);
+    const hintViewRef = useRef(null);
+    const timer = useRef();
+
+    useImperativeHandle(ref, () => ({trigger}));
+
+    const trigger = () => {
+        clearTimeout(timer.current);
+        setVisible(true);
+        hintViewRef.current?.fadeInDown(800)?.then((res) => {
+            if (res.finished) {
+                timer.current = setTimeout(() => {
+                    hintViewRef.current?.fadeOutUp(700).then((res2) => {
+                        if (res2.finished) {
+                            setVisible(false);
+                        }
+                    });
+                }, 3000);
+            }
+        });
+    };
+
+    return (
+        <Animatable.View style={[styles.hintWrap, {zIndex: visible ? 3 : -3, opacity: +visible}]} ref={hintViewRef}>
+            <Image source={hintIcon} style={{width: px(14), height: px(14), marginRight: px(4)}} />
+            <Text style={{fontSize: px(12), lineHeight: px(14), color: '#fff'}}>魔方推荐内容有23条更新</Text>
+        </Animatable.View>
+    );
+});
+
 const Index = ({navigation, route, setLoading}) => {
     const dispatch = useDispatch();
     const isFocused = useIsFocused();
@@ -815,6 +848,7 @@ const Index = ({navigation, route, setLoading}) => {
     const publishRef = useRef();
     const firstIn = useRef(true);
     const scrollTab = useRef();
+    const updateHintRef = useRef();
 
     const init = () => {
         getPageData()
@@ -889,6 +923,14 @@ const Index = ({navigation, route, setLoading}) => {
         init_type !== undefined && setTimeout(() => scrollTab.current?.goToPage?.(1));
     }, [route.params]);
 
+    // useFocusEffect(
+    //     useCallback(() => {
+    //         setTimeout(() => {
+    //             updateHintRef.current.trigger();
+    //         }, 1000);
+    //     }, [])
+    // );
+
     return Object.keys(data).length > 0 ? (
         <View style={styles.container}>
             <Header
@@ -913,6 +955,7 @@ const Index = ({navigation, route, setLoading}) => {
                     const {name, type} = tab;
                     return (
                         <View key={type} style={{flex: 1}} tabLabel={name}>
+                            <UpdateHint ref={updateHintRef} />
                             {type === 'follow' ? (
                                 follow?.list?.length > 0 ? (
                                     <Follow
@@ -1102,6 +1145,19 @@ const styles = StyleSheet.create({
     close: {
         width: px(24),
         height: px(24),
+    },
+    hintWrap: {
+        position: 'absolute',
+        top: 0,
+        left: px(16),
+        width: px(343),
+        padding: px(8),
+        borderRadius: px(6),
+        backgroundColor: '#FF7D41',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 2,
     },
 });
 
