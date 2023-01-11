@@ -23,6 +23,7 @@ import {FixedButton} from '~/components/Button';
 import Toast from '~/components/Toast';
 import {PasswordModal} from '~/components/Password';
 import RenderHtml from '~/components/RenderHtml';
+import {postDo} from '~/pages/Project/ProjectSetTradeAmount/service';
 
 const SignalTarget = ({route, navigation}) => {
     const [stopProfitIndex, setStopProfitIndex] = useState(0);
@@ -71,7 +72,7 @@ const SignalTarget = ({route, navigation}) => {
             possible: possible || 0,
             password,
         };
-        let res = await getNextPath(params);
+        let res = await postDo(params);
         Toast.hide(toast);
         Toast.show(res.message);
         if (res.code === '000000') {

@@ -22,6 +22,7 @@ const FixedInvestDetail = ({navigation, route}) => {
     const [modalVisible, setModalVisible] = useState(false);
     const jump = useJump();
     const passwordModal = useRef(null);
+    const [selectPop, setSelectPop] = useState(1);
     const [state, setState] = useState({
         loading: true,
         btn_list: [],
@@ -84,6 +85,9 @@ const FixedInvestDetail = ({navigation, route}) => {
                 ...route?.params,
             });
             Toast.hide(loading);
+            if (res.code === '000000') {
+                init();
+            }
             let timer = setTimeout(() => {
                 Toast.show(res.message);
                 timer && clearTimeout(timer);
@@ -211,13 +215,15 @@ const FixedInvestDetail = ({navigation, route}) => {
                                                 {state.pay_info?.limit_desc}
                                             </Text>
                                         )}
-                                        <Text style={[styles.schedule, {marginTop: px(12)}]}>
-                                            {state.pay_info?.text}
-                                        </Text>
+                                        {!!state.pay_info?.text && (
+                                            <Text style={[styles.schedule, {marginTop: px(12)}]}>
+                                                {state.pay_info?.text}
+                                            </Text>
+                                        )}
                                     </View>
                                 </View>
                                 {!isEmpty(state.pay_info?.remind) && (
-                                    <View style={styles.payInfo}>
+                                    <View style={[styles.payInfo, Style.borderTop]}>
                                         <View style={[Style.flexRow, {flexWrap: 'wrap'}]}>
                                             <HTML
                                                 html={state.pay_info?.remind}
@@ -298,23 +304,42 @@ const FixedInvestDetail = ({navigation, route}) => {
                             <View style={styles.modal}>
                                 <View style={styles.centeredView}>
                                     <Text style={styles.terminatedConfirm}>
-                                        {state.btn_list[2]?.popup?.title ?? ''}
+                                        {state.btn_list[selectPop]?.popup?.title ?? ''}
                                     </Text>
-                                    <Text style={styles.content}>{state.btn_list[2]?.popup?.content ?? ''}</Text>
-                                    <View style={styles.bottomWrap}>
-                                        <TouchableOpacity onPress={handleClick}>
-                                            <Text style={styles.confirmTerminated}>
-                                                {state.btn_list[2]?.popup?.confirm.text ?? ''}
-                                            </Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity onPress={() => setModalVisible(false)}>
-                                            <View style={styles.keepOnView}>
-                                                <Text style={styles.keepOnText}>
-                                                    {state.btn_list[2]?.popup?.cancel.text ?? ''}
+                                    <Text style={styles.content}>
+                                        {state.btn_list[selectPop]?.popup?.content ?? ''}
+                                    </Text>
+                                    {selectPop == 1 ? (
+                                        <View style={styles.bottomWrap}>
+                                            <TouchableOpacity onPress={() => setModalVisible(false)}>
+                                                <Text style={styles.confirmTerminated}>
+                                                    {state.btn_list[selectPop]?.popup?.confirm.text ?? ''}
                                                 </Text>
-                                            </View>
-                                        </TouchableOpacity>
-                                    </View>
+                                            </TouchableOpacity>
+                                            <TouchableOpacity onPress={handleClick}>
+                                                <View style={styles.keepOnView}>
+                                                    <Text style={styles.keepOnText}>
+                                                        {state.btn_list[selectPop]?.popup?.cancel.text ?? ''}
+                                                    </Text>
+                                                </View>
+                                            </TouchableOpacity>
+                                        </View>
+                                    ) : (
+                                        <View style={styles.bottomWrap}>
+                                            <TouchableOpacity onPress={handleClick}>
+                                                <Text style={styles.confirmTerminated}>
+                                                    {state.btn_list[selectPop]?.popup?.confirm.text ?? ''}
+                                                </Text>
+                                            </TouchableOpacity>
+                                            <TouchableOpacity onPress={() => setModalVisible(false)}>
+                                                <View style={styles.keepOnView}>
+                                                    <Text style={styles.keepOnText}>
+                                                        {state.btn_list[selectPop]?.popup?.cancel.text ?? ''}
+                                                    </Text>
+                                                </View>
+                                            </TouchableOpacity>
+                                        </View>
+                                    )}
                                 </View>
                             </View>
                         </Modal>
@@ -327,8 +352,14 @@ const FixedInvestDetail = ({navigation, route}) => {
                                 } else if (index === 1) {
                                     global.LogTool('click', 'accumlated_investment_pause');
                                     setType(state.pay_info?.btn_type);
-                                    handleClick();
+                                    if (state.btn_list[index]?.popup) {
+                                        setSelectPop(1);
+                                        handleModal();
+                                    } else {
+                                        handleClick();
+                                    }
                                 } else if (index === 2) {
+                                    setSelectPop(2);
                                     handleModal();
                                 }
                             }}
@@ -486,9 +517,6 @@ const styles = StyleSheet.create({
         color: Colors.lightBlackColor,
     },
     bankcard: {
-        borderBottomColor: '#E9EAEF',
-        borderStyle: 'solid',
-        borderBottomWidth: StyleSheet.hairlineWidth,
         flexDirection: 'row',
         paddingBottom: px(11),
         marginTop: px(10),
