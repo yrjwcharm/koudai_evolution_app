@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 10:40:08
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-24 14:09:41
+ * @LastEditTime: 2023-01-11 16:24:26
  * @Description:设置登录密码
  */
 import React, {Component} from 'react';
@@ -39,21 +39,23 @@ class SetLoginPassword extends Component {
     }
     register = () => {
         const {code, password, re_password} = this.state;
-        const reg = /(?!\d+$)(?![a-zA-Z]+$)(?![!"#$%&'()*+,-./:;<=>?@[\\]\^_`{\|}~]+$).{8,20}/;
-        if (password.length < 8 || password.length > 20) {
-            Toast.show('密码必须8-20位');
-            return false;
-        } else if (!reg.test(password)) {
-            Toast.show('密码必须包含数字、英文和符号至少两项');
-            return false;
-        }
-        const leftChar = password
-            .replace(/\d/g, '')
-            .replace(/[a-zA-Z]/g, '')
-            .replace(/[_!"#$%&'()*+,-./:;<=>?@[\]^`{|}~\\]/g, '');
-        if (leftChar) {
-            Toast.show('密码含有无效字符');
-            return false;
+        if (this.fr == 'forget') {
+            const reg = /(?!\d+$)(?![a-zA-Z]+$)(?![!"#$%&'()*+,-./:;<=>?@[\\]\^_`{\|}~]+$).{8,20}/;
+            if (password.length < 8 || password.length > 20) {
+                Toast.show('密码必须8-20位');
+                return false;
+            } else if (!reg.test(password)) {
+                Toast.show('密码必须包含数字、英文和符号至少两项');
+                return false;
+            }
+            const leftChar = password
+                .replace(/\d/g, '')
+                .replace(/[a-zA-Z]/g, '')
+                .replace(/[_!"#$%&'()*+,-./:;<=>?@[\]^`{|}~\\]/g, '');
+            if (leftChar) {
+                Toast.show('密码含有无效字符');
+                return false;
+            }
         }
         //找回登录密码
         if (this.fr == 'forget') {
@@ -113,7 +115,6 @@ class SetLoginPassword extends Component {
             http.post('/auth/user/register/20210101', {
                 mobile: this.props.route?.params?.mobile,
                 verify_code: code,
-                password,
             }).then((res) => {
                 Toast.hide(toast);
                 if (res.code === '000000') {
@@ -213,7 +214,7 @@ class SetLoginPassword extends Component {
         } else {
             this.setState({
                 code: _code,
-                btnClick: !(_code.length >= 6 && password.length >= 8),
+                btnClick: !(_code.length >= 6),
             });
         }
     };
@@ -225,7 +226,6 @@ class SetLoginPassword extends Component {
                 btnClick: !(code.length >= 6 && password.length >= 8 && re_password.length >= 8),
             });
         } else {
-            this.setState({password: password, btnClick: !(code.length >= 6 && password.length >= 8)});
         }
     };
     onChangeRePassword = (re_password) => {
@@ -262,16 +262,18 @@ class SetLoginPassword extends Component {
                     </TouchableHighlight>
                 </View>
 
-                <InputView
-                    title={this.fr == 'forget' ? '新密码' : '登录密码'}
-                    onChangeText={this.onChangePassword}
-                    value={password}
-                    placeholder="8-20位数字、英文或符号"
-                    maxLength={20}
-                    secureTextEntry={true}
-                    keyboardType={'ascii-capable'}
-                    clearButtonMode="while-editing"
-                />
+                {this.fr == 'forget' ? (
+                    <InputView
+                        title={'新密码'}
+                        onChangeText={this.onChangePassword}
+                        value={password}
+                        placeholder="8-20位数字、英文或符号"
+                        maxLength={20}
+                        secureTextEntry={true}
+                        keyboardType={'ascii-capable'}
+                        clearButtonMode="while-editing"
+                    />
+                ) : null}
                 {this.fr == 'forget' ? (
                     <InputView
                         title="确认密码"

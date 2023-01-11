@@ -11,7 +11,7 @@ import {useJump} from '~/components/hooks';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
-const Header = ({newMes}) => {
+const Header = ({newMes, light, bgColor}) => {
     const jump = useJump();
     const inset = useSafeAreaInsets();
     const navigation = useNavigation();
@@ -22,17 +22,22 @@ const Header = ({newMes}) => {
                 style={[
                     Style.flexBetween,
                     styles.header,
-                    {paddingTop: inset.top + (Platform.OS == 'ios' ? px(5) : px(6))},
+                    {
+                        paddingTop: inset.top + (Platform.OS == 'ios' ? px(5) : px(6)),
+                        backgroundColor: bgColor || '#ECF5FF',
+                    },
                 ]}>
                 <TouchableOpacity
                     activeOpacity={0.9}
                     style={Style.flexRow}
                     onPress={() => {
-                        navigation.navigate('Profile');
+                        navigation.navigate(userInfo.is_login ? 'Profile' : 'Login');
                     }}>
                     <Image source={{uri: userInfo?.avatar}} style={styles.avatar} />
-                    <Text style={styles.name}>{userInfo?.nickname || '昵称'}</Text>
-                    <FontAwesome name={'angle-right'} color={Colors.defaultColor} size={18} />
+                    <Text style={[styles.name, {color: light ? '#fff' : Colors.defaultColor}]}>
+                        {userInfo?.nickname || '昵称'}
+                    </Text>
+                    <FontAwesome name={'angle-right'} color={light ? '#fff' : Colors.defaultColor} size={18} />
                 </TouchableOpacity>
                 {/* 消息 */}
                 <TouchableOpacity
@@ -44,7 +49,9 @@ const Header = ({newMes}) => {
                     <Image
                         style={{width: px(24), height: px(24)}}
                         source={{
-                            uri: 'https://static.licaimofang.com/wp-content/uploads/2022/09/message-centre.png',
+                            uri: light
+                                ? 'https://static.licaimofang.com/wp-content/uploads/2022/09/message-centre-2.png'
+                                : 'https://static.licaimofang.com/wp-content/uploads/2022/09/message-centre.png',
                         }}
                     />
                     {newMes ? (
@@ -64,10 +71,9 @@ const styles = StyleSheet.create({
     header: {
         paddingHorizontal: px(16),
         paddingBottom: px(10),
-        backgroundColor: '#ECF5FF',
     },
     avatar: {width: px(30), height: px(30), borderRadius: px(30), marginRight: px(10)},
-    name: {color: Colors.defaultColor, fontSize: px(14), fontWeight: '700', marginRight: px(4)},
+    name: {fontSize: px(14), fontWeight: '700', marginRight: px(4)},
     header_icon: {
         width: px(32),
         height: px(32),

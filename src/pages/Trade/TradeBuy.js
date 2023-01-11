@@ -264,6 +264,45 @@ class TradeBuy extends Component {
     submit = async (password) => {
         global.LogTool('tpwd');
         const {poid, bankSelect, type, currentDate, isLargeAmount, largeAmount} = this.state;
+
+        const res = await getBuyQuestionnaire({fr: 'compliance', poid});
+        const flag = await new Promise((resolve) => {
+            const {code, result: {list, summary_id} = {}} = res || {};
+            if (code === '000000' && summary_id) {
+                Modal.show(
+                    {
+                        backButtonClose: false,
+                        children: (
+                            <Questionnaire
+                                callback={(action) => {
+                                    Modal.close();
+                                    if (action === 'close') {
+                                        resolve(false);
+                                    } else {
+                                        resolve(true);
+                                    }
+                                }}
+                                data={list}
+                                summary_id={summary_id}
+                            />
+                        ),
+                        header: <View />,
+                        isTouchMaskToClose: false,
+                        style: {
+                            minHeight: 0,
+                        },
+                    },
+                    'slide'
+                );
+            } else {
+                resolve(true);
+            }
+        });
+        if (!flag) {
+            this.props.navigation.goBack();
+            return;
+        }
+
         let toast = Toast.showLoading();
         let bank = isLargeAmount ? largeAmount : bankSelect || '';
         if (type == 0) {
@@ -462,42 +501,7 @@ class TradeBuy extends Component {
         });
         http.post('/advisor/action/report/20220422', {action: 'confirm', poids: [poid]});
         Keyboard.dismiss();
-        const res = await getBuyQuestionnaire({fr: 'compliance', poid});
-        const flag = await new Promise((resolve) => {
-            const {code, result: {list, summary_id} = {}} = res || {};
-            if (code === '000000' && summary_id) {
-                Modal.show(
-                    {
-                        backButtonClose: false,
-                        children: (
-                            <Questionnaire
-                                callback={(action) => {
-                                    Modal.close();
-                                    if (action === 'close') {
-                                        resolve(false);
-                                    } else {
-                                        resolve(true);
-                                    }
-                                }}
-                                data={list}
-                                summary_id={summary_id}
-                            />
-                        ),
-                        header: <View />,
-                        isTouchMaskToClose: false,
-                        style: {
-                            minHeight: 0,
-                        },
-                    },
-                    'slide'
-                );
-            } else {
-                resolve(true);
-            }
-        });
-        if (!flag) {
-            return false;
-        }
+
         if (data?.buy_do_pop) {
             Modal.show({
                 title: data?.buy_do_pop?.title,
