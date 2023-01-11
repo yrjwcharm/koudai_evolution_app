@@ -105,7 +105,7 @@ export const CommunityCardCover = ({
             {/* 视频播放图片 */}
             {type === 3 ? <Image source={videoPlay} style={styles.videoPlay} /> : null}
             {/* 社区关注人数 */}
-            {attention_num && attention_user ? (
+            {/* {attention_num && attention_user ? (
                 <LinearGradient
                     colors={['rgba(0, 0, 0, 0.7)', 'rgba(0, 0, 0, 0)']}
                     start={{x: 0, y: 0}}
@@ -127,7 +127,7 @@ export const CommunityCardCover = ({
                         </Text>
                     </View>
                 </LinearGradient>
-            ) : null}
+            ) : null} */}
         </View>
     );
 };
