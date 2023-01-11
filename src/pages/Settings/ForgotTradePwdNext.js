@@ -1,37 +1,37 @@
 /*
  * @Date: 2021-02-23 16:31:24
+ * @Author: dx
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-12-29 16:58:03
  * @Description: 找回交易密码下一步
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {ScrollView, StyleSheet, Text} from 'react-native';
-import {px as text} from '~/utils/appUtil.js';
-import {Colors, Font, Space} from '~/common/commonStyle';
-import http from '~/services';
-import {formCheck} from '~/utils/validator';
+import {px as text} from '../../utils/appUtil.js';
+import {Colors, Font, Space} from '../../common/commonStyle';
+import http from '../../services/index.js';
+import {formCheck} from '../../utils/validator';
 import InputView from '../Assets/components/input';
-import {Button} from '~/components/Button';
-import {useCountdown} from '~/components/hooks';
-import Toast from '~/components/Toast';
+import {Button} from '../../components/Button';
+import Toast from '../../components/Toast';
 import {useDispatch} from 'react-redux';
-import {getUserInfo} from '~/redux/actions/userInfo';
+import {getUserInfo} from '../../redux/actions/userInfo';
 
 const ForgotTradePwdNext = ({navigation, route}) => {
     const dispatch = useDispatch();
     const [msg] = useState(route.params?.msg);
+    const [, setSecond] = useState(0);
     const [codeText, setCodeText] = useState('60秒后可重发');
-    const {countdown, start} = useCountdown(() => {
-        setCodeText('重新获取');
-        btnClick.current = true;
-    });
     const btnClick = useRef(true);
+    const timerRef = useRef('');
     const [code, setCode] = useState('');
     const [newPwd, setNewPwd] = useState('');
     const [confirmPwd, setConfirmPwd] = useState('');
     const subBtnClick = useRef(true);
 
     const getCode = useCallback(() => {
+        global.LogTool('click', 'getCode');
         if (btnClick.current) {
-            global.LogTool('click', 'getCode');
             btnClick.current = false;
             http.post('/passport/reset_trade_password_prepare/20210101', {
                 name: route.params?.name,
@@ -39,13 +39,31 @@ const ForgotTradePwdNext = ({navigation, route}) => {
             }).then((res) => {
                 if (res.code === '000000') {
                     Toast.show(res.message);
-                    start();
+                    timer();
                 } else {
                     Toast.show(res.message);
                     btnClick.current = true;
                 }
             });
         }
+    }, [btnClick, timer, route]);
+    const timer = useCallback(() => {
+        setSecond(60);
+        setCodeText('60秒后可重发');
+        btnClick.current = false;
+        timerRef.current = setInterval(() => {
+            setSecond((prev) => {
+                if (prev === 1) {
+                    clearInterval(timerRef.current);
+                    setCodeText('重新获取');
+                    btnClick.current = true;
+                    return prev;
+                } else {
+                    setCodeText(prev - 1 + '秒后可重发');
+                    return prev - 1;
+                }
+            });
+        }, 1000);
     }, []);
     // 完成找回密码
     const submit = useCallback(() => {
@@ -93,9 +111,11 @@ const ForgotTradePwdNext = ({navigation, route}) => {
     }, [code, dispatch, newPwd, confirmPwd, navigation]);
 
     useEffect(() => {
-        btnClick.current = false;
-        start();
-    }, []);
+        timer();
+        return () => {
+            clearInterval(timerRef.current);
+        };
+    }, [timer, timerRef]);
     return (
         <ScrollView style={styles.container}>
             <Text style={[styles.desc, {paddingTop: text(22), paddingLeft: Space.padding}]}>{msg}</Text>
@@ -110,7 +130,7 @@ const ForgotTradePwdNext = ({navigation, route}) => {
                 title={'验证码'}
                 value={code}>
                 <Text style={styles.inputRightText} onPress={getCode}>
-                    {countdown > 0 ? `${countdown}秒后可重发` : codeText}
+                    {codeText}
                 </Text>
             </InputView>
             <InputView

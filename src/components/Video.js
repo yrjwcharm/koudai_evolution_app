@@ -8,8 +8,9 @@ import Image from 'react-native-fast-image';
 import Video from 'react-native-video';
 import Slider from 'react-native-slider';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+// import Octicons from 'react-native-vector-icons/Octicons';
 import play from '~/assets/img/icon/videoPlay.png';
-import {formatMediaTime, px} from '~/utils/appUtil';
+import {px} from '../utils/appUtil';
 import {Colors, Font, Style} from '~/common/commonStyle';
 
 export default class App extends React.Component {
@@ -32,6 +33,14 @@ export default class App extends React.Component {
             isVisiblePausedSliderFullScreen: false,
             loading: true,
         };
+    }
+    //格式化音乐播放的时间为0：00。借助onProgress的定时器调用，更新当前时间
+    formatMediaTime(time) {
+        let minute = Math.floor(time / 60);
+        let second = parseInt(time - minute * 60, 10);
+        minute = minute >= 10 ? minute : '0' + minute;
+        second = second >= 10 ? second : '0' + second;
+        return minute + ':' + second;
     }
     //加载视频调用，主要是拿到 “总时间”，并格式化
     customerOnload(e) {
@@ -80,7 +89,7 @@ export default class App extends React.Component {
                 {/* 进度条按钮     */}
                 <View style={styles.slide_box}>
                     <Text style={{color: '#fff', fontFamily: Font.numMedium}}>
-                        {formatMediaTime(this.state.currentTime)}
+                        {this.formatMediaTime(this.state.currentTime)}
                     </Text>
                     <Slider
                         animateTransitions={true}
@@ -99,7 +108,7 @@ export default class App extends React.Component {
                         onSlidingComplete={this.customerSliderValue}
                     />
                     <Text style={{color: '#fff', fontFamily: Font.numMedium}}>
-                        {formatMediaTime(this.state.duration)}
+                        {this.formatMediaTime(this.state.duration)}
                     </Text>
                 </View>
                 {/* 全屏按钮 */}
@@ -108,6 +117,7 @@ export default class App extends React.Component {
                 </TouchableOpacity> */}
             </View>
         );
+        const pausedSliderFull = pausedSliderFullComponent;
         return (
             <View
                 style={{
@@ -147,7 +157,7 @@ export default class App extends React.Component {
                 {/* 播放的按钮：点击之后需要消失 */}
                 {pausedBtn}
                 {/* 暂停按钮，进度条，全屏按钮 */}
-                {pausedSliderFullComponent}
+                {pausedSliderFull}
                 {this.state.loading && (
                     <View style={[Style.flexCenter, styles.loadingBox]}>
                         <ActivityIndicator color={Colors.lightGrayColor} />

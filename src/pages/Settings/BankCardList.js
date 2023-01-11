@@ -1,5 +1,8 @@
 /*
  * @Date: 2021-02-22 18:20:12
+ * @Author: dx
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-09-02 14:37:03
  * @Description: 银行卡管理
  */
 import React, {useCallback, useState} from 'react';
@@ -7,46 +10,17 @@ import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native
 import {useFocusEffect} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {px as text, isIphoneX} from '~/utils/appUtil.js';
-import {Colors, Font, Space, Style} from '~/common/commonStyle';
-import http from '~/services';
-import {Button} from '~/components/Button';
-import Empty from '~/components/EmptyTip';
-import {useJump} from '~/components/hooks';
+import {px as text, isIphoneX} from '../../utils/appUtil.js';
+import {Colors, Font, Space, Style} from '../../common/commonStyle';
+import http from '../../services/index.js';
+import {Button} from '../../components/Button';
+import Empty from '../../components/EmptyTip';
+import {useJump} from '../../components/hooks';
 
 const BankCardList = ({navigation}) => {
     const jump = useJump();
     const [data, setData] = useState({});
     const [showEmpty, setShowEmpty] = useState(false);
-
-    /**
-     * 渲染银行卡
-     * @param item
-     * @returns {JSX.Element}
-     */
-    const renderCards = (item) => {
-        return (
-            <TouchableOpacity
-                activeOpacity={0.8}
-                key={item.pay_method}
-                style={[Style.flexRow, styles.cardBox]}
-                onPress={() => {
-                    global.LogTool('click', 'bankcard', item.pay_method);
-                    navigation.navigate('BankCard', {pay_method: item.pay_method});
-                }}>
-                <View style={[Style.flexRow, {flex: 1}]}>
-                    <Image source={{uri: item.bank_icon}} style={styles.bankLogo} />
-                    <View style={{flex: 1}}>
-                        <Text style={styles.cardNum}>
-                            {item.bank_name}({item.bank_no})
-                        </Text>
-                        <Text style={[styles.title, {marginTop: text(2)}]}>{item.limit_desc}</Text>
-                    </View>
-                </View>
-                <Icon name={'angle-right'} size={20} color={Colors.lightGrayColor} />
-            </TouchableOpacity>
-        );
-    };
 
     useFocusEffect(
         useCallback(() => {
@@ -65,11 +39,55 @@ const BankCardList = ({navigation}) => {
                 {data.xy?.cards?.length > 0 && (
                     <Text style={[styles.title, {paddingTop: text(12), paddingBottom: text(6)}]}>{data.xy.text}</Text>
                 )}
-                {data.xy?.cards?.map(renderCards)}
+                {data.xy?.cards?.map((item, index) => {
+                    return (
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            key={item.pay_method}
+                            style={[Style.flexRow, styles.cardBox]}
+                            onPress={() => {
+                                global.LogTool('click', 'bankcard', item.pay_method);
+                                navigation.navigate('BankCard', {pay_method: item.pay_method});
+                            }}>
+                            <View style={[Style.flexRow, {flex: 1}]}>
+                                <Image source={{uri: item.bank_icon}} style={styles.bankLogo} />
+                                <View style={{flex: 1}}>
+                                    <Text style={styles.cardNum}>
+                                        {item.bank_name}({item.bank_no})
+                                    </Text>
+                                    <Text style={[styles.title, {marginTop: text(2)}]}>{item.limit_desc}</Text>
+                                </View>
+                            </View>
+                            <Icon name={'angle-right'} size={20} color={Colors.lightGrayColor} />
+                        </TouchableOpacity>
+                    );
+                })}
                 {data.ym?.cards?.length > 0 && (
                     <Text style={[styles.title, {paddingTop: text(12), paddingBottom: text(6)}]}>{'盈米银行卡'}</Text>
                 )}
-                {data.ym?.cards?.map(renderCards)}
+                {data.ym?.cards?.map((item, index) => {
+                    return (
+                        <TouchableOpacity
+                            activeOpacity={0.8}
+                            key={item.pay_method}
+                            style={[Style.flexRow, styles.cardBox]}
+                            onPress={() => {
+                                global.LogTool('click', 'bankcard', item.pay_method);
+                                navigation.navigate('BankCard', {pay_method: item.pay_method});
+                            }}>
+                            <View style={[Style.flexRow, {flex: 1}]}>
+                                <Image source={{uri: item.bank_icon}} style={styles.bankLogo} />
+                                <View style={{flex: 1}}>
+                                    <Text style={styles.cardNum}>
+                                        {item.bank_name}({item.bank_no})
+                                    </Text>
+                                    <Text style={[styles.title, {marginTop: text(2)}]}>{item.limit_desc}</Text>
+                                </View>
+                            </View>
+                            <Icon name={'angle-right'} size={20} color={Colors.lightGrayColor} />
+                        </TouchableOpacity>
+                    );
+                })}
                 {showEmpty &&
                 (Object.keys(data).length === 0 ||
                     (!data?.xy?.cards && !data?.ym?.cards) ||
