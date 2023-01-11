@@ -75,11 +75,11 @@ export const CommunityCardCover = ({
                             <Text style={styles.numDesc}>{left_desc}</Text>
                         </View>
                     ) : null}
-                    {right_desc ? (
+                    {/* {right_desc ? (
                         <View style={[Style.flexRow, styles.waitTag, {paddingLeft: px(6)}]}>
                             <Text style={styles.numDesc}>{right_desc}</Text>
                         </View>
-                    ) : null}
+                    ) : null} */}
                 </View>
             ) : null}
             {/* 媒体时长或类型文案 */}
