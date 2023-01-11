@@ -6,14 +6,14 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import {Text, TouchableOpacity, StyleSheet, View} from 'react-native';
-import {px as text} from '~/utils/appUtil';
-import {Colors, Font, getColor, Space, Style} from '~/common/commonStyle';
-import {Modal} from '~/components/Modal';
+import {px, px as text} from '../../../../utils/appUtil';
+import {Colors, Font, Space, Style} from '../../../../common/commonStyle';
+import {Modal} from '../../../../components/Modal';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {Chart} from '~/components/Chart';
-import {areaChart} from '~/pages/Portfolio/components/ChartOption';
-import EmptyTip from '~/components/EmptyTip';
-import http from '~/services';
+import {Chart} from '../../../../components/Chart';
+import {areaChart} from '../../../Portfolio/components/ChartOption';
+import EmptyTip from '../../../../components/EmptyTip';
+import http from '../../../../services';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 const AccEarningsCom = React.memo(({fund_code = '', intelligent, poid = '', type, changePeriod}) => {
     const insets = useSafeAreaInsets();
@@ -43,6 +43,19 @@ const AccEarningsCom = React.memo(({fund_code = '', intelligent, poid = '', type
     useEffect(() => {
         getChart();
     }, [getChart]);
+    // 获取日收益背景颜色
+    const getColor = useCallback((t) => {
+        if (!t) {
+            return Colors.darkGrayColor;
+        }
+        if (parseFloat(t.replace(/,/g, '')) < 0) {
+            return Colors.green;
+        } else if (parseFloat(t.replace(/,/g, '')) === 0) {
+            return Colors.darkGrayColor;
+        } else {
+            return Colors.red;
+        }
+    }, []);
     return (
         <React.Fragment>
             {chartData.chart ? (

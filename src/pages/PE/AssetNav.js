@@ -1,54 +1,17 @@
 /*
+ * @Author: xjh
  * @Date: 2021-02-26 16:16:16
  * @Description:私募净值
+ * @LastEditors: yhc
+ * @LastEditTime: 2021-07-14 19:08:31
  */
 
 import React, {useCallback, useEffect, useState} from 'react';
 import {SectionList, StyleSheet, Text, View} from 'react-native';
 import {px as text} from '../../utils/appUtil';
-import {Colors, Font, getColor, Space, Style} from '~/common/commonStyle';
-import http from '~/services';
-import Empty from '~/components/EmptyTip';
-
-/**
- * 渲染头部
- * @param header
- * @returns {JSX.Element}
- * @constructor
- */
-export const Header = ({header}) => {
-    return (
-        <View style={[Style.flexRow, styles.header]}>
-            {header?.map((item, index, arr) => {
-                return (
-                    <Text
-                        key={item + index}
-                        style={[
-                            styles.headerText,
-                            index === 0 ? {textAlign: 'left'} : {},
-                            index === arr.length - 1 ? {textAlign: 'right'} : {},
-                        ]}>
-                        {item}
-                    </Text>
-                );
-            })}
-        </View>
-    );
-};
-
-/**
- * 渲染底部
- * @param hasMore
- * @returns {JSX.Element}
- * @constructor
- */
-export const Footer = ({hasMore}) => {
-    return (
-        <Text style={[styles.headerText, {paddingBottom: Space.padding}]}>
-            {hasMore ? '正在加载...' : '我们是有底线的...'}
-        </Text>
-    );
-};
+import {Colors, Font, Space, Style} from '../../common/commonStyle';
+import http from '../../services/index.js';
+import Empty from '../../components/EmptyTip';
 
 const AssetNav = ({navigation, route}) => {
     const [page, setPage] = useState(1);
@@ -69,48 +32,108 @@ const AssetNav = ({navigation, route}) => {
                 setHasMore(res.result.has_more);
                 first && navigation.setOptions({title: res.result.title || '历史净值'});
                 first && setHeader(res.result.th);
-                const {tr_list} = res.result;
                 if (status === 'refresh') {
-                    setList(tr_list || []);
+                    setList(res.result.tr_list || []);
                 } else if (status === 'loadmore') {
-                    setList((prevList) => [...prevList, ...(tr_list || [])]);
+                    setList((prevList) => [...prevList, ...(res.result.tr_list || [])]);
                 }
             });
         },
         [navigation, route, page]
     );
+    // 下拉刷新
+    const onRefresh = useCallback(() => {
+        setPage(1);
+    }, []);
     // 上拉加载
-    const onEndReached = ({distanceFromEnd}) => {
-        if (distanceFromEnd < 0) return false;
-        hasMore && setPage((p) => p + 1);
-    };
-    // 渲染列表项
-    const renderItem = ({item, index}) => {
+    const onEndReached = useCallback(
+        ({distanceFromEnd}) => {
+            if (distanceFromEnd < 0) {
+                return false;
+            }
+            if (hasMore) {
+                setPage((p) => p + 1);
+            }
+        },
+        [hasMore]
+    );
+    // 渲染头部
+    const renderHeader = useCallback(() => {
         return (
-            <View style={[Style.flexRow, styles.item, index % 2 === 1 ? {backgroundColor: Colors.bgColor} : {}]}>
-                {item?.map((value, idx, arr) => {
+            <View style={[Style.flexRow, styles.header]}>
+                {header?.map((item, index, arr) => {
                     return (
                         <Text
-                            key={value + idx}
+                            key={item + index}
                             style={[
-                                styles.itemText,
-                                {fontFamily: Font.numFontFamily},
-                                idx === 0 ? {textAlign: 'left'} : {},
-                                idx === arr.length - 1
-                                    ? {color: getColor(value.text, Colors.defaultColor), textAlign: 'right'}
-                                    : {},
+                                styles.headerText,
+                                index === 0 ? {textAlign: 'left'} : {},
+                                index === arr.length - 1 ? {textAlign: 'right'} : {},
                             ]}>
-                            {idx === arr.length - 1
-                                ? parseFloat(value?.text?.replace(/,/g, '')) > 0
-                                    ? `+${value.text}`
-                                    : value.text
-                                : value.text}
+                            {item}
                         </Text>
                     );
                 })}
             </View>
         );
-    };
+    }, [header]);
+    // 渲染底部
+    const renderFooter = useCallback(() => {
+        return (
+            <>
+                {list.length > 0 && (
+                    <Text style={[styles.headerText, {paddingBottom: Space.padding}]}>
+                        {hasMore ? '正在加载...' : '我们是有底线的...'}
+                    </Text>
+                )}
+            </>
+        );
+    }, [hasMore, list]);
+    // 渲染空数据状态
+    const renderEmpty = useCallback(() => {
+        return showEmpty ? <Empty text={'暂无净值数据'} /> : null;
+    }, [showEmpty]);
+    // 渲染列表项
+    const renderItem = useCallback(
+        ({item, index}) => {
+            return (
+                <View style={[Style.flexRow, styles.item, index % 2 === 1 ? {backgroundColor: Colors.bgColor} : {}]}>
+                    {item?.map((value, idx, arr) => {
+                        return (
+                            <Text
+                                key={value + idx}
+                                style={[
+                                    styles.itemText,
+                                    {fontFamily: Font.numFontFamily},
+                                    idx === 0 ? {textAlign: 'left'} : {},
+                                    idx === arr.length - 1 ? {color: getColor(value.text), textAlign: 'right'} : {},
+                                ]}>
+                                {idx === arr.length - 1
+                                    ? parseFloat(value?.text?.replace(/,/g, '')) > 0
+                                        ? `+${value.text}`
+                                        : value.text
+                                    : value.text}
+                            </Text>
+                        );
+                    })}
+                </View>
+            );
+        },
+        [getColor]
+    );
+    // 获取涨跌颜色
+    const getColor = useCallback((t) => {
+        if (!t) {
+            return Colors.defaultColor;
+        }
+        if (parseFloat(t.replace(/,/g, '')) < 0) {
+            return Colors.green;
+        } else if (parseFloat(t.replace(/,/g, '')) > 0) {
+            return Colors.red;
+        } else {
+            return Colors.defaultColor;
+        }
+    }, []);
 
     useEffect(() => {
         if (page === 1) {
@@ -125,14 +148,14 @@ const AssetNav = ({navigation, route}) => {
                 sections={list.length > 0 ? [{data: list, title: 'list'}] : []}
                 initialNumToRender={20}
                 keyExtractor={(item, index) => item + index}
-                ListFooterComponent={() => (list?.length > 0 ? <Footer hasMore={hasMore} /> : null)}
-                ListEmptyComponent={() => (showEmpty ? <Empty text={'暂无净值数据'} /> : null)}
+                ListFooterComponent={renderFooter}
+                ListEmptyComponent={renderEmpty}
                 onEndReached={onEndReached}
                 onEndReachedThreshold={0.5}
-                onRefresh={() => setPage(1)}
+                onRefresh={onRefresh}
                 refreshing={refreshing}
                 renderItem={renderItem}
-                renderSectionHeader={() => <Header header={header} />}
+                renderSectionHeader={renderHeader}
                 stickySectionHeadersEnabled
             />
         </View>

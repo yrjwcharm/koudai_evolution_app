@@ -18,20 +18,20 @@ import {px} from '~/utils/appUtil';
 const LinearHeader = ({bgType, proData, tabActive, tabRef}) => {
     const insets = useSafeAreaInsets();
     const jump = useJump();
-    const userInfo = useSelector((store) => store.userInfo).toJS();
+    const userInfo = useSelector((store) => store.userInfo);
 
     const [allMsg, setAll] = useState(0);
 
-    const readInterface = () => {
+    const readInterface = useCallback(() => {
         http.get('/message/unread/20210101').then((res) => {
             setAll(res.result.all);
         });
-    };
+    }, []);
 
     useFocusEffect(
         useCallback(() => {
-            if (userInfo.is_login) readInterface();
-        }, [userInfo.is_login])
+            if (userInfo.toJS().is_login) readInterface();
+        }, [readInterface, userInfo])
     );
 
     return (

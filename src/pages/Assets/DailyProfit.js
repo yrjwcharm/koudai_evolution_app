@@ -1,5 +1,8 @@
 /*
  * @Date: 2021-01-27 16:25:11
+ * @Author: dx
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-07-22 16:35:58
  * @Description: 日收益
  */
 import React, {useState, useEffect, useCallback, useRef} from 'react';
@@ -8,62 +11,10 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import PropTypes from 'prop-types';
 import Accordion from 'react-native-collapsible/Accordion';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {px as text} from '~/utils/appUtil';
-import {Colors, Font, getColor, Space, Style} from '~/common/commonStyle';
-import http from '~/services';
-import Empty from '~/components/EmptyTip';
-// 渲染收益更新说明头部
-export const renderHeader = (section, index, isActive) => {
-    return (
-        <View style={[Style.flexBetween, {padding: Space.padding}]}>
-            <Text style={styles.title}>{'收益更新说明'}</Text>
-            <FontAwesome color={Colors.descColor} size={20} name={isActive ? 'angle-up' : 'angle-down'} />
-        </View>
-    );
-};
-// 渲染收益更新表格
-export const renderTable = () => {
-    return (
-        <View style={[styles.tableWrap]}>
-            <View style={[Style.flexRow, {backgroundColor: Colors.bgColor}]}>
-                <View style={[styles.borderRight, {flex: 1}]}>
-                    <Text style={[styles.tableCell, {fontWeight: '500'}]}>{'基金种类'}</Text>
-                </View>
-                <View style={[styles.borderRight, {flex: 1.5}]}>
-                    <Text style={[styles.tableCell, {fontWeight: '500'}]}>{'更新时间'}</Text>
-                </View>
-                <View style={[styles.borderRight, {flex: 1.76}]}>
-                    <Text style={[styles.tableCell, {fontWeight: '500'}]}>{'说明'}</Text>
-                </View>
-            </View>
-            <View style={Style.flexRow}>
-                <View style={{flex: 2.5}}>
-                    <View style={Style.flexRow}>
-                        <View style={[styles.borderRight, {flex: 1}]}>
-                            <Text style={styles.tableCell}>{'普通基金'}</Text>
-                        </View>
-                        <View style={[styles.borderRight, {flex: 1.5}]}>
-                            <Text style={styles.tableCell}>{'1个交易日（T+1）'}</Text>
-                        </View>
-                    </View>
-                    <View style={[Style.flexRow, {backgroundColor: Colors.bgColor, height: text(41)}]}>
-                        <View style={[styles.borderRight, {flex: 1}]}>
-                            <Text style={styles.tableCell}>{'QDII基金'}</Text>
-                        </View>
-                        <View style={[styles.borderRight, {flex: 1.5}]}>
-                            <Text style={styles.tableCell}>{'2个交易日（T+2）'}</Text>
-                        </View>
-                    </View>
-                </View>
-                <View style={{flex: 1.76}}>
-                    <Text style={[styles.tableCell, styles.bigCell]}>
-                        {'因基金净值更新时间不同，收益更新时，日收益、累计收益会产生变动'}
-                    </Text>
-                </View>
-            </View>
-        </View>
-    );
-};
+import {px as text} from '../../utils/appUtil';
+import {Colors, Font, Space, Style} from '../../common/commonStyle';
+import http from '../../services/index.js';
+import Empty from '../../components/EmptyTip';
 const DailyProfit = ({fund_code = '', poid = ''}) => {
     const insets = useSafeAreaInsets();
     const [refreshing, setRefreshing] = useState(false);
@@ -76,7 +27,7 @@ const DailyProfit = ({fund_code = '', poid = ''}) => {
     const [showEmpty, setShowEmpty] = useState(false);
     const canLoadRef = useRef(true); // 是否可以加载下一页
     const init = useCallback(
-        (status) => {
+        (status, first) => {
             canLoadRef.current = false;
             const url = poid ? '/portfolio/profit/daily/20210101' : '/profit/user_daily/20210101';
             http.get(url, {
@@ -97,6 +48,7 @@ const DailyProfit = ({fund_code = '', poid = ''}) => {
                 canLoadRef.current = true;
             });
         },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [page]
     );
     // 下拉刷新
@@ -115,6 +67,71 @@ const DailyProfit = ({fund_code = '', poid = ''}) => {
         },
         [hasMore]
     );
+    // 渲染收益更新说明头部
+    const renderHeader = useCallback((section, index, isActive) => {
+        return (
+            <View style={[Style.flexBetween, {padding: Space.padding}]}>
+                <Text style={styles.title}>{'收益更新说明'}</Text>
+                <FontAwesome color={Colors.descColor} size={20} name={isActive ? 'angle-up' : 'angle-down'} />
+            </View>
+        );
+    }, []);
+    // 渲染收益更新表格
+    const renderTable = useCallback(() => {
+        return (
+            <View style={[styles.tableWrap]}>
+                <View style={[Style.flexRow, {backgroundColor: Colors.bgColor}]}>
+                    <View style={[styles.borderRight, {flex: 1}]}>
+                        <Text style={[styles.tableCell, {fontWeight: '500'}]}>{'基金种类'}</Text>
+                    </View>
+                    <View style={[styles.borderRight, {flex: 1.5}]}>
+                        <Text style={[styles.tableCell, {fontWeight: '500'}]}>{'更新时间'}</Text>
+                    </View>
+                    <View style={[styles.borderRight, {flex: 1.76}]}>
+                        <Text style={[styles.tableCell, {fontWeight: '500'}]}>{'说明'}</Text>
+                    </View>
+                </View>
+                <View style={Style.flexRow}>
+                    <View style={{flex: 2.5}}>
+                        <View style={Style.flexRow}>
+                            <View style={[styles.borderRight, {flex: 1}]}>
+                                <Text style={styles.tableCell}>{'普通基金'}</Text>
+                            </View>
+                            <View style={[styles.borderRight, {flex: 1.5}]}>
+                                <Text style={styles.tableCell}>{'1个交易日（T+1）'}</Text>
+                            </View>
+                        </View>
+                        <View style={[Style.flexRow, {backgroundColor: Colors.bgColor, height: text(41)}]}>
+                            <View style={[styles.borderRight, {flex: 1}]}>
+                                <Text style={styles.tableCell}>{'QDII基金'}</Text>
+                            </View>
+                            <View style={[styles.borderRight, {flex: 1.5}]}>
+                                <Text style={styles.tableCell}>{'2个交易日（T+2）'}</Text>
+                            </View>
+                        </View>
+                    </View>
+                    <View style={{flex: 1.76}}>
+                        <Text style={[styles.tableCell, styles.bigCell]}>
+                            {'因基金净值更新时间不同，收益更新时，日收益、累计收益会产生变动'}
+                        </Text>
+                    </View>
+                </View>
+            </View>
+        );
+    }, []);
+    // 获取日收益背景颜色
+    const getColor = useCallback((t) => {
+        if (!t) {
+            return Colors.darkGrayColor;
+        }
+        if (parseFloat(t.replace(/,/g, '')) < 0) {
+            return Colors.green;
+        } else if (parseFloat(t.replace(/,/g, '')) === 0) {
+            return Colors.darkGrayColor;
+        } else {
+            return Colors.red;
+        }
+    }, []);
     // 渲染头部
     const renderSectionHeader = useCallback(() => {
         return (
@@ -196,7 +213,7 @@ const DailyProfit = ({fund_code = '', poid = ''}) => {
     );
 
     useEffect(() => {
-        if (page === 1) {
+        if (page == 1) {
             init('refresh');
         } else {
             init('loadmore');

@@ -55,18 +55,6 @@ export const Colors = {
     // 描述文字颜色
     descColor: '#545968',
 };
-export const getColor = (t, defaultColor = Colors.darkGrayColor) => {
-    if (!t) {
-        return defaultColor;
-    }
-    if (parseFloat(t.replace(/,/g, '')) < 0) {
-        return Colors.green;
-    } else if (parseFloat(t.replace(/,/g, '')) === 0) {
-        return defaultColor;
-    } else {
-        return Colors.red;
-    }
-};
 export const Space = {
     /** space **/
 

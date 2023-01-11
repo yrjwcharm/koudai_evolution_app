@@ -1,18 +1,18 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {ActivityIndicator, StyleSheet, View, Text, TouchableOpacity, TextInput, ScrollView} from 'react-native';
-import {Colors, Font, Style} from '~/common/commonStyle';
-import {useJump} from '~/components/hooks';
-import Toast from '~/components/Toast';
-import http from '~/services';
-import {onlyNumber, px} from '~/utils/appUtil';
+import {Colors, Font, Style} from '../../common/commonStyle';
+import {useJump} from '../../components/hooks';
+import Toast from '../../components/Toast';
+import http from '../../services';
+import {px} from '../../utils/appUtil';
 import Icon from 'react-native-vector-icons/AntDesign';
-import BottomDesc from '~/components/BottomDesc';
-import Html from '~/components/RenderHtml';
-import {FixedButton} from '~/components/Button';
-import {BankCardModal, Modal} from '~/components/Modal';
-import Radio from '~/components/Radio';
+import BottomDesc from '../../components/BottomDesc';
+import Html from '../../components/RenderHtml';
+import {FixedButton} from '../../components/Button';
+import {BankCardModal, Modal} from '../../components/Modal';
+import Radio from '../../components/Radio';
 import FastImage from 'react-native-fast-image';
-import {PasswordModal} from '~/components/Password';
+import {PasswordModal} from '../../components/Password';
 import Loading from '../Portfolio/components/PageLoading';
 
 const SingleFundRedeem = ({navigation, route}) => {
@@ -94,6 +94,29 @@ const SingleFundRedeem = ({navigation, route}) => {
         }, 500);
     };
 
+    const handlerInputVal = (value, integer = false) => {
+        if (value && typeof value == 'string') {
+            //先把非数字的都替换掉，除了数字和.
+            value = value.replace(/[^\d.]/g, '');
+            //前两位不能是0加数字
+            value = value.replace(/^0\d[0-9]*/g, '');
+            if (integer) {
+                value = value.replace(/\.\d*/g, '');
+            } else {
+                //必须保证第一个为数字而不是.
+                value = value.replace(/^\./g, '');
+                //保证.只出现一次，而不能出现两次以上
+                value = value.replace('.', '$#$').replace(/\./g, '').replace('$#$', '.');
+                //若是第一位是负号，则容许添加
+                value = value.replace(/(\d+)\.(\d\d).*$/, '$1.$2');
+            }
+
+            return value;
+        } else {
+            return '';
+        }
+    };
+
     const handlerErrText = (newVal) => {
         let max = bankSelectObj.select.max_share;
         let min = bankSelectObj.select.min_share;
@@ -114,7 +137,7 @@ const SingleFundRedeem = ({navigation, route}) => {
     };
 
     const onChangeText = (val) => {
-        let newVal = onlyNumber(val);
+        let newVal = handlerInputVal(val);
         handlerErrText(newVal);
 
         setInputVal(newVal);
