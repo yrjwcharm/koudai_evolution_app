@@ -15,6 +15,7 @@ import SignalCard from '../components/SignalCard';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {useJump} from '~/components/hooks';
 import SortHeader from '../components/SortHeader';
+import EmptyTip from '~/components/EmptyTip';
 const SignalManage = (props) => {
     const [data, setData] = useState({});
     const [current, setCurrent] = useState(0);
@@ -77,7 +78,7 @@ const SignalManage = (props) => {
                 />
             )}
             <SortHeader data={product_headers} onSort={(head) => handleSort(head)} style={{marginTop: px(12)}} />
-            {product_list?.length > 0 && (
+            {tab_list?.length > 0 ? (
                 <ScrollableTabView
                     initialPage={0}
                     onChangeTab={({i}) => {
@@ -89,12 +90,26 @@ const SignalManage = (props) => {
                     style={{flex: 1}}>
                     {tab_list?.map((item) => (
                         <View key={item.name}>
-                            {product_list?.map((_data, index) => (
-                                <SignalCard data={_data} key={index} />
-                            ))}
+                            {product_list?.length > 0 ? (
+                                product_list?.map((_data, index) => <SignalCard data={_data} key={index} />)
+                            ) : (
+                                <View style={[Style.flexCenter, styles.card, {height: px(220), marginTop: px(12)}]}>
+                                    <EmptyTip paddingTop={0} style={{paddingTop: px(20)}} type="part" />
+                                </View>
+                            )}
                         </View>
                     ))}
                 </ScrollableTabView>
+            ) : product_list?.length > 0 ? (
+                <View>
+                    {product_list?.map((_data, index) => (
+                        <SignalCard data={_data} key={index} />
+                    ))}
+                </View>
+            ) : (
+                <View style={[Style.flexCenter, styles.card, {height: px(220), marginTop: px(12)}]}>
+                    <EmptyTip paddingTop={0} style={{paddingTop: px(20)}} type="part" />
+                </View>
             )}
             {stop_info ? (
                 <TouchableOpacity
