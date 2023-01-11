@@ -11,7 +11,7 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import Picker from 'react-native-picker';
 import Mask from '~/components/Mask';
 import {getNextDay} from './service';
-const RenderAutoTime = ({initalData, onChangeAutoTime}) => {
+const RenderAutoTime = ({initalData, onChangeAutoTime, style}) => {
     const [data, setData] = useState(initalData);
     const [showMask, setShowMask] = useState(false);
     useEffect(() => {
@@ -77,7 +77,7 @@ const RenderAutoTime = ({initalData, onChangeAutoTime}) => {
     return (
         //定投周期
 
-        <TouchableOpacity style={styles.auto_time} onPress={() => showDatePicker()} activeOpacity={0.8}>
+        <TouchableOpacity style={[styles.auto_time, style]} onPress={() => showDatePicker()} activeOpacity={0.8}>
             {showMask && <Mask />}
             <View style={[Style.flexBetween, {marginBottom: px(8)}]}>
                 <Text style={{fontSize: px(14), color: Colors.lightBlackColor}}>{initalData?.text}</Text>

@@ -87,8 +87,8 @@ const SignalManage = (props) => {
                     renderTabBar={false}
                     ref={scrollTab}
                     style={{flex: 1}}>
-                    {tab_list?.map(() => (
-                        <View>
+                    {tab_list?.map((item) => (
+                        <View key={item.name}>
                             {product_list?.map((_data, index) => (
                                 <SignalCard data={_data} key={index} />
                             ))}

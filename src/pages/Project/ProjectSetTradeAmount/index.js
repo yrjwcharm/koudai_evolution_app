@@ -20,6 +20,7 @@ import {PasswordModal} from '~/components/Password';
 import Header from '~/pages/Assets/UpgradeDetail/Header';
 import RenderHtml from '~/components/RenderHtml';
 import http from '~/services';
+import RenderAutoTime from '../ProjectSetTradeModel/AutoTime';
 
 const Index = ({route, navigation}) => {
     const isFocused = useIsFocused();
@@ -33,6 +34,7 @@ const Index = ({route, navigation}) => {
     const jump = useJump();
     const showRiskDisclosureRef = useRef(true);
     const riskDisclosureModalRef = useRef();
+    const autoTime = useRef({});
 
     const getData = async () => {
         const res = await getInfo(route?.params);
@@ -168,6 +170,7 @@ const Index = ({route, navigation}) => {
             trade_method: 0,
             ...route?.params,
             password,
+            ...autoTime.current,
         };
         let toast = Toast.showLoading();
         let res = await postDo(params);
@@ -197,6 +200,10 @@ const Index = ({route, navigation}) => {
                 'replace'
             );
         }
+    };
+    // 定投周期
+    const onChangeAutoTime = (time) => {
+        autoTime.current = time;
     };
     const render_bank = () => {
         const {pay_methods = []} = data;
@@ -298,14 +305,18 @@ const Index = ({route, navigation}) => {
     const {buy_info, money_safe} = data;
     return (
         <View style={{backgroundColor: Colors.bgColor, flex: 1}}>
-            <View style={{height: 0.5, backgroundColor: Colors.bgColor}} />
-            {data?.upgrade ? (
-                <Header data={{base_list: data?.upgrade.base_list, target: data?.upgrade.target}} />
-            ) : (
-                <Image
-                    source={require('~/assets/img/trade/setModel2.png')}
-                    style={{width: deviceWidth, height: px(42)}}
-                />
+            {route?.params?.fr != 'signal_manage' && (
+                <>
+                    <View style={{height: 0.5, backgroundColor: Colors.bgColor}} />
+                    {data?.upgrade ? (
+                        <Header data={{base_list: data?.upgrade.base_list, target: data?.upgrade.target}} />
+                    ) : (
+                        <Image
+                            source={require('~/assets/img/trade/setModel2.png')}
+                            style={{width: deviceWidth, height: px(42)}}
+                        />
+                    )}
+                </>
             )}
             <ScrollView style={{flex: 1}}>
                 <Text style={[styles.title, {paddingLeft: px(16), paddingVertical: px(9)}]}>{data?.name}</Text>
@@ -381,6 +392,13 @@ const Index = ({route, navigation}) => {
                         </View>
                     )}
                 </View>
+                {data?.period_info && (
+                    <RenderAutoTime
+                        initalData={data?.period_info}
+                        onChangeAutoTime={onChangeAutoTime}
+                        style={{marginBottom: px(12), paddingHorizontal: px(16)}}
+                    />
+                )}
                 {render_bank()}
                 <BottomDesc />
             </ScrollView>

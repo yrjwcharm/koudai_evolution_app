@@ -5,39 +5,17 @@
  */
 
 import React, {useEffect, useRef, useState} from 'react';
-import {
-    Text,
-    TouchableOpacity,
-    Modal,
-    StyleSheet,
-    View,
-    ScrollView,
-    Image,
-    ActivityIndicator,
-    findNodeHandle,
-    UIManager,
-} from 'react-native';
+import {Text, TouchableOpacity, Modal, StyleSheet, View, ScrollView, Image} from 'react-native';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
-import {deviceWidth, isEmpty, px} from '../../../utils/appUtil';
-import {BoxShadow} from 'react-native-shadow';
+import {isEmpty, px} from '../../../utils/appUtil';
 import {SelectModal} from '../../../components/Modal';
-import {useDispatch, useSelector} from 'react-redux';
 import {callFixedInvestDetailApi, executeStopFixedInvestApi} from './services';
 import {useJump} from '../../../components/hooks';
 import Loading from '../../Portfolio/components/PageLoading';
 import {PasswordModal} from '../../../components/Password';
 import Http from '../../../services';
 import Toast from '../../../components/Toast';
-import Mask from '../../../components/Mask';
 import HTML from '../../../components/RenderHtml';
-const shadow = {
-    color: '#aaa',
-    border: 6,
-    radius: 1,
-    opacity: 0.1,
-    x: 0,
-    y: 2,
-};
 
 const FixedInvestDetail = ({navigation, route}) => {
     const {invest_plan_id: plan_id = '', fund_code = '', poid = '', avail} = route?.params;
@@ -103,6 +81,7 @@ const FixedInvestDetail = ({navigation, route}) => {
                 plan_id,
                 password,
                 type,
+                ...route?.params,
             });
             Toast.hide(loading);
             let timer = setTimeout(() => {
@@ -113,6 +92,7 @@ const FixedInvestDetail = ({navigation, route}) => {
             Http.get('/trade/stop/invest_plan/20210101', {
                 invest_id: plan_id,
                 password,
+                ...route?.params,
             }).then((res) => {
                 Toast.show(res.message);
                 if (res.code == '000000') {
