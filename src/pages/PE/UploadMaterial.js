@@ -2,7 +2,7 @@
  * @Date: 2022-05-17 15:46:02
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-10 14:50:58
+ * @LastEditTime: 2023-01-11 18:31:46
  * @Description: 投资者证明材料上传
  */
 import React, {useCallback, useMemo, useRef, useState} from 'react';
@@ -238,11 +238,8 @@ export default ({navigation, route}) => {
             const toast = Toast.showLoading('正在上传');
             const _data = {...data};
             const _file = {fileName: file.name, type: 'application/pdf', uri: file.fileCopyUri};
-            upload(
-                '/private_fund/upload_material/20220510',
-                _file,
-                [],
-                (res) => {
+            http.uploadFiles('/private_fund/upload_material/20220510', _file)
+                .then((res) => {
                     Toast.hide(toast);
                     if (res?.code === '000000') {
                         Toast.show('上传成功');
@@ -257,12 +254,11 @@ export default ({navigation, route}) => {
                     } else {
                         Toast.show(res?.message || '上传失败');
                     }
-                },
-                () => {
+                })
+                .catch(() => {
                     Toast.hide(toast);
                     Toast.show('上传失败');
-                }
-            );
+                });
         });
     };
 
