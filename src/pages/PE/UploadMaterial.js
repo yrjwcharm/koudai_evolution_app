@@ -2,7 +2,7 @@
  * @Date: 2022-05-17 15:46:02
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-12 12:32:06
+ * @LastEditTime: 2023-01-12 19:48:22
  * @Description: 投资者证明材料上传
  */
 import React, {useCallback, useMemo, useRef, useState} from 'react';
@@ -175,7 +175,7 @@ export default ({navigation, route}) => {
         Modal.show({
             title: '权限申请',
             content: `${
-                action === 'gallery' ? '相册' : action === 'doc' ? '文档' : '相机'
+                action === 'gallery' ? '相册' : action === 'doc' ? '文档读取' : '相机'
             }权限没打开,请前往手机的“设置”选项中,允许该权限`,
             confirm: true,
             confirmText: '前往',
@@ -232,7 +232,7 @@ export default ({navigation, route}) => {
     const takePdf = () => {
         setTimeout(() => {
             DocumentPicker.pickSingle({
-                type: [DocumentPicker.types.pdf],
+                type: DocumentPicker.types.pdf,
                 copyTo: 'cachesDirectory',
             }).then((file) => {
                 const toast = Toast.showLoading('正在上传');
@@ -615,7 +615,19 @@ export default ({navigation, route}) => {
                         //     // 进入读卡页面
                         //     enterToReadCardPage(JSON.stringify(uiconfig));
                         // }, 1000);
-                        takePdf();
+                        if (Platform.OS == 'android') {
+                            requestAuth(
+                                PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+                                () => takePdf(),
+                                () => blockCal('doc')
+                            );
+                        } else {
+                            requestAuth(
+                                PERMISSIONS.IOS.MEDIA_LIBRARY,
+                                () => takePdf(),
+                                () => blockCal('doc')
+                            );
+                        }
                     }
                 }}
                 closeModal={() => setVisible(false)}
