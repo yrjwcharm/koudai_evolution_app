@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-22 14:28:27
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-12-09 17:19:39
+ * @LastEditTime: 2023-01-12 16:06:27
  */
 import React, {useState, useCallback, useRef} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, TouchableNativeFeedback} from 'react-native';
@@ -100,7 +100,7 @@ const LargeAmount = (props) => {
 
     return data ? (
         <View style={{backgroundColor: Colors.bgColor}}>
-            <View style={[styles.navBar, {paddingTop: inset.top}]} ref={navBarRef}>
+            <View style={[styles.navBar, {paddingTop: inset.top + px(12)}]} ref={navBarRef}>
                 <TouchableNativeFeedback
                     activeOpacity={0.8}
                     onPress={() => {
