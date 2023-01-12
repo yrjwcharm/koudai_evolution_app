@@ -182,24 +182,14 @@ const FixedInvestDetail = ({navigation, route}) => {
                                     style={[
                                         styles.status,
                                         {
-                                            backgroundColor:
-                                                state.pay_info?.btn_type == 20
-                                                    ? '#EDF7EC'
-                                                    : state.pay_info?.btn_type == 30
-                                                    ? '#FDEFE4'
-                                                    : '#E9EAEF',
+                                            backgroundColor: state.pay_info?.tag_bg_color,
                                         },
                                     ]}>
                                     <Text
                                         style={[
                                             styles.statusText,
                                             {
-                                                color:
-                                                    state.pay_info?.btn_type == 20
-                                                        ? Colors.green
-                                                        : state.pay_info?.btn_type == 30
-                                                        ? '#FF7D41'
-                                                        : Colors.lightGrayColor,
+                                                color: state.pay_info?.tag_color,
                                             },
                                         ]}>
                                         {state.pay_info?.status}
@@ -238,17 +228,18 @@ const FixedInvestDetail = ({navigation, route}) => {
                                 )}
                             </View>
                         </View>
-                        {state.records?.data_list?.length > 0 && (
-                            <View style={styles.footer}>
-                                <View>
-                                    <Text style={styles.listRowTitle}>{state.records?.title}</Text>
-                                </View>
-                                <View style={[Style.flexBetween, {marginTop: px(12)}]}>
-                                    <Text style={styles.rowTitle}>日期</Text>
-                                    <Text style={styles.rowTitle}>金额(元)</Text>
-                                    <Text style={styles.rowTitle}>交易状态</Text>
-                                </View>
-                                {state.records?.data_list?.map((item, index) => {
+
+                        <View style={styles.footer}>
+                            <View>
+                                <Text style={styles.listRowTitle}>{state.records?.title}</Text>
+                            </View>
+                            <View style={[Style.flexBetween, {marginTop: px(12)}]}>
+                                <Text style={styles.rowTitle}>日期</Text>
+                                <Text style={styles.rowTitle}>金额(元)</Text>
+                                <Text style={styles.rowTitle}>交易状态</Text>
+                            </View>
+                            {state.records?.data_list?.length > 0 &&
+                                state.records?.data_list?.map((item, index) => {
                                     return (
                                         <TouchableOpacity
                                             key={item + '' + index}
@@ -293,9 +284,9 @@ const FixedInvestDetail = ({navigation, route}) => {
                                         </TouchableOpacity>
                                     );
                                 })}
-                                {state.records?.data_list?.length > 0 && <ListFooterComponent />}
-                            </View>
-                        )}
+                            {state.records?.data_list?.length > 0 && <ListFooterComponent />}
+                        </View>
+
                         <PasswordModal ref={passwordModal} onDone={submit} />
                         <Modal
                             animationType="fade"
