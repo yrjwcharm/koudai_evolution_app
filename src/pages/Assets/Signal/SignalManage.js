@@ -81,7 +81,11 @@ const SignalManage = (props) => {
                         }}
                     />
                 )}
-                <SortHeader data={product_headers} onSort={(head) => handleSort(head)} style={{marginTop: px(12)}} />
+                <SortHeader
+                    data={product_headers}
+                    onSort={(head) => handleSort(head)}
+                    style={{marginTop: px(12), marginBottom: tab_list?.length > 0 ? 0 : px(12)}}
+                />
                 {tab_list?.length > 0 ? (
                     <ScrollableTabView
                         initialPage={tab_list?.findIndex((item) => item.type == routeParams?.type)}
