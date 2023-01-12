@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-07 12:15:57
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-04-27 23:10:04
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-01-12 19:33:47
  * @Description:渲染Html片段
  */
 import HTML from 'react-native-render-html';

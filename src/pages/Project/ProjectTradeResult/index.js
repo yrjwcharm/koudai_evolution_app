@@ -173,23 +173,25 @@ const Index = ({route, navigation}) => {
                     </>
                 ) : null}
             </ScrollView>
-            <FixedButton
-                title={data?.btn?.text}
-                containerStyle={{position: 'relative'}}
-                onPress={() => {
-                    global.LogTool('TradeFinish_Click', '', data?.log_id);
-                    if (data?.btn?.url) {
-                        jump(data?.btn?.url);
-                        return;
-                    }
-                    //升级的返回两层
-                    if (route?.params?.upgrade_id) {
-                        navigation.pop(2);
-                    } else {
-                        navigation.pop(1);
-                    }
-                }}
-            />
+            {data?.btn?.text ? (
+                <FixedButton
+                    title={data?.btn?.text}
+                    containerStyle={{position: 'relative'}}
+                    onPress={() => {
+                        global.LogTool('TradeFinish_Click', '', data?.log_id);
+                        if (data?.btn?.url) {
+                            jump(data?.btn?.url);
+                            return;
+                        }
+                        //升级的返回两层
+                        if (route?.params?.upgrade_id) {
+                            navigation.pop(2);
+                        } else {
+                            navigation.pop(1);
+                        }
+                    }}
+                />
+            ) : null}
         </View>
     );
 };

@@ -41,20 +41,26 @@ const SignalCard = ({data}) => {
                             {/* 目标盈 */}
                             {signal?.target_indicators
                                 ? signal?.target_indicators?.map((target, _index) => (
-                                      <View key={_index} style={{marginVertical: px(12), flex: 1}}>
-                                          <RenderHtml
-                                              html={target?.value}
+                                      <View
+                                          key={_index}
+                                          style={{
+                                              marginVertical: px(12),
+                                              flex: 1,
+                                          }}>
+                                          <Text
                                               style={{
+                                                  color: target?.color || Colors.defaultColor,
                                                   fontSize: px(14),
                                                   fontFamily: Font.numFontFamily,
-                                                  textAlign: index == 0 ? 'center' : 'right',
-                                              }}
-                                          />
+                                                  textAlign: _index == 0 ? 'center' : 'right',
+                                              }}>
+                                              {target?.value}
+                                          </Text>
                                           <Text
                                               style={{
                                                   ...styles.lightText,
                                                   marginTop: px(5),
-                                                  textAlign: index == 0 ? 'center' : 'right',
+                                                  textAlign: _index == 0 ? 'center' : 'right',
                                               }}>
                                               {target?.text}
                                           </Text>
