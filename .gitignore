@@ -65,6 +65,7 @@ buck-out/
 /src/services/config.js
 /ios/Podfile.lock
 /src/test.html
-/ios/Podfile.lock
-
 /src/pages/Assets/ProfitAnalysis/Example.js
+/fastlane/
+/Gemfile
+/Gemfile.lock

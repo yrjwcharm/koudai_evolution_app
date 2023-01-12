@@ -16,13 +16,14 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import {useJump} from '~/components/hooks';
 import SortHeader from '../components/SortHeader';
 import EmptyTip from '~/components/EmptyTip';
+import {FixedButton} from '~/components/Button';
 const SignalManage = (props) => {
     const [data, setData] = useState({});
     const [current, setCurrent] = useState(0);
     const routeParams = props.route?.params;
     const scrollTab = useRef();
     const jump = useJump();
-    const {top_info, tab_list, product_headers, product_list = [], stop_info} = data;
+    const {top_info, tab_list, product_headers, product_list = [], stop_info, button} = data;
     const getData = async (params) => {
         let res = await getSignalInfo({...routeParams, ...params});
         props.navigation.setOptions({title: res.result.title});
@@ -43,84 +44,89 @@ const SignalManage = (props) => {
         }, [])
     );
     return (
-        <ScrollView style={styles.con}>
-            {/* 组合顶部 */}
-            <View style={[styles.card, {paddingTop: 0}]}>
-                {routeParams?.poid && (
-                    <View style={{paddingBottom: px(10), paddingTop: px(16), ...Style.borderBottom}}>
-                        <Text style={{fontSize: px(14), fontWeight: '700', marginBottom: px(6)}}>{top_info?.name}</Text>
-                        {!!top_info?.code && (
-                            <Text style={{fontSize: px(11), color: Colors.lightBlackColor}}>{top_info?.code}</Text>
-                        )}
-                    </View>
-                )}
-                <View style={[Style.flexBetween, {paddingTop: px(12)}]}>
-                    {top_info?.indicators?.map((item, index) => {
-                        return (
-                            <View key={index} style={Style.flexCenter}>
-                                <Text style={{fontFamily: Font.numMedium, fontSize: px(16), marginBottom: px(4)}}>
-                                    {item.value}
-                                </Text>
-                                <Text style={{color: Colors.lightBlackColor, fontSize: px(11)}}>{item.text}</Text>
-                            </View>
-                        );
-                    })}
-                </View>
-            </View>
-            {tab_list?.length > 0 && (
-                <Tab
-                    tabs={tab_list}
-                    current={current}
-                    style={{marginTop: px(16)}}
-                    onPress={(i) => {
-                        scrollTab.current.goToPage(i);
-                    }}
-                />
-            )}
-            <SortHeader data={product_headers} onSort={(head) => handleSort(head)} style={{marginTop: px(12)}} />
-            {tab_list?.length > 0 ? (
-                <ScrollableTabView
-                    initialPage={tab_list?.findIndex((item) => item.type == routeParams?.type)}
-                    onChangeTab={({i}) => {
-                        getData({type: tab_list[i]?.type});
-                        setCurrent(i);
-                    }}
-                    renderTabBar={false}
-                    ref={scrollTab}
-                    style={{flex: 1}}>
-                    {tab_list?.map((item) => (
-                        <View key={item.name}>
-                            {product_list?.length > 0 ? (
-                                product_list?.map((_data, index) => <SignalCard data={_data} key={index} />)
-                            ) : (
-                                <View style={[Style.flexCenter, styles.card, {height: px(220), marginTop: px(12)}]}>
-                                    <EmptyTip paddingTop={0} style={{paddingTop: px(20)}} type="part" />
-                                </View>
+        <>
+            <ScrollView style={styles.con}>
+                {/* 组合顶部 */}
+                <View style={[styles.card, {paddingTop: 0}]}>
+                    {routeParams?.poid && (
+                        <View style={{paddingBottom: px(10), paddingTop: px(16), ...Style.borderBottom}}>
+                            <Text style={{fontSize: px(14), fontWeight: '700', marginBottom: px(6)}}>
+                                {top_info?.name}
+                            </Text>
+                            {!!top_info?.code && (
+                                <Text style={{fontSize: px(11), color: Colors.lightBlackColor}}>{top_info?.code}</Text>
                             )}
                         </View>
-                    ))}
-                </ScrollableTabView>
-            ) : product_list?.length > 0 ? (
-                <View>
-                    {product_list?.map((_data, index) => (
-                        <SignalCard data={_data} key={index} />
-                    ))}
+                    )}
+                    <View style={[Style.flexBetween, {paddingTop: px(12)}]}>
+                        {top_info?.indicators?.map((item, index) => {
+                            return (
+                                <View key={index} style={Style.flexCenter}>
+                                    <Text style={{fontFamily: Font.numMedium, fontSize: px(16), marginBottom: px(4)}}>
+                                        {item.value}
+                                    </Text>
+                                    <Text style={{color: Colors.lightBlackColor, fontSize: px(11)}}>{item.text}</Text>
+                                </View>
+                            );
+                        })}
+                    </View>
                 </View>
-            ) : (
-                <View style={[Style.flexCenter, styles.card, {height: px(220), marginTop: px(12)}]}>
-                    <EmptyTip paddingTop={0} style={{paddingTop: px(20)}} type="part" />
-                </View>
-            )}
-            {stop_info ? (
-                <TouchableOpacity
-                    style={[Style.flexCenter, {marginTop: px(20), flexDirection: 'row', marginBottom: px(50)}]}
-                    activeOpacity={0.8}
-                    onPress={() => jump(stop_info?.url)}>
-                    <Text style={{color: Colors.lightBlackColor}}>{stop_info?.text}</Text>
-                    <Icon name="right" color={Colors.lightBlackColor} />
-                </TouchableOpacity>
-            ) : null}
-        </ScrollView>
+                {tab_list?.length > 0 && (
+                    <Tab
+                        tabs={tab_list}
+                        current={current}
+                        style={{marginTop: px(16)}}
+                        onPress={(i) => {
+                            scrollTab.current.goToPage(i);
+                        }}
+                    />
+                )}
+                <SortHeader data={product_headers} onSort={(head) => handleSort(head)} style={{marginTop: px(12)}} />
+                {tab_list?.length > 0 ? (
+                    <ScrollableTabView
+                        initialPage={tab_list?.findIndex((item) => item.type == routeParams?.type)}
+                        onChangeTab={({i}) => {
+                            getData({type: tab_list[i]?.type});
+                            setCurrent(i);
+                        }}
+                        renderTabBar={false}
+                        ref={scrollTab}
+                        style={{flex: 1}}>
+                        {tab_list?.map((item) => (
+                            <View key={item.name}>
+                                {product_list?.length > 0 ? (
+                                    product_list?.map((_data, index) => <SignalCard data={_data} key={index} />)
+                                ) : (
+                                    <View style={[Style.flexCenter, styles.card, {height: px(220), marginTop: px(12)}]}>
+                                        <EmptyTip paddingTop={0} style={{paddingTop: px(20)}} type="part" />
+                                    </View>
+                                )}
+                            </View>
+                        ))}
+                    </ScrollableTabView>
+                ) : product_list?.length > 0 ? (
+                    <View>
+                        {product_list?.map((_data, index) => (
+                            <SignalCard data={_data} key={index} />
+                        ))}
+                    </View>
+                ) : (
+                    <View style={[Style.flexCenter, styles.card, {height: px(220), marginTop: px(12)}]}>
+                        <EmptyTip paddingTop={0} style={{paddingTop: px(20)}} type="part" />
+                    </View>
+                )}
+                {stop_info ? (
+                    <TouchableOpacity
+                        style={[Style.flexCenter, {marginTop: px(20), flexDirection: 'row', marginBottom: px(50)}]}
+                        activeOpacity={0.8}
+                        onPress={() => jump(stop_info?.url)}>
+                        <Text style={{color: Colors.lightBlackColor}}>{stop_info?.text}</Text>
+                        <Icon name="right" color={Colors.lightBlackColor} />
+                    </TouchableOpacity>
+                ) : null}
+            </ScrollView>
+            {button && <FixedButton title={button?.text} onPress={() => jump(button?.url)} />}
+        </>
     );
 };
 
