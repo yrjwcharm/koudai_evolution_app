@@ -2,7 +2,7 @@
  * @Date: 2022-05-17 15:46:02
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-11 18:31:46
+ * @LastEditTime: 2023-01-12 12:32:06
  * @Description: 投资者证明材料上传
  */
 import React, {useCallback, useMemo, useRef, useState} from 'react';
@@ -41,7 +41,6 @@ import {
 } from '../CreateAccount/Account/TokenCloudBridge';
 import {debounce} from 'lodash';
 import DocumentPicker from 'react-native-document-picker';
-import RNFetchBlob from 'rn-fetch-blob';
 
 export default ({navigation, route}) => {
     const [data, setData] = useState({});
@@ -231,35 +230,37 @@ export default ({navigation, route}) => {
 
     // 上传pdf
     const takePdf = () => {
-        DocumentPicker.pickSingle({
-            type: [DocumentPicker.types.pdf],
-            copyTo: 'cachesDirectory',
-        }).then((file) => {
-            const toast = Toast.showLoading('正在上传');
-            const _data = {...data};
-            const _file = {fileName: file.name, type: 'application/pdf', uri: file.fileCopyUri};
-            http.uploadFiles('/private_fund/upload_material/20220510', _file)
-                .then((res) => {
-                    Toast.hide(toast);
-                    if (res?.code === '000000') {
-                        Toast.show('上传成功');
+        setTimeout(() => {
+            DocumentPicker.pickSingle({
+                type: [DocumentPicker.types.pdf],
+                copyTo: 'cachesDirectory',
+            }).then((file) => {
+                const toast = Toast.showLoading('正在上传');
+                const _data = {...data};
+                const _file = {fileName: file.name, type: 'application/pdf', uri: file.fileCopyUri};
+                http.uploadFiles('/private_fund/upload_material/20220510', _file)
+                    .then((res) => {
+                        Toast.hide(toast);
+                        if (res?.code === '000000') {
+                            Toast.show('上传成功');
 
-                        let obj = {type: 'pdf', url: res.result.url, name: file.name};
-                        if (_data?.materials[clickIndexRef.current]?.images) {
-                            _data.materials[clickIndexRef.current].images.push(obj);
+                            let obj = {type: 'pdf', url: res.result.url, name: file.name};
+                            if (_data?.materials[clickIndexRef.current]?.images) {
+                                _data.materials[clickIndexRef.current].images.push(obj);
+                            } else {
+                                _data.materials[clickIndexRef.current].images = [obj];
+                            }
+                            setData(_data);
                         } else {
-                            _data.materials[clickIndexRef.current].images = [obj];
+                            Toast.show(res?.message || '上传失败');
                         }
-                        setData(_data);
-                    } else {
-                        Toast.show(res?.message || '上传失败');
-                    }
-                })
-                .catch(() => {
-                    Toast.hide(toast);
-                    Toast.show('上传失败');
-                });
-        });
+                    })
+                    .catch(() => {
+                        Toast.hide(toast);
+                        Toast.show('上传失败');
+                    });
+            });
+        }, 600);
     };
 
     // 读卡成功，获取到ReqID
