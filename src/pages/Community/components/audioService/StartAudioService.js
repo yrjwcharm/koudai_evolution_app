@@ -14,7 +14,7 @@ export const startAudio = async (track) => {
             }
             await TrackPlayer.add(track);
             await TrackPlayer.play();
-            TrackPlayer.setRepeatMode(RepeatMode.Track);
+            TrackPlayer.setRepeatMode(RepeatMode.Off);
         }
     }
 
