@@ -31,7 +31,7 @@ const Header = ({newMes, light, bgColor}) => {
                     activeOpacity={0.9}
                     style={Style.flexRow}
                     onPress={() => {
-                        navigation.navigate(userInfo.is_login ? 'Profile' : 'Login');
+                        jump(userInfo.url);
                     }}>
                     <Image source={{uri: userInfo?.avatar}} style={styles.avatar} />
                     <Text style={[styles.name, {color: light ? '#fff' : Colors.defaultColor}]}>

@@ -49,6 +49,7 @@ import actionTypes from '~/redux/actionTypes';
 import {debounce, groupBy, isEqual, sortBy} from 'lodash';
 import hintIcon from '~/assets/img/hint-icon.png';
 import * as Animatable from 'react-native-animatable';
+import {TextInput} from 'react-native-gesture-handler';
 
 /** @name 社区头部 */
 const Header = ({active, isLogin, message_url, newsData, refresh, search_url, setActive, tabs, userInfo = {}}) => {
@@ -473,7 +474,7 @@ const Follow = forwardRef(({list = [], refreshNews, tabs = []}, ref) => {
 
 /** @name 推荐瀑布流列表 */
 export const WaterfallFlowList = forwardRef(
-    ({getData = () => {}, listType = 'waterflow', params, refreshNews, wrapper, ...rest}, ref) => {
+    ({getData = () => {}, listType = 'waterflow', params, refreshNews, wrapper, onUpdate, ...rest}, ref) => {
         const [refreshing, setRefreshing] = useState(true);
         const [data, setData] = useState([]);
         const [page, setPage] = useState(1);
@@ -489,8 +490,9 @@ export const WaterfallFlowList = forwardRef(
             getData({...params, page})
                 .then((res) => {
                     if (res.code === '000000') {
-                        const {has_more, items = [], resource_private_tip: tip} = res.result;
+                        const {has_more, items = [], update_community_guide, resource_private_tip: tip} = res.result;
                         setHasMore(has_more);
+                        onUpdate(update_community_guide);
                         page === 1 && waterfallWrapper.current?.clear?.();
                         setData((prev) => (page === 1 ? items : prev.concat(items)));
                         tip && setTip(tip);
@@ -627,6 +629,7 @@ const Recommend = forwardRef(({isLogin, list = [], refreshNews, showType, tabs =
     const scrollTab = useRef();
     const recommendList = useRef([]);
     const isLoginRef = useRef(isLogin);
+    const updateHintRef = useRef();
 
     const refresh = () => {
         recommendList.current[current]?.refresh?.();
@@ -648,6 +651,10 @@ const Recommend = forwardRef(({isLogin, list = [], refreshNews, showType, tabs =
 
     useImperativeHandle(ref, () => ({refresh}));
 
+    const onUpdate = useCallback((text) => {
+        if (text) updateHintRef.current.trigger(text);
+    }, []);
+
     useEffect(() => {
         global.LogTool({event: 'recommend'});
     }, []);
@@ -665,6 +672,7 @@ const Recommend = forwardRef(({isLogin, list = [], refreshNews, showType, tabs =
 
     return (
         <>
+            <UpdateHint ref={updateHintRef} />
             {renderHeader(jump, list)}
             <View style={[Style.flexRow, {paddingTop: px(8)}]}>
                 <ScrollView bounces={false} horizontal showsHorizontalScrollIndicator={false} style={{flex: 1}}>
@@ -722,6 +730,7 @@ const Recommend = forwardRef(({isLogin, list = [], refreshNews, showType, tabs =
                                 listType={listType}
                                 refreshNews={refreshNews}
                                 params={{type}}
+                                onUpdate={onUpdate}
                                 ref={(flow) => (recommendList.current[i] = flow)}
                                 wrapper="Recommend"
                             />
@@ -806,11 +815,19 @@ const UpdateHint = forwardRef((props, ref) => {
     const [visible, setVisible] = useState(false);
     const hintViewRef = useRef(null);
     const timer = useRef();
+    const inputRef = useRef();
 
-    useImperativeHandle(ref, () => ({trigger}));
+    useImperativeHandle(ref, () => ({
+        trigger: (text) => {
+            requestAnimationFrame(() => {
+                trigger(text);
+            });
+        },
+    }));
 
-    const trigger = () => {
+    const trigger = (text) => {
         clearTimeout(timer.current);
+        inputRef.current?.setNativeProps({text});
         setVisible(true);
         hintViewRef.current?.fadeInDown(800)?.then((res) => {
             if (res.finished) {
@@ -826,9 +843,12 @@ const UpdateHint = forwardRef((props, ref) => {
     };
 
     return (
-        <Animatable.View style={[styles.hintWrap, {zIndex: visible ? 3 : -3, opacity: +visible}]} ref={hintViewRef}>
+        <Animatable.View
+            useNativeDriver={true}
+            style={[styles.hintWrap, {zIndex: visible ? 3 : -3, opacity: +visible}]}
+            ref={hintViewRef}>
             <Image source={hintIcon} style={{width: px(14), height: px(14), marginRight: px(4)}} />
-            <Text style={{fontSize: px(12), lineHeight: px(14), color: '#fff'}}>魔方推荐内容有23条更新</Text>
+            <TextInput ref={inputRef} style={{fontSize: px(12), lineHeight: px(14), color: '#fff', padding: 0}} />
         </Animatable.View>
     );
 });
@@ -848,7 +868,6 @@ const Index = ({navigation, route, setLoading}) => {
     const publishRef = useRef();
     const firstIn = useRef(true);
     const scrollTab = useRef();
-    const updateHintRef = useRef();
 
     const init = () => {
         getPageData()
@@ -923,14 +942,6 @@ const Index = ({navigation, route, setLoading}) => {
         init_type !== undefined && setTimeout(() => scrollTab.current?.goToPage?.(1));
     }, [route.params]);
 
-    // useFocusEffect(
-    //     useCallback(() => {
-    //         setTimeout(() => {
-    //             updateHintRef.current.trigger();
-    //         }, 1000);
-    //     }, [])
-    // );
-
     return Object.keys(data).length > 0 ? (
         <View style={styles.container}>
             <Header
@@ -955,7 +966,6 @@ const Index = ({navigation, route, setLoading}) => {
                     const {name, type} = tab;
                     return (
                         <View key={type} style={{flex: 1}} tabLabel={name}>
-                            <UpdateHint ref={updateHintRef} />
                             {type === 'follow' ? (
                                 follow?.list?.length > 0 ? (
                                     <Follow

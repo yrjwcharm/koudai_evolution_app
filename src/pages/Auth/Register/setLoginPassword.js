@@ -119,40 +119,35 @@ class SetLoginPassword extends Component {
                 Toast.hide(toast);
                 if (res.code === '000000') {
                     Toast.show('注册成功');
-                    http.post('/auth/user/login/20210101', {
-                        mobile: this.props.route?.params?.mobile,
-                        password: base64.encode(password),
-                    }).then((data) => {
-                        this.props.getUserInfo();
-                        this.props.getAppConfig();
-                        this.props.getVerifyGesture(true);
-                        if (res.result.url) {
-                            const {path, params = {}} = res.result.url;
-                            params.popNum = this.props.route.params?.fr ? 3 : 2;
-                            this.props.navigation.replace(path, params);
-                        } else if (this.props.route?.params?.redirect) {
-                            this.props.navigation.dispatch((state) => {
-                                // Remove the home route from the stack
-                                const routes = state.routes.filter((r) => {
-                                    return r.name !== 'Register';
-                                });
-                                return CommonActions.reset({
-                                    ...state,
-                                    routes,
-                                    index: routes.length - 1,
-                                });
+                    this.props.getUserInfo();
+                    this.props.getAppConfig();
+                    this.props.getVerifyGesture(true);
+                    if (res.result.url) {
+                        const {path, params = {}} = res.result.url;
+                        params.popNum = this.props.route.params?.fr ? 3 : 2;
+                        this.props.navigation.replace(path, params);
+                    } else if (this.props.route?.params?.redirect) {
+                        this.props.navigation.dispatch((state) => {
+                            // Remove the home route from the stack
+                            const routes = state.routes.filter((r) => {
+                                return r.name !== 'Register';
                             });
-                            this.props.navigation.replace(
-                                this.props.route?.params?.redirect.path,
-                                this.props.route?.params?.redirect.params
-                            );
-                        } else if (this.props.route?.params?.fr) {
-                            this.props.navigation.pop(3);
-                        } else {
-                            this.props.navigation.pop(2);
-                        }
-                        Storage.save('loginStatus', data.result);
-                    });
+                            return CommonActions.reset({
+                                ...state,
+                                routes,
+                                index: routes.length - 1,
+                            });
+                        });
+                        this.props.navigation.replace(
+                            this.props.route?.params?.redirect.path,
+                            this.props.route?.params?.redirect.params
+                        );
+                    } else if (this.props.route?.params?.fr) {
+                        this.props.navigation.pop(3);
+                    } else {
+                        this.props.navigation.pop(2);
+                    }
+                    Storage.save('loginStatus', res.result.login_result);
                 } else {
                     Toast.show(res.message);
                 }
