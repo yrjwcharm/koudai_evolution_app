@@ -4,7 +4,7 @@
  * @Description: 定投详情新页面
  */
 
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import {Text, TouchableOpacity, Modal, StyleSheet, View, ScrollView, Image} from 'react-native';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {isEmpty, px} from '../../../utils/appUtil';
@@ -16,6 +16,7 @@ import {PasswordModal} from '../../../components/Password';
 import Http from '../../../services';
 import Toast from '../../../components/Toast';
 import HTML from '../../../components/RenderHtml';
+import {useFocusEffect} from '@react-navigation/native';
 
 const FixedInvestDetail = ({navigation, route}) => {
     const {invest_plan_id: plan_id = '', fund_code = '', poid = '', avail} = route?.params;
@@ -72,9 +73,12 @@ const FixedInvestDetail = ({navigation, route}) => {
             });
         }
     };
-    useEffect(() => {
-        init();
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            init();
+        }, [])
+    );
+
     const submit = async (password) => {
         const loading = Toast.showLoading();
         if (type == 20 || type == 30) {
