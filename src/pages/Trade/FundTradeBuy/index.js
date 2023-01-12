@@ -2,7 +2,7 @@
  * @Date: 2022-06-23 16:05:46
  * @Description: 基金购买
  */
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
     ActivityIndicator,
     Keyboard,
@@ -13,41 +13,42 @@ import {
     Text,
     TextInput,
     TouchableOpacity,
-    View,
-} from 'react-native';
-import {useSelector} from 'react-redux';
-import {useFocusEffect, useIsFocused, useRoute} from '@react-navigation/native';
-import Image from 'react-native-fast-image';
-import Picker from 'react-native-picker';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import checked from '~/assets/img/login/checked.png';
-import notChecked from '~/assets/img/login/notChecked.png';
-import tips from '~/assets/img/trade/tips.png';
-import {Colors, Font, Space, Style} from '~/common/commonStyle';
-import BottomDesc from '~/components/BottomDesc';
-import {Button, FixedButton} from '~/components/Button';
-import {useJump} from '~/components/hooks';
-import Mask from '~/components/Mask';
-import {BankCardModal, Modal} from '~/components/Modal';
-import {PasswordModal} from '~/components/Password';
-import HTML from '~/components/RenderHtml';
-import Toast from '~/components/Toast';
-import Loading from '~/pages/Portfolio/components/PageLoading';
-import {onlyNumber, px} from '~/utils/appUtil';
+    View
+} from "react-native";
+import { useSelector } from "react-redux";
+import { useFocusEffect, useIsFocused, useRoute } from "@react-navigation/native";
+import Image from "react-native-fast-image";
+import Picker from "react-native-picker";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
+import AntDesign from "react-native-vector-icons/AntDesign";
+import checked from "~/assets/img/login/checked.png";
+import notChecked from "~/assets/img/login/notChecked.png";
+import tips from "~/assets/img/trade/tips.png";
+import { Colors, Font, Space, Style } from "~/common/commonStyle";
+import BottomDesc from "~/components/BottomDesc";
+import { Button, FixedButton } from "~/components/Button";
+import { useJump } from "~/components/hooks";
+import Mask from "~/components/Mask";
+import { BankCardModal, Modal } from "~/components/Modal";
+import { PasswordModal } from "~/components/Password";
+import HTML from "~/components/RenderHtml";
+import Toast from "~/components/Toast";
+import Loading from "~/pages/Portfolio/components/PageLoading";
+import { onlyNumber, px } from "~/utils/appUtil";
 import {
     fundBatchBuyDo,
     fundBuyDo,
     fundFixDo,
+    getBatchBuyFee,
     getBatchBuyInfo,
     getBuyFee,
     getBuyInfo,
     getBuyQuestionnaire,
     getNextDay,
-    postQuestionAnswer,
-} from './services';
-import http from '~/services';
-import {debounce} from 'lodash';
+    postQuestionAnswer
+} from "./services";
+import http from "~/services";
+import { debounce } from "lodash";
 
 export const Questionnaire = ({callback, data = [], summary_id}) => {
     const [current, setIndex] = useState(0);
@@ -134,12 +135,12 @@ export const Questionnaire = ({callback, data = [], summary_id}) => {
 };
 
 /** @name 金额输入框 */
-const InputBox = ({buy_info, errTip, feeData, onChange, rule_button, value = ''}) => {
+const InputBox = ({ buy_info, errTip, feeData, onChange, rule_button, tipLoading, value = "" }) => {
     const jump = useJump();
     const route = useRoute();
-    const {type} = route.params || {};
-    const {hidden_text, title} = buy_info;
-    const {date_text, fee_text, origin_fee} = feeData;
+    const { type } = route.params || {};
+    const { hidden_text, title } = buy_info;
+    const { date_text, fee_text, origin_fee } = feeData;
     const input = useRef();
 
     const keyboardHide = () => {
@@ -179,43 +180,43 @@ const InputBox = ({buy_info, errTip, feeData, onChange, rule_button, value = ''}
                     </TouchableOpacity>
                 )}
             </View>
-            {(type === 1 || type === 3) && !errTip ? null : (
-                <View style={styles.tipsBox}>
-                    {errTip ? (
-                        <HTML html={errTip} style={{...styles.desc, color: Colors.red}} />
-                    ) : fee_text || date_text ? (
-                        <>
-                            {fee_text ? (
-                                <View style={Style.flexRow}>
-                                    <HTML
-                                        html={`${fee_text.split('：')[0]}：`}
-                                        style={{...styles.desc, color: Colors.descColor}}
-                                    />
-                                    {origin_fee ? (
-                                        <Text style={[styles.desc, styles.originFee]}>{origin_fee}</Text>
-                                    ) : null}
-                                    <HTML
-                                        html={`${fee_text.split('：')[1]}`}
-                                        style={{...styles.desc, color: Colors.descColor}}
-                                    />
-                                </View>
-                            ) : null}
-                            {date_text ? (
-                                <View style={{marginTop: px(4)}}>
-                                    <HTML
-                                        html={date_text}
-                                        style={{...styles.desc, color: Colors.descColor, marginTop: px(4)}}
-                                    />
-                                </View>
-                            ) : null}
-                        </>
-                    ) : (
-                        <View style={Style.flexCenter}>
-                            <ActivityIndicator color={Colors.lightGrayColor} />
-                        </View>
-                    )}
-                </View>
-            )}
+            {Object.keys(feeData).length > 0 || errTip ? (
+              <View style={styles.tipsBox}>
+                  {errTip ? (
+                    <HTML html={errTip} style={{ ...styles.desc, color: Colors.red }} />
+                  ) : tipLoading ? (
+                    <View style={Style.flexCenter}>
+                        <ActivityIndicator color={Colors.lightGrayColor} />
+                    </View>
+                  ) : fee_text || date_text ? (
+                    <>
+                        {fee_text ? (
+                          <View style={Style.flexRow}>
+                              <HTML
+                                html={`${fee_text.split("：")[0]}：`}
+                                style={{ ...styles.desc, color: Colors.descColor }}
+                              />
+                              {origin_fee ? (
+                                <Text style={[styles.desc, styles.originFee]}>{origin_fee}</Text>
+                              ) : null}
+                              <HTML
+                                html={`${fee_text.split('：')[1]}`}
+                                style={{...styles.desc, color: Colors.descColor}}
+                              />
+                          </View>
+                        ) : null}
+                        {date_text ? (
+                          <View style={{ marginTop: px(4) }}>
+                              <HTML
+                                html={date_text}
+                                style={{ ...styles.desc, color: Colors.descColor, marginTop: px(4) }}
+                              />
+                          </View>
+                        ) : null}
+                    </>
+                  ) : null}
+              </View>
+            ) : null}
         </View>
     );
 };
@@ -689,6 +690,7 @@ const Index = ({navigation, route}) => {
     const [amount, setAmount] = useState(_amount);
     const [data, setData] = useState({});
     const [feeData, setFeeData] = useState({});
+    const [tipLoading, setTipLoading] = useState(false);
     const [isLarge, setIsLarge] = useState(isLargeAmount);
     const [bankSelectIndex, setIndex] = useState(0);
     const [deltaHeight, setDeltaHeight] = useState(0);
@@ -731,28 +733,43 @@ const Index = ({navigation, route}) => {
                     ? `您当日剩余可用额度为${method.left_amount}元，推荐使用大额极速购`
                     : `魔方宝余额不足,建议<alink url='{"path":"MfbIn","params":{"fr":"fund_trade_buy"}}'>立即充值</alink>`
             );
-            setFeeData({});
         } else if (amount > method.single_amount) {
             setErrTip(`最大单笔购买金额为${method.single_amount}元`);
-            setFeeData({});
         } else if (method.pay_method !== 'wallet' && amount > method.day_limit) {
             setErrTip(`最大单日购买金额为${method.day_limit}元`);
-            setFeeData({});
         } else if (amount !== '' && amount < buy_info.initial_amount) {
             setErrTip(`起购金额${buy_info.initial_amount}`);
-            setFeeData({});
         } else {
-            setErrTip('');
-            if (type === 0) {
+            setErrTip("");
+            if (type === 0 || type === 3) {
+                setTipLoading(true);
                 timer.current && clearTimeout(timer.current);
                 timer.current = setTimeout(() => {
-                    getBuyFee({amount, fund_code: code, pay_method: method.pay_method, type: 0}).then((res) => {
-                        if (res.code === '000000') {
-                            setFeeData(res.result);
-                        } else {
-                            setErrTip(res.message);
-                        }
-                    });
+                    const params = {
+                        amount,
+                        fund_code: code,
+                        pay_method: method.pay_method,
+                        type
+                    };
+                    if (type === 3) {
+                        params.fund_ratios = JSON.stringify(
+                          tradeDetailList.current?.map?.((item) => {
+                              const { code: _code, percent } = item;
+                              return { amount: (amount * percent) / 100, code: _code, percent };
+                          })
+                        );
+                    }
+                    (type === 0 ? getBuyFee : getBatchBuyFee)(params)
+                      .then((res) => {
+                          if (res.code === "000000") {
+                              setFeeData(res.result);
+                          } else {
+                              setErrTip(res.message);
+                          }
+                      })
+                      .finally(() => {
+                          setTipLoading(false);
+                      });
                 }, 300);
             }
         }
@@ -995,12 +1012,13 @@ const Index = ({navigation, route}) => {
                             </TouchableOpacity>
                         ) : null}
                         <InputBox
-                            buy_info={buy_info}
-                            errTip={errTip}
-                            feeData={feeData}
-                            onChange={onChange}
-                            rule_button={rule_button}
-                            value={amount}
+                          buy_info={buy_info}
+                          errTip={errTip}
+                          feeData={feeData}
+                          onChange={onChange}
+                          rule_button={rule_button}
+                          tipLoading={tipLoading}
+                          value={amount}
                         />
                         {period_info ? (
                             <FixedInvestCycle {...period_info} onChange={onChangeDate} setShowMask={setShowMask} />
