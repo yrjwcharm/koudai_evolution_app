@@ -89,8 +89,8 @@ const ClassCard = ({data = {}, showEye, expand}) => {
             </TouchableOpacity>
             {child?.length > 0 && expand && (
                 <>
-                    <View style={[styles.circle, {left: px(12)}]} />
-                    <View style={[styles.circle, {right: px(12)}]} />
+                    {/* <View style={[styles.circle, {left: px(12)}]} /> */}
+                    {/* <View style={[styles.circle, {right: px(12)}]} /> */}
                     <View style={[styles.portCard]}>
                         <View
                             style={{
