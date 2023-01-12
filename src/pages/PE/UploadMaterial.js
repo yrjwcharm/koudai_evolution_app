@@ -2,7 +2,7 @@
  * @Date: 2022-05-17 15:46:02
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-12 19:48:22
+ * @LastEditTime: 2023-01-12 20:04:43
  * @Description: 投资者证明材料上传
  */
 import React, {useCallback, useMemo, useRef, useState} from 'react';
@@ -622,11 +622,12 @@ export default ({navigation, route}) => {
                                 () => blockCal('doc')
                             );
                         } else {
-                            requestAuth(
-                                PERMISSIONS.IOS.MEDIA_LIBRARY,
-                                () => takePdf(),
-                                () => blockCal('doc')
-                            );
+                            takePdf();
+                            // requestAuth(
+                            //     PERMISSIONS.IOS.MEDIA_LIBRARY,
+                            //     () => ,
+                            //     () => blockCal('doc')
+                            // );
                         }
                     }
                 }}
