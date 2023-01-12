@@ -16,7 +16,7 @@ import {
     View,
 } from 'react-native';
 import {useSelector} from 'react-redux';
-import {useFocusEffect, useIsFocused, useRoute} from '@react-navigation/native';
+import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import Image from 'react-native-fast-image';
 import Picker from 'react-native-picker';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -65,7 +65,7 @@ export const Questionnaire = ({callback, data = [], summary_id}) => {
                 return (
                     <TouchableOpacity
                         activeOpacity={0.8}
-                        disabled={selected ? true : false}
+                        disabled={!!selected}
                         key={optionId}
                         onPress={debounce(
                             () => {
@@ -137,8 +137,6 @@ export const Questionnaire = ({callback, data = [], summary_id}) => {
 /** @name 金额输入框 */
 const InputBox = ({buy_info, errTip, feeData, onChange, rule_button, tipLoading, value = ''}) => {
     const jump = useJump();
-    const route = useRoute();
-    const {type} = route.params || {};
     const {hidden_text, title} = buy_info;
     const {date_text, fee_text, origin_fee} = feeData;
     const input = useRef();
@@ -660,7 +658,7 @@ const TradeDetail = ({amount, data = {}, listRef = {}, setCanBuy}) => {
             {disable_info?.items?.length > 0 && (
                 <View style={styles.disableBox}>
                     <Text style={[styles.desc, {color: Colors.defaultColor}]}>{disable_info.text}</Text>
-                    {disable_info.items.map?.((item, index) => {
+                    {disable_info.items.map?.((item) => {
                         const {code, name} = item;
                         return (
                             <Text
@@ -880,7 +878,7 @@ const Index = ({navigation, route}) => {
                 }
             },
             cancelText: cancel.text,
-            confirm: cancel?.text ? true : false,
+            confirm: !!cancel?.text,
             confirmCallBack: () => {
                 const {act, url} = confirm;
                 if (act === 'jump') {
