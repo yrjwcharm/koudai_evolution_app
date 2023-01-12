@@ -763,42 +763,53 @@ const Index = ({navigation, route}) => {
         const method = isLarge ? large_pay_method : pay_methods[bankSelectIndex];
         global.LogTool({ctrl: `${method.pay_method},${amount}`, event: 'buy_button_click', oid: code});
         Keyboard.dismiss();
-        getBuyQuestionnaire({fr: 'compliance', scene: 'fund'}).then((res) => {
-            if (res.code === '000000') {
-                const {list, summary_id} = res.result;
-                if (summary_id) {
-                    Modal.show(
-                        {
-                            backButtonClose: false,
-                            children: (
-                                <Questionnaire
-                                    callback={(action) => {
-                                        Modal.close();
-                                        action === 'continue' && passwordModal.current.show();
-                                    }}
-                                    data={list}
-                                    summary_id={summary_id}
-                                />
-                            ),
-                            header: <View />,
-                            isTouchMaskToClose: false,
-                            style: {
-                                minHeight: 0,
+        passwordModal.current.show();
+    };
+
+    const handlerQuestion = async () => {
+        return new Promise((resolve) => {
+            getBuyQuestionnaire({fr: 'compliance', scene: 'fund'}).then((res) => {
+                if (res.code === '000000') {
+                    const {list, summary_id} = res.result;
+                    if (summary_id) {
+                        Modal.show(
+                            {
+                                backButtonClose: false,
+                                children: (
+                                    <Questionnaire
+                                        callback={(action) => {
+                                            Modal.close();
+                                            resolve(action === 'continue');
+                                        }}
+                                        data={list}
+                                        summary_id={summary_id}
+                                    />
+                                ),
+                                header: <View />,
+                                isTouchMaskToClose: false,
+                                style: {
+                                    minHeight: 0,
+                                },
                             },
-                        },
-                        'slide'
-                    );
+                            'slide'
+                        );
+                    } else {
+                        resolve(true);
+                    }
                 } else {
-                    passwordModal.current.show();
+                    resolve(true);
                 }
-            } else {
-                passwordModal.current.show();
-            }
+            });
         });
     };
 
     /** @name 输入完交易密码确认交易 */
-    const onSubmit = (password) => {
+    const onSubmit = async (password) => {
+        let flag = await handlerQuestion();
+        if (!flag) {
+            navigation.goBack();
+            return;
+        }
         const method = isLarge ? large_pay_method : pay_methods[bankSelectIndex];
         const toast = Toast.showLoading();
         const params = {
