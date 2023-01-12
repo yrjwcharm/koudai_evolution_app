@@ -11,8 +11,7 @@
     "test": "jest",
     "lint": "eslint .",
     "svg": "node src/assets/getSvg.js",
-    "bundle-android": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res",
-    "bundle-ios": "react-native bundle --entry-file index.js  --platform ios --dev false --bundle-output ./ios/bundle/index.ios.jsbundle --assets-dest ./ios/bundle"
+    "release-android": "cd android && ./gradlew clean && ./gradlew assembleWWWRelease"
   },
   "dependencies": {
     "@react-native-community/art": "^1.2.0",

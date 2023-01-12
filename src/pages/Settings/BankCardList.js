@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-02-22 18:20:12
  * @Author: dx
- * @LastEditors: yhc
- * @LastEditTime: 2021-09-02 14:37:03
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-01-12 11:01:23
  * @Description: 银行卡管理
  */
 import React, {useCallback, useState} from 'react';
@@ -111,7 +111,7 @@ const BankCardList = ({navigation}) => {
             </ScrollView>
             {Object.keys(data).length === 0 ||
             (!data?.xy?.cards && !data?.ym?.cards) ||
-            (data?.xy?.cards?.length === 0 && data?.ym?.cards?.length === 0) ? null : (
+            (data?.xy?.cards?.length === 0 && data?.ym?.cards?.length === 0) ? null : data?.button?.text ? (
                 <Button
                     title={data?.button?.text}
                     style={styles.btn}
@@ -120,7 +120,7 @@ const BankCardList = ({navigation}) => {
                         jump(data?.button?.url);
                     }}
                 />
-            )}
+            ) : null}
         </View>
     );
 };
