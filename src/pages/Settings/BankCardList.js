@@ -99,11 +99,11 @@ const BankCardList = ({navigation}) => {
                             desc={'您目前还未绑定任何银行卡'}
                         />
                         <Button
-                            title={data?.button?.text}
+                            title={data?.button?.text || '添加银行卡'}
                             style={{...styles.btn, ...{marginHorizontal: text(4), marginTop: text(86)}}}
                             onPress={() => {
                                 global.LogTool('click', 'addBankCard');
-                                jump(data?.button?.url);
+                                jump(data?.button?.url || {path: 'AddBankCard', params: {action: 'add'}});
                             }}
                         />
                     </>
