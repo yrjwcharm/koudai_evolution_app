@@ -50,6 +50,7 @@ import {debounce, groupBy, isEqual, sortBy} from 'lodash';
 import hintIcon from '~/assets/img/hint-icon.png';
 import * as Animatable from 'react-native-animatable';
 import {TextInput} from 'react-native-gesture-handler';
+import CommunityRecommendCard from '../components/CommunityRecommendCard';
 
 /** @name 社区头部 */
 const Header = ({active, isLogin, message_url, newsData, refresh, search_url, setActive, tabs, userInfo = {}}) => {
@@ -511,7 +512,12 @@ export const WaterfallFlowList = forwardRef(
         };
 
         const renderItem = ({item = {}, index}) => {
-            return (
+            return listType == 'list' ? (
+                <CommunityRecommendCard
+                    data={item}
+                    style={{marginTop: index === 0 ? 0 : px(12), marginHorizontal: Space.marginAlign}}
+                />
+            ) : (
                 <CommunityCard
                     cardType={listType}
                     data={item}

@@ -134,7 +134,7 @@ const AssetCard = ({data = {}, showEye, style, borderStyle, type}) => {
                     </View>
                     {/* 收益 */}
                     <View style={{alignItems: 'flex-end', flex: 1}}>
-                        {log_id == 10 ? (
+                        {type == 10 ? (
                             <Text style={styles.card_amount}>
                                 {showEye === 'true' ? <RenderHtml html={profit} style={styles.card_amount} /> : '****'}
                             </Text>

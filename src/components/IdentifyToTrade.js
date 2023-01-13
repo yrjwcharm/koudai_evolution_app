@@ -3,13 +3,13 @@
  * @Autor: wxp
  * @Date: 2022-12-22 15:07:51
  */
-import React, {useState} from 'react';
+import React, {useImperativeHandle, useState} from 'react';
 import {Text, StyleSheet, TouchableOpacity, Image, Modal, ActivityIndicator} from 'react-native';
 import {px} from '~/utils/appUtil';
 import identifyTradeIcon from '~/assets/img/identify-trade.png';
 import {captureScreen} from 'react-native-view-shot';
 
-const IdentifyToTrade = ({style, onStart, onIdentify, onError}) => {
+const IdentifyToTrade = ({style, onStart, onIdentify, onError, showFloatIcon = true, _ref}) => {
     const [uri, setUri] = useState('');
     const [floatIconVisible, setFloatIconVisible] = useState(true);
     const [identifyModalVisible, setIdentifyModalVisible] = useState(false);
@@ -20,8 +20,8 @@ const IdentifyToTrade = ({style, onStart, onIdentify, onError}) => {
             format: 'jpg',
             quality: 0.8,
         }).then(
-            (uri) => {
-                setUri(uri);
+            (_uri) => {
+                setUri(_uri);
                 setIdentifyModalVisible(true);
                 onIdentify(() => setIdentifyModalVisible(false));
                 setFloatIconVisible(true);
@@ -34,9 +34,12 @@ const IdentifyToTrade = ({style, onStart, onIdentify, onError}) => {
             }
         );
     };
+    useImperativeHandle(_ref, () => ({
+        handler,
+    }));
     return (
         <>
-            {floatIconVisible ? (
+            {floatIconVisible && showFloatIcon ? (
                 <TouchableOpacity style={[styles.container, style]} activeOpacity={0.8} onPress={handler}>
                     <Image source={identifyTradeIcon} style={{width: px(102), height: px(52)}} resizeMode={'contain'} />
                 </TouchableOpacity>

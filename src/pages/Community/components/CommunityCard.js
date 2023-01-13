@@ -75,11 +75,11 @@ export const CommunityCardCover = ({
                             <Text style={styles.numDesc}>{left_desc}</Text>
                         </View>
                     ) : null}
-                    {right_desc ? (
+                    {/* {right_desc ? (
                         <View style={[Style.flexRow, styles.waitTag, {paddingLeft: px(6)}]}>
                             <Text style={styles.numDesc}>{right_desc}</Text>
                         </View>
-                    ) : null}
+                    ) : null} */}
                 </View>
             ) : null}
             {/* 媒体时长或类型文案 */}
@@ -105,7 +105,7 @@ export const CommunityCardCover = ({
             {/* 视频播放图片 */}
             {type === 3 ? <Image source={videoPlay} style={styles.videoPlay} /> : null}
             {/* 社区关注人数 */}
-            {attention_num && attention_user ? (
+            {/* {attention_num && attention_user ? (
                 <LinearGradient
                     colors={['rgba(0, 0, 0, 0.7)', 'rgba(0, 0, 0, 0)']}
                     start={{x: 0, y: 0}}
@@ -127,7 +127,7 @@ export const CommunityCardCover = ({
                         </Text>
                     </View>
                 </LinearGradient>
-            ) : null}
+            ) : null} */}
         </View>
     );
 };
