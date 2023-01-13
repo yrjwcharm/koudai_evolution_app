@@ -47,6 +47,10 @@ import {
 import {followAdd, followCancel} from '~/pages/Attention/Index/service';
 import actionTypes from '~/redux/actionTypes';
 import {debounce, groupBy, isEqual, sortBy} from 'lodash';
+import hintIcon from '~/assets/img/hint-icon.png';
+import * as Animatable from 'react-native-animatable';
+import {TextInput} from 'react-native-gesture-handler';
+import CommunityRecommendCard from '../components/CommunityRecommendCard';
 
 /** @name 社区头部 */
 const Header = ({active, isLogin, message_url, newsData, refresh, search_url, setActive, tabs, userInfo = {}}) => {
@@ -471,7 +475,7 @@ const Follow = forwardRef(({list = [], refreshNews, tabs = []}, ref) => {
 
 /** @name 推荐瀑布流列表 */
 export const WaterfallFlowList = forwardRef(
-    ({getData = () => {}, listType = 'waterflow', params, refreshNews, wrapper, ...rest}, ref) => {
+    ({getData = () => {}, listType = 'waterflow', params, refreshNews, wrapper, onUpdate, ...rest}, ref) => {
         const [refreshing, setRefreshing] = useState(true);
         const [data, setData] = useState([]);
         const [page, setPage] = useState(1);
@@ -487,8 +491,9 @@ export const WaterfallFlowList = forwardRef(
             getData({...params, page})
                 .then((res) => {
                     if (res.code === '000000') {
-                        const {has_more, items = [], resource_private_tip: tip} = res.result;
+                        const {has_more, items = [], update_community_guide, resource_private_tip: tip} = res.result;
                         setHasMore(has_more);
+                        onUpdate(update_community_guide);
                         page === 1 && waterfallWrapper.current?.clear?.();
                         setData((prev) => (page === 1 ? items : prev.concat(items)));
                         tip && setTip(tip);
@@ -507,7 +512,12 @@ export const WaterfallFlowList = forwardRef(
         };
 
         const renderItem = ({item = {}, index}) => {
-            return (
+            return listType == 'list' ? (
+                <CommunityRecommendCard
+                    data={item}
+                    style={{marginTop: index === 0 ? 0 : px(12), marginHorizontal: Space.marginAlign}}
+                />
+            ) : (
                 <CommunityCard
                     cardType={listType}
                     data={item}
@@ -625,6 +635,7 @@ const Recommend = forwardRef(({isLogin, list = [], refreshNews, showType, tabs =
     const scrollTab = useRef();
     const recommendList = useRef([]);
     const isLoginRef = useRef(isLogin);
+    const updateHintRef = useRef();
 
     const refresh = () => {
         recommendList.current[current]?.refresh?.();
@@ -646,6 +657,10 @@ const Recommend = forwardRef(({isLogin, list = [], refreshNews, showType, tabs =
 
     useImperativeHandle(ref, () => ({refresh}));
 
+    const onUpdate = useCallback((text) => {
+        if (text) updateHintRef.current.trigger(text);
+    }, []);
+
     useEffect(() => {
         global.LogTool({event: 'recommend'});
     }, []);
@@ -663,6 +678,7 @@ const Recommend = forwardRef(({isLogin, list = [], refreshNews, showType, tabs =
 
     return (
         <>
+            <UpdateHint ref={updateHintRef} />
             {renderHeader(jump, list)}
             <View style={[Style.flexRow, {paddingTop: px(8)}]}>
                 <ScrollView bounces={false} horizontal showsHorizontalScrollIndicator={false} style={{flex: 1}}>
@@ -720,6 +736,7 @@ const Recommend = forwardRef(({isLogin, list = [], refreshNews, showType, tabs =
                                 listType={listType}
                                 refreshNews={refreshNews}
                                 params={{type}}
+                                onUpdate={onUpdate}
                                 ref={(flow) => (recommendList.current[i] = flow)}
                                 wrapper="Recommend"
                             />
@@ -798,6 +815,48 @@ export const PublishContent = forwardRef(({community_id = 0, muid = 0, history_i
             </BottomModal>
         </>
     ) : null;
+});
+
+const UpdateHint = forwardRef((props, ref) => {
+    const [visible, setVisible] = useState(false);
+    const hintViewRef = useRef(null);
+    const timer = useRef();
+    const inputRef = useRef();
+
+    useImperativeHandle(ref, () => ({
+        trigger: (text) => {
+            requestAnimationFrame(() => {
+                trigger(text);
+            });
+        },
+    }));
+
+    const trigger = (text) => {
+        clearTimeout(timer.current);
+        inputRef.current?.setNativeProps({text});
+        setVisible(true);
+        hintViewRef.current?.fadeInDown(800)?.then((res) => {
+            if (res.finished) {
+                timer.current = setTimeout(() => {
+                    hintViewRef.current?.fadeOutUp(700).then((res2) => {
+                        if (res2.finished) {
+                            setVisible(false);
+                        }
+                    });
+                }, 3000);
+            }
+        });
+    };
+
+    return (
+        <Animatable.View
+            useNativeDriver={true}
+            style={[styles.hintWrap, {zIndex: visible ? 3 : -3, opacity: +visible}]}
+            ref={hintViewRef}>
+            <Image source={hintIcon} style={{width: px(14), height: px(14), marginRight: px(4)}} />
+            <TextInput ref={inputRef} style={{fontSize: px(12), lineHeight: px(14), color: '#fff', padding: 0}} />
+        </Animatable.View>
+    );
 });
 
 const Index = ({navigation, route, setLoading}) => {
@@ -1102,6 +1161,19 @@ const styles = StyleSheet.create({
     close: {
         width: px(24),
         height: px(24),
+    },
+    hintWrap: {
+        position: 'absolute',
+        top: 0,
+        left: px(16),
+        width: px(343),
+        padding: px(8),
+        borderRadius: px(6),
+        backgroundColor: '#FF7D41',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 2,
     },
 });
 

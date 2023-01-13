@@ -2,10 +2,10 @@
  * @Date: 2021-01-14 17:23:13
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-29 17:53:52
+ * @LastEditTime: 2023-01-11 10:46:25
  * @Description: 协议
  */
-import React, {useState} from 'react';
+import React, {forwardRef, useImperativeHandle, useState} from 'react';
 import PropTypes from 'prop-types';
 import {useNavigation} from '@react-navigation/native';
 import {Text, TouchableHighlight, StyleSheet, View} from 'react-native';
@@ -15,7 +15,7 @@ import {Colors, Font, Space} from '../common/commonStyle';
 import {baseURL} from '../services/config';
 import {useJump} from './hooks';
 
-function Agreements(props) {
+function Agreements(props, ref) {
     const jump = useJump();
     const navigation = useNavigation();
     const {
@@ -44,6 +44,10 @@ function Agreements(props) {
         }
     };
     const [checked, setChecked] = useState(check);
+
+    useImperativeHandle(ref, () => ({
+        toggle,
+    }));
     const toggle = () => {
         setChecked(!checked);
         onChange && onChange(!checked);
@@ -143,4 +147,4 @@ const styles = StyleSheet.create({
         lineHeight: px(18),
     },
 });
-export default Agreements;
+export default forwardRef(Agreements);

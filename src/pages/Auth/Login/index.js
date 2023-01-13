@@ -2,10 +2,10 @@
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-24 14:09:26
+ * @LastEditTime: 2023-01-11 10:52:07
  * @Description: 登录
  */
-import React, {Component} from 'react';
+import React, {Component, createRef} from 'react';
 import {View, Text, ScrollView, StyleSheet, TouchableHighlight, Dimensions, StatusBar} from 'react-native';
 import {px as text, px, inputInt} from '../../../utils/appUtil';
 import {Button} from '../../../components/Button';
@@ -28,7 +28,7 @@ class Login extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            type: 1, //登录方式
+            type: 2, //登录方式
             mobile: this.props.route?.params?.mobile,
             password: '',
             check: true,
@@ -38,8 +38,8 @@ class Login extends Component {
             code_btn_click: true,
             second: 60,
         };
+        this.agreementsRef = createRef();
     }
-
     login = () => {
         const {mobile, password, type, code} = this.state;
         const userInfo = this.props.userInfo?.toJS();
@@ -163,7 +163,20 @@ class Login extends Component {
     sendCode = () => {
         const {code_btn_click, mobile, agreeState} = this.state;
         if (!(mobile?.length === 11)) return Toast.show('请正确输入您的手机号');
-        if (!agreeState) return Toast.show('请勾选并同意理财魔方相关协议');
+        if (!agreeState && code_btn_click) {
+            Modal.show({
+                title: '服务协议及隐私协议',
+                content: '为了更好的保障您的合法权益，请您阅读并同意《用户协议》和《隐私协议》',
+                confirm: true,
+                confirmCallBack: () => {
+                    this.agreementsRef.current.toggle();
+                    setTimeout(() => {
+                        this.sendCode();
+                    }, 0);
+                },
+            });
+            return;
+        }
         if (code_btn_click) {
             http.post('/passport/send_verify_code/20210101', {
                 mobile,
@@ -295,7 +308,8 @@ class Login extends Component {
                             onChange={(agreeState) => {
                                 this.setState({agreeState});
                             }}
-                            check={false}
+                            ref={this.agreementsRef}
+                            check={agreeState}
                             suffix="，未注册手机号将自动完成注册"
                             data={[
                                 {
@@ -304,7 +318,7 @@ class Login extends Component {
                                 },
 
                                 {
-                                    title: '《隐私权政策》',
+                                    title: '《隐私协议》',
                                     id: 32,
                                 },
                             ]}

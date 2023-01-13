@@ -1,16 +1,12 @@
 /*
  * @Date: 2021-02-23 10:29:30
- * @Author: yhc
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-02 15:14:28
  * @Description:埋点
- *
  */
 import http from '../services';
 const sUrl = 'https://tj.licaimofang.com/v.gif';
 const _ts = 0;
 const LogTool = (event, ctrl, oid, pid, ref, staytime, tag) => {
-    var _params = {},
+    let _params = {},
         st = new Date().getTime();
 
     if ((st - _ts) / 1000 < 1) {
