@@ -44,7 +44,7 @@ const Header = ({newMes, light, bgColor}) => {
                     activeOpacity={0.8}
                     onPress={() => {
                         global.LogTool('indexNotificationCenter');
-                        jump({path: 'RemindMessage'});
+                        jump(userInfo.message_center_url);
                     }}>
                     <Image
                         style={{width: px(24), height: px(24)}}
@@ -54,7 +54,7 @@ const Header = ({newMes, light, bgColor}) => {
                                 : 'https://static.licaimofang.com/wp-content/uploads/2022/09/message-centre.png',
                         }}
                     />
-                    {newMes ? (
+                    {newMes && userInfo.is_login ? (
                         <View style={[styles.point_sty, Style.flexCenter]}>
                             <Text style={styles.point_text}>{newMes > 99 ? '99+' : newMes}</Text>
                         </View>
