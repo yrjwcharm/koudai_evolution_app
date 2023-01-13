@@ -52,7 +52,7 @@ const RenderAutoTime = ({initalData, onChangeAutoTime, style}) => {
             pickerCancelBtnColor: [128, 137, 155, 1],
             pickerTextEllipsisLen: 100,
             wheelFlex: [1, 1],
-            selectedValue: [initalData?.current_date[0], initalData?.current_date[1]],
+            selectedValue: [data?.current_date[0], data?.current_date[1]],
             onPickerConfirm: async (pickedValue) => {
                 setShowMask(false);
                 let params = {

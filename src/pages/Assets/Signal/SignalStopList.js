@@ -44,6 +44,7 @@ const SignalStopList = (props) => {
                     <EmptyTip paddingTop={0} style={{paddingTop: px(20)}} type="part" />
                 </View>
             )}
+            <View style={{height: px(40)}} />
         </ScrollView>
     );
 };
@@ -53,6 +54,7 @@ export default SignalStopList;
 const styles = StyleSheet.create({
     con: {
         padding: px(16),
+
         flex: 1,
         backgroundColor: Colors.bgColor,
     },

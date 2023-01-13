@@ -38,6 +38,9 @@ const Index = ({route, navigation}) => {
 
     const getData = async () => {
         const res = await getInfo(route?.params);
+        if (res?.result?.buy_info?.default_amount) {
+            setAmount(res?.result?.buy_info?.default_amount);
+        }
         global.LogTool('effect_jump', '', res?.result?.log_id);
         const {pop_risk_disclosure, risk_disclosure} = res.result || {};
         if (isFocused && pop_risk_disclosure && risk_disclosure && showRiskDisclosureRef.current) {
