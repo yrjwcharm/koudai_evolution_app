@@ -278,6 +278,7 @@ export default function Launch({navigation}) {
     };
     //跳转
     const appJump = (res) => {
+        timer.current && clearInterval(timer.current);
         if (res) {
             navigation.replace('Tab');
             SplashScreen.hide();
