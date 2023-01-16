@@ -49,7 +49,6 @@ import actionTypes from '~/redux/actionTypes';
 import {debounce, groupBy, isEqual, sortBy} from 'lodash';
 import hintIcon from '~/assets/img/hint-icon.png';
 import * as Animatable from 'react-native-animatable';
-import {TextInput} from 'react-native-gesture-handler';
 import CommunityRecommendCard from '../components/CommunityRecommendCard';
 
 /** @name 社区头部 */
@@ -683,7 +682,6 @@ const Recommend = forwardRef(({isLogin, list = [], refreshNews, showType, tabs =
 
     return (
         <>
-            <UpdateHint ref={updateHintRef} />
             {renderHeader(jump, list)}
             <View style={[Style.flexRow, {paddingTop: px(8)}]}>
                 <ScrollView bounces={false} horizontal showsHorizontalScrollIndicator={false} style={{flex: 1}}>
@@ -736,6 +734,7 @@ const Recommend = forwardRef(({isLogin, list = [], refreshNews, showType, tabs =
                     const {name, type} = tab;
                     return (
                         <View key={name + type} style={{flex: 1}} tabLabel={name}>
+                            <UpdateHint ref={updateHintRef} />
                             <WaterfallFlowList
                                 getData={getRecommendData}
                                 listType={listType}
@@ -823,10 +822,10 @@ export const PublishContent = forwardRef(({community_id = 0, muid = 0, history_i
 });
 
 const UpdateHint = forwardRef((props, ref) => {
+    const [text, setText] = useState('');
     const [visible, setVisible] = useState(false);
     const hintViewRef = useRef(null);
     const timer = useRef();
-    const inputRef = useRef();
 
     useImperativeHandle(ref, () => ({
         trigger: (text) => {
@@ -836,40 +835,28 @@ const UpdateHint = forwardRef((props, ref) => {
         },
     }));
 
-    const trigger = (text) => {
+    const trigger = (_text) => {
         clearTimeout(timer.current);
-        inputRef.current?.setNativeProps({text});
+        setText(_text);
         setVisible(true);
-        hintViewRef.current?.fadeInDown(800)?.then((res) => {
-            if (res.finished) {
-                timer.current = setTimeout(() => {
-                    hintViewRef.current?.fadeOutUp(700).then((res2) => {
-                        if (res2.finished) {
-                            setVisible(false);
-                        }
-                    });
-                }, 3000);
-            }
-        });
+        timer.current = setTimeout(() => {
+            setVisible(false);
+        }, 3000);
     };
 
-    return (
-        <Animatable.View
-            useNativeDriver={true}
-            style={[styles.hintWrap, {zIndex: visible ? 3 : -3, opacity: +visible}]}
-            ref={hintViewRef}>
+    return visible ? (
+        <Animatable.View animation={'fadeIn'} duration={600} style={[styles.hintWrap]} ref={hintViewRef}>
             <Image source={hintIcon} style={{width: px(14), height: px(14), marginRight: px(4)}} />
-            <TextInput
-                ref={inputRef}
+            <Text
                 style={{
                     fontSize: px(12),
                     lineHeight: px(14),
                     color: '#fff',
-                    padding: 0,
-                }}
-            />
+                }}>
+                {text}
+            </Text>
         </Animatable.View>
-    );
+    ) : null;
 });
 
 const Index = ({navigation, route, setLoading}) => {
@@ -1176,17 +1163,15 @@ const styles = StyleSheet.create({
         height: px(24),
     },
     hintWrap: {
-        position: 'absolute',
-        top: 0,
-        left: px(16),
         width: px(343),
         padding: px(8),
         borderRadius: px(6),
+        alignSelf: 'center',
+        marginBottom: px(12),
         backgroundColor: '#FF7D41',
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        zIndex: 2,
     },
 });
 
