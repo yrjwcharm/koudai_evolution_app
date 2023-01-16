@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:39
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-16 13:16:06
+ * @LastEditTime: 2023-01-16 13:29:44
  * @Description: 注册
  */
 import React, {Component} from 'react';
@@ -20,6 +20,7 @@ import {connect} from 'react-redux';
 import {HeaderHeightContext} from '@react-navigation/stack';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Modal} from '~/components/Modal';
+import {baseURL} from '../../../services/config';
 class Index extends Component {
     constructor(props) {
         super(props);
@@ -52,10 +53,10 @@ class Index extends Component {
                 params: {id: 0},
                 $event: 'registerModalClick',
             })}>《用户协议》</alink>和<alink url=${JSON.stringify({
-                path: 'Agreement',
-                params: {id: 32},
+                path: 'WebView',
+                params: {link: `${baseURL.H5}/privacy`, title: '理财魔方隐私权协议'},
+                $event: 'registerModalClick',
             })}>《隐私协议》</alink>`,
-            $event: 'registerModalClick',
             confirm: true,
             onCloseCallBack: () => {
                 this.agreementCheckModalState = false;

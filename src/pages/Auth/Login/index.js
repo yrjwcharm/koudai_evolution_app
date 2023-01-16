@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-16 13:09:15
+ * @LastEditTime: 2023-01-16 13:26:33
  * @Description: 登录
  */
 import React, {Component, createRef} from 'react';
@@ -33,6 +33,7 @@ import Agreements from '../../../components/Agreements';
 import memoize from 'memoize-one';
 import {HeaderHeightContext} from '@react-navigation/stack';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {baseURL} from '../../../services/config';
 class Login extends Component {
     constructor(props) {
         super(props);
@@ -188,8 +189,8 @@ class Login extends Component {
                 params: {id: 0},
                 $event: 'loginModalClick',
             })}>《用户协议》</alink>和<alink url=${JSON.stringify({
-                path: 'Agreement',
-                params: {id: 32},
+                path: 'WebView',
+                params: {link: `${baseURL.H5}/privacy`, title: '理财魔方隐私权协议'},
                 $event: 'loginModalClick',
             })}>《隐私协议》</alink>`,
             confirm: true,
