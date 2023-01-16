@@ -2,11 +2,20 @@
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-16 11:35:21
+ * @LastEditTime: 2023-01-16 13:09:15
  * @Description: 登录
  */
 import React, {Component, createRef} from 'react';
-import {View, Text, ScrollView, StyleSheet, TouchableHighlight, Dimensions, StatusBar} from 'react-native';
+import {
+    View,
+    Text,
+    ScrollView,
+    StyleSheet,
+    TouchableHighlight,
+    Dimensions,
+    StatusBar,
+    DeviceEventEmitter,
+} from 'react-native';
 import {px as text, px, inputInt} from '../../../utils/appUtil';
 import {Button} from '../../../components/Button';
 import {Colors, Font, Style} from '../../../common/commonStyle';
@@ -38,8 +47,18 @@ class Login extends Component {
             code_btn_click: true,
             second: 60,
         };
+        this.agreementCheckModalState = false;
         this.agreementsRef = createRef();
         this.codeInputRef = createRef();
+    }
+    componentDidMount() {
+        this.focusLister = this.props.navigation.addListener('focus', () => {
+            if (this.agreementCheckModalState) this.autoCheck();
+        });
+        this.loginModalClickLister = DeviceEventEmitter.addListener('loginModalClick', () => {
+            Modal.close();
+            this.agreementCheckModalState = true;
+        });
     }
     login = () => {
         const {mobile, password, type, code} = this.state;
@@ -161,27 +180,36 @@ class Login extends Component {
         }
     });
     weChatLogin = () => {};
+    autoCheck = () => {
+        Modal.show({
+            title: '服务协议及隐私协议',
+            content: `为了更好的保障您的合法权益，请您阅读并同意<alink url=${JSON.stringify({
+                path: 'Agreement',
+                params: {id: 0},
+                $event: 'loginModalClick',
+            })}>《用户协议》</alink>和<alink url=${JSON.stringify({
+                path: 'Agreement',
+                params: {id: 32},
+                $event: 'loginModalClick',
+            })}>《隐私协议》</alink>`,
+            confirm: true,
+            onCloseCallBack: () => {
+                this.agreementCheckModalState = false;
+            },
+            confirmCallBack: () => {
+                this.agreementCheckModalState = false;
+                this.agreementsRef.current.toggle();
+                setTimeout(() => {
+                    this.sendCode();
+                }, 0);
+            },
+        });
+    };
     sendCode = () => {
         const {code_btn_click, mobile, agreeState} = this.state;
         if (!(mobile?.length === 11)) return Toast.show('请正确输入您的手机号');
         if (!agreeState && code_btn_click) {
-            Modal.show({
-                title: '服务协议及隐私协议',
-                content: `为了更好的保障您的合法权益，请您阅读并同意<alink url=${JSON.stringify({
-                    path: 'Agreement',
-                    params: {id: 0},
-                })}>《用户协议》</alink>和<alink url=${JSON.stringify({
-                    path: 'Agreement',
-                    params: {id: 32},
-                })}>《隐私协议》</alink>`,
-                confirm: true,
-                confirmCallBack: () => {
-                    this.agreementsRef.current.toggle();
-                    setTimeout(() => {
-                        this.sendCode();
-                    }, 0);
-                },
-            });
+            this.autoCheck();
             return;
         }
         if (code_btn_click) {
@@ -226,6 +254,8 @@ class Login extends Component {
     };
     componentWillUnmount() {
         this.time && clearInterval(this.time);
+        this.focusLister();
+        this.loginModalClickLister.remove();
     }
     render() {
         const {mobile, password, type, code, agreeState, code_btn_click, verifyText} = this.state;

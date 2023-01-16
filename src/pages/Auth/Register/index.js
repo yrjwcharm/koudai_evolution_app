@@ -2,11 +2,11 @@
  * @Date: 2021-01-13 16:52:39
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-13 20:19:14
+ * @LastEditTime: 2023-01-16 13:16:06
  * @Description: 注册
  */
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, ScrollView, Dimensions, StatusBar} from 'react-native';
+import {View, Text, StyleSheet, ScrollView, Dimensions, StatusBar, DeviceEventEmitter} from 'react-native';
 import {px as text, px, inputInt} from '../../../utils/appUtil';
 import {Button} from '../../../components/Button';
 import {Style, Colors} from '../../../common/commonStyle';
@@ -28,28 +28,51 @@ class Index extends Component {
             check: false,
             btnClick: true,
         };
+        this.agreementCheckModalState = false;
         this.agreementsRef = React.createRef();
     }
+    componentDidMount() {
+        this.focusLister = this.props.navigation.addListener('focus', () => {
+            if (this.agreementCheckModalState) this.autoCheck();
+        });
+        this.loginModalClickLister = DeviceEventEmitter.addListener('registerModalClick', () => {
+            Modal.close();
+            this.agreementCheckModalState = true;
+        });
+    }
+    componentWillUnmount() {
+        this.focusLister();
+        this.loginModalClickLister.remove();
+    }
+    autoCheck = () => {
+        Modal.show({
+            title: '服务协议及隐私协议',
+            content: `为了更好的保障您的合法权益，请您阅读并同意<alink url=${JSON.stringify({
+                path: 'Agreement',
+                params: {id: 0},
+                $event: 'registerModalClick',
+            })}>《用户协议》</alink>和<alink url=${JSON.stringify({
+                path: 'Agreement',
+                params: {id: 32},
+            })}>《隐私协议》</alink>`,
+            $event: 'registerModalClick',
+            confirm: true,
+            onCloseCallBack: () => {
+                this.agreementCheckModalState = false;
+            },
+            confirmCallBack: () => {
+                this.agreementCheckModalState = false;
+                this.agreementsRef.current.toggle();
+                setTimeout(() => {
+                    this.register();
+                }, 0);
+            },
+        });
+    };
     register = () => {
         const {mobile, check} = this.state;
         if (!check) {
-            Modal.show({
-                title: '服务协议及隐私协议',
-                content: `为了更好的保障您的合法权益，请您阅读并同意<alink url=${JSON.stringify({
-                    path: 'Agreement',
-                    params: {id: 0},
-                })}>《用户协议》</alink>和<alink url=${JSON.stringify({
-                    path: 'Agreement',
-                    params: {id: 32},
-                })}>《隐私协议》</alink>`,
-                confirm: true,
-                confirmCallBack: () => {
-                    this.agreementsRef.current.toggle();
-                    setTimeout(() => {
-                        this.register();
-                    }, 0);
-                },
-            });
+            this.autoCheck();
             return;
         }
         global.LogTool('Register');
