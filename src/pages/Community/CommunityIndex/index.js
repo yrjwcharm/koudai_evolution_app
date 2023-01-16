@@ -390,44 +390,46 @@ const Follow = forwardRef(({list = [], refreshNews, tabs = []}, ref) => {
 
     return (
         <>
-            <ScrollView bounces={false} horizontal showsHorizontalScrollIndicator={false} style={{flexGrow: 0}}>
-                <View style={[Style.flexRow, {paddingVertical: px(8), paddingHorizontal: Space.padding}]}>
-                    {tabs?.map((tab, i) => {
-                        const {name, type} = tab;
-                        const isActive = current === type;
-                        return (
-                            <TouchableOpacity
-                                activeOpacity={0.8}
-                                disabled={isActive}
-                                key={name + type}
-                                onPress={() => {
-                                    flatList.current?.scrollToOffset({animated: false, offset: 0});
-                                    setCurrent(type);
-                                    setPage(1);
-                                    setRefreshing(true);
-                                }}
-                                style={[
-                                    styles.recommendTab,
-                                    {
-                                        marginLeft: i === 0 ? 0 : px(8),
-                                        backgroundColor: isActive ? Colors.brandColor : '#fff',
-                                    },
-                                ]}>
-                                <Text
+            {tabs && tabs?.length > 0 && (
+                <ScrollView bounces={false} horizontal showsHorizontalScrollIndicator={false} style={{flexGrow: 0}}>
+                    <View style={[Style.flexRow, {paddingVertical: px(8), paddingHorizontal: Space.padding}]}>
+                        {tabs?.map((tab, i) => {
+                            const {name, type} = tab;
+                            const isActive = current === type;
+                            return (
+                                <TouchableOpacity
+                                    activeOpacity={0.8}
+                                    disabled={isActive}
+                                    key={name + type}
+                                    onPress={() => {
+                                        flatList.current?.scrollToOffset({animated: false, offset: 0});
+                                        setCurrent(type);
+                                        setPage(1);
+                                        setRefreshing(true);
+                                    }}
                                     style={[
-                                        styles.smText,
+                                        styles.recommendTab,
                                         {
-                                            color: isActive ? '#fff' : Colors.defaultColor,
-                                            fontWeight: isActive ? Font.weightMedium : '400',
+                                            marginLeft: i === 0 ? 0 : px(8),
+                                            backgroundColor: isActive ? Colors.brandColor : '#fff',
                                         },
                                     ]}>
-                                    {name}
-                                </Text>
-                            </TouchableOpacity>
-                        );
-                    })}
-                </View>
-            </ScrollView>
+                                    <Text
+                                        style={[
+                                            styles.smText,
+                                            {
+                                                color: isActive ? '#fff' : Colors.defaultColor,
+                                                fontWeight: isActive ? Font.weightMedium : '400',
+                                            },
+                                        ]}>
+                                        {name}
+                                    </Text>
+                                </TouchableOpacity>
+                            );
+                        })}
+                    </View>
+                </ScrollView>
+            )}
             <FlatList
                 data={data}
                 initialNumToRender={20}
