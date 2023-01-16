@@ -486,9 +486,10 @@ export const WaterfallFlowList = forwardRef(
         const [loading, setLoading] = useState(true);
         const logedPage = useRef([]);
         const waterfallFlowHeight = useRef(0);
+        const operation = useRef();
 
         const init = () => {
-            getData({...params, page})
+            getData({...params, page, operation: operation.current})
                 .then((res) => {
                     if (res.code === '000000') {
                         const {has_more, items = [], update_community_guide, resource_private_tip: tip} = res.result;
@@ -503,6 +504,7 @@ export const WaterfallFlowList = forwardRef(
                     setLoading(false);
                     setRefreshing(false);
                 });
+            operation.current = null;
         };
 
         const refresh = () => {
@@ -584,6 +586,7 @@ export const WaterfallFlowList = forwardRef(
                     onRefresh: () => {
                         setRefreshing(true);
                         refreshNews?.('recommend');
+                        operation.current = 'pull';
                         page > 1 ? setPage(1) : init();
                     },
                     _onScroll: (e) => {
@@ -854,7 +857,15 @@ const UpdateHint = forwardRef((props, ref) => {
             style={[styles.hintWrap, {zIndex: visible ? 3 : -3, opacity: +visible}]}
             ref={hintViewRef}>
             <Image source={hintIcon} style={{width: px(14), height: px(14), marginRight: px(4)}} />
-            <TextInput ref={inputRef} style={{fontSize: px(12), lineHeight: px(14), color: '#fff', padding: 0}} />
+            <TextInput
+                ref={inputRef}
+                style={{
+                    fontSize: px(12),
+                    lineHeight: px(14),
+                    color: '#fff',
+                    padding: 0,
+                }}
+            />
         </Animatable.View>
     );
 });

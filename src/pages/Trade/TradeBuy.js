@@ -265,7 +265,7 @@ class TradeBuy extends Component {
         global.LogTool('tpwd');
         const {poid, bankSelect, type, currentDate, isLargeAmount, largeAmount} = this.state;
 
-        const res = await getBuyQuestionnaire({fr: 'compliance', poid});
+        const res = await getBuyQuestionnaire({fr: 'compliance', poid, password});
         const flag = await new Promise((resolve) => {
             const {code, result: {list, summary_id} = {}} = res || {};
             if (code === '000000' && summary_id) {
@@ -299,7 +299,7 @@ class TradeBuy extends Component {
             }
         });
         if (!flag) {
-            this.props.navigation.goBack();
+            // this.props.navigation.goBack();
             return;
         }
 

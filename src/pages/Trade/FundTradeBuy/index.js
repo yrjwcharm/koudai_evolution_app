@@ -822,7 +822,7 @@ const Index = ({navigation, route}) => {
     const onSubmit = async (password) => {
         let flag = await handlerQuestion();
         if (!flag) {
-            navigation.goBack();
+            // navigation.goBack();
             return;
         }
         const method = isLarge ? large_pay_method : pay_methods[bankSelectIndex];

@@ -17,6 +17,7 @@ import TagInfo from '../components/TagInfo';
 import RenderAlert from '../components/RenderAlert';
 import Icon from 'react-native-vector-icons/Entypo';
 import AssetCard from '../components/AssetCard';
+import {useSelector} from 'react-redux';
 const ClassCard = ({data = {}, showEye, expand}) => {
     const jump = useJump();
     const {name, number, remind_info, tag_info, indicators, icon, url, child, child_header_list} = data;
@@ -169,6 +170,8 @@ const HoldCard = ({data, reload, showEye}) => {
 const ListTitle = ({title = '全部资产', pop_info, reload, allData, expand, onExpand}) => {
     const bottomModal = useRef();
     const [list, setList] = useState(fromJS([]));
+    const userInfo = useSelector((store) => store.userInfo)?.toJS();
+    const jump = useJump();
     useEffect(() => {
         setList(fromJS(pop_info?.list || []));
     }, [pop_info]);
@@ -181,6 +184,10 @@ const ListTitle = ({title = '全部资产', pop_info, reload, allData, expand, o
         setList(tmp);
     };
     const onClose = () => {
+        if (!userInfo.is_login) {
+            jump(pop_info?.close_url);
+            return;
+        }
         let params = list
             .toJS()
             ?.filter((item) => item.select == 1)

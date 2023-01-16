@@ -1,17 +1,18 @@
 /*
  * @Date: 2021-01-14 17:08:04
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-26 14:04:38
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-01-16 11:34:41
  * @Description:
  */
-import React from 'react';
+import React, {forwardRef, useImperativeHandle} from 'react';
 import {Colors, Style} from '../../common/commonStyle';
 import {px as text, px} from '../../utils/appUtil';
 import {View, Text, TextInput, StyleSheet} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
-export default function Input(props) {
+const Input = (props, ref) => {
     const inputRef = React.useRef(null);
+    useImperativeHandle(ref, () => ({origin: inputRef.current}));
     useFocusEffect(
         React.useCallback(() => {
             if (props.autoFocus) {
@@ -37,7 +38,9 @@ export default function Input(props) {
             />
         </View>
     );
-}
+};
+
+export default forwardRef(Input);
 const styles = StyleSheet.create({
     inputLeftText: {
         fontSize: text(16),

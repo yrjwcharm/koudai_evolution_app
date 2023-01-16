@@ -2,7 +2,7 @@
  * @Date: 2021-01-07 12:15:57
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-12 19:33:47
+ * @LastEditTime: 2023-01-13 20:19:58
  * @Description:渲染Html片段
  */
 import HTML from 'react-native-render-html';
@@ -11,6 +11,7 @@ import {Dimensions, Text} from 'react-native';
 import {px as text} from '../utils/appUtil';
 import {navigate} from './hooks/RootNavigation';
 import {Colors} from '../common/commonStyle';
+import {Modal} from './Modal';
 const width = Dimensions.get('window').width;
 
 const tagsStyles = {
@@ -23,7 +24,12 @@ const RenderHtml = (props) => {
             wrapper: 'Text',
             renderer: (htmlAttribs, children, convertedCSSStyles, passProps) => {
                 return (
-                    <Text key={children[0][0].key} onPress={() => navigate(JSON.parse(htmlAttribs.url))}>
+                    <Text
+                        key={children[0][0].key}
+                        onPress={() => {
+                            Modal.close();
+                            navigate(JSON.parse(htmlAttribs.url));
+                        }}>
                         {children}
                     </Text>
                 );

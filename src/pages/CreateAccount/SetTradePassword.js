@@ -3,7 +3,7 @@
  * @Autor: xjh
  * @Date: 2021-01-15 11:12:20
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-13 16:18:32
+ * @LastEditTime: 2023-01-16 10:47:33
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView} from 'react-native';
@@ -100,7 +100,10 @@ const SetTradePassword = ({navigation, route}) => {
                                 Toast.show('设置密码成功，即将跳转');
                                 setTimeout(() => {
                                     if (data.result?.jump_url?.path) {
-                                        jump(data.result.jump_url, 'replace');
+                                        jump(
+                                            data.result.jump_url,
+                                            ['Product'].includes(data.result?.jump_url?.path) ? 'navigate' : 'replace'
+                                        );
                                     } else {
                                         navigation.goBack();
                                     }

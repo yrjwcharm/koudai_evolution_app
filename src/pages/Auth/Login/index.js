@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-11 10:52:07
+ * @LastEditTime: 2023-01-16 11:35:21
  * @Description: 登录
  */
 import React, {Component, createRef} from 'react';
@@ -39,6 +39,7 @@ class Login extends Component {
             second: 60,
         };
         this.agreementsRef = createRef();
+        this.codeInputRef = createRef();
     }
     login = () => {
         const {mobile, password, type, code} = this.state;
@@ -166,7 +167,13 @@ class Login extends Component {
         if (!agreeState && code_btn_click) {
             Modal.show({
                 title: '服务协议及隐私协议',
-                content: '为了更好的保障您的合法权益，请您阅读并同意《用户协议》和《隐私协议》',
+                content: `为了更好的保障您的合法权益，请您阅读并同意<alink url=${JSON.stringify({
+                    path: 'Agreement',
+                    params: {id: 0},
+                })}>《用户协议》</alink>和<alink url=${JSON.stringify({
+                    path: 'Agreement',
+                    params: {id: 32},
+                })}>《隐私协议》</alink>`,
                 confirm: true,
                 confirmCallBack: () => {
                     this.agreementsRef.current.toggle();
@@ -185,6 +192,7 @@ class Login extends Component {
                 if (res.code == '000000') {
                     Toast.show('验证码发送成功');
                     this.setState({code_btn_click: false});
+                    this.codeInputRef.current?.origin?.focus?.();
                     this.timer();
                 } else {
                     Toast.show(res.message);
@@ -268,6 +276,7 @@ class Login extends Component {
                                     value={code}
                                     placeholder="请输入验证码"
                                     maxLength={6}
+                                    ref={this.codeInputRef}
                                     keyboardType={'number-pad'}
                                     clearButtonMode="while-editing"
                                     style={styles.code_input}

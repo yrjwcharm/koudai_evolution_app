@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-13 16:52:39
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-05-10 20:48:38
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-01-13 20:19:14
  * @Description: 注册
  */
 import React, {Component} from 'react';
@@ -19,6 +19,7 @@ import FastImage from 'react-native-fast-image';
 import {connect} from 'react-redux';
 import {HeaderHeightContext} from '@react-navigation/stack';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {Modal} from '~/components/Modal';
 class Index extends Component {
     constructor(props) {
         super(props);
@@ -27,14 +28,31 @@ class Index extends Component {
             check: false,
             btnClick: true,
         };
+        this.agreementsRef = React.createRef();
     }
     register = () => {
-        global.LogTool('Register');
         const {mobile, check} = this.state;
         if (!check) {
-            Toast.show('请勾选并同意理财魔方相关协议');
+            Modal.show({
+                title: '服务协议及隐私协议',
+                content: `为了更好的保障您的合法权益，请您阅读并同意<alink url=${JSON.stringify({
+                    path: 'Agreement',
+                    params: {id: 0},
+                })}>《用户协议》</alink>和<alink url=${JSON.stringify({
+                    path: 'Agreement',
+                    params: {id: 32},
+                })}>《隐私协议》</alink>`,
+                confirm: true,
+                confirmCallBack: () => {
+                    this.agreementsRef.current.toggle();
+                    setTimeout(() => {
+                        this.register();
+                    }, 0);
+                },
+            });
             return;
         }
+        global.LogTool('Register');
         http.post('/auth/user/mobile_available/20210101', {mobile}).then((res) => {
             if (res.code === '000000') {
                 this.props.navigation.navigate('SetLoginPassword', {
@@ -95,6 +113,7 @@ class Index extends Component {
                         keyboardType={'number-pad'}
                     />
                     <Agreements
+                        ref={this.agreementsRef}
                         onChange={(check) => {
                             this.setState({check});
                         }}
@@ -106,7 +125,7 @@ class Index extends Component {
                             },
 
                             {
-                                title: '《隐私权政策》',
+                                title: '《隐私协议》',
                                 id: 32,
                             },
                         ]}
