@@ -781,9 +781,9 @@ const Index = ({navigation, route}) => {
         passwordModal.current.show();
     };
 
-    const handlerQuestion = async () => {
+    const handlerQuestion = async (password) => {
         return new Promise((resolve) => {
-            getBuyQuestionnaire({fr: 'compliance', scene: 'fund'}).then((res) => {
+            getBuyQuestionnaire({fr: 'compliance', scene: 'fund', password}).then((res) => {
                 if (res.code === '000000') {
                     const {list, summary_id} = res.result;
                     if (summary_id) {
@@ -820,7 +820,7 @@ const Index = ({navigation, route}) => {
 
     /** @name 输入完交易密码确认交易 */
     const onSubmit = async (password) => {
-        let flag = await handlerQuestion();
+        let flag = await handlerQuestion(password);
         if (!flag) {
             // navigation.goBack();
             return;
