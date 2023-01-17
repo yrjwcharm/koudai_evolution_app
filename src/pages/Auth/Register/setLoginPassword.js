@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 10:40:08
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-11 16:24:26
+ * @LastEditTime: 2023-01-17 18:18:39
  * @Description:设置登录密码
  */
 import React, {Component} from 'react';
@@ -91,20 +91,15 @@ class SetLoginPassword extends Component {
                 Toast.hide(toast);
                 if (res.code === '000000') {
                     Toast.show('绑定成功');
-                    http.post('/auth/user/login/20210101', {
-                        mobile: this.props.route?.params?.mobile,
-                        password: base64.encode(password),
-                    }).then((data) => {
-                        this.props.getUserInfo();
-                        this.props.getAppConfig();
-                        this.props.getVerifyGesture(true);
-                        if (this.props.route?.params?.fr) {
-                            this.props.navigation.pop(4);
-                        } else {
-                            this.props.navigation.pop(3);
-                        }
-                        Storage.save('loginStatus', data.result);
-                    });
+                    this.props.getUserInfo();
+                    this.props.getAppConfig();
+                    this.props.getVerifyGesture(true);
+                    if (this.props.route?.params?.fr) {
+                        this.props.navigation.pop(4);
+                    } else {
+                        this.props.navigation.pop(3);
+                    }
+                    Storage.save('loginStatus', res.result.login_result);
                 } else {
                     Toast.show(res.message);
                 }
