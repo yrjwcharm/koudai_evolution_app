@@ -227,8 +227,8 @@ export default function Launch({navigation}) {
         }
         http.post('mapi/upload/apple_ad/20220530', data);
     };
-    const init = () => {
-        getSystemMes();
+    const init = async () => {
+        await getSystemMes();
         Platform.OS == 'ios' ? getIdfa() : getOaid();
         Platform.OS == 'ios' && getAdData();
         heartBeat();
