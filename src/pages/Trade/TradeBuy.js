@@ -268,32 +268,36 @@ class TradeBuy extends Component {
         const res = await getBuyQuestionnaire({fr: 'compliance', poid, password});
         const flag = await new Promise((resolve) => {
             const {code, result: {list, summary_id} = {}} = res || {};
-            if (code === '000000' && summary_id) {
-                Modal.show(
-                    {
-                        backButtonClose: false,
-                        children: (
-                            <Questionnaire
-                                callback={(action) => {
-                                    Modal.close();
-                                    if (action === 'close') {
-                                        resolve(false);
-                                    } else {
-                                        resolve(true);
-                                    }
-                                }}
-                                data={list}
-                                summary_id={summary_id}
-                            />
-                        ),
-                        header: <View />,
-                        isTouchMaskToClose: false,
-                        style: {
-                            minHeight: 0,
+            if (code === '000000') {
+                if (summary_id) {
+                    Modal.show(
+                        {
+                            backButtonClose: false,
+                            children: (
+                                <Questionnaire
+                                    callback={(action) => {
+                                        Modal.close();
+                                        if (action === 'close') {
+                                            resolve(false);
+                                        } else {
+                                            resolve(true);
+                                        }
+                                    }}
+                                    data={list}
+                                    summary_id={summary_id}
+                                />
+                            ),
+                            header: <View />,
+                            isTouchMaskToClose: false,
+                            style: {
+                                minHeight: 0,
+                            },
                         },
-                    },
-                    'slide'
-                );
+                        'slide'
+                    );
+                } else {
+                    resolve(true);
+                }
             } else {
                 Toast.show(res.message);
                 resolve(false);
