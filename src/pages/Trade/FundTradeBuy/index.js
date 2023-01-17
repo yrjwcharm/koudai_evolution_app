@@ -783,38 +783,43 @@ const Index = ({navigation, route}) => {
 
     const handlerQuestion = async (password) => {
         return new Promise((resolve) => {
-            getBuyQuestionnaire({fr: 'compliance', scene: 'fund', password}).then((res) => {
-                if (res.code === '000000') {
-                    const {list, summary_id} = res.result;
-                    if (summary_id) {
-                        Modal.show(
-                            {
-                                backButtonClose: false,
-                                children: (
-                                    <Questionnaire
-                                        callback={(action) => {
-                                            Modal.close();
-                                            resolve(action === 'continue');
-                                        }}
-                                        data={list}
-                                        summary_id={summary_id}
-                                    />
-                                ),
-                                header: <View />,
-                                isTouchMaskToClose: false,
-                                style: {
-                                    minHeight: 0,
+            getBuyQuestionnaire({fr: 'compliance', scene: 'fund', password})
+                .then((res) => {
+                    if (res.code === '000000') {
+                        const {list, summary_id} = res.result;
+                        if (summary_id) {
+                            Modal.show(
+                                {
+                                    backButtonClose: false,
+                                    children: (
+                                        <Questionnaire
+                                            callback={(action) => {
+                                                Modal.close();
+                                                resolve(action === 'continue');
+                                            }}
+                                            data={list}
+                                            summary_id={summary_id}
+                                        />
+                                    ),
+                                    header: <View />,
+                                    isTouchMaskToClose: false,
+                                    style: {
+                                        minHeight: 0,
+                                    },
                                 },
-                            },
-                            'slide'
-                        );
+                                'slide'
+                            );
+                        } else {
+                            resolve(true);
+                        }
                     } else {
-                        resolve(true);
+                        Toast.show(res.message);
+                        resolve(false);
                     }
-                } else {
-                    resolve(true);
-                }
-            });
+                })
+                .catch((_) => {
+                    resolve(false);
+                });
         });
     };
 

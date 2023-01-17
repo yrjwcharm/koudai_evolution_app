@@ -495,7 +495,7 @@ export const WaterfallFlowList = forwardRef(
                     if (res.code === '000000') {
                         const {has_more, items = [], update_community_guide, resource_private_tip: tip} = res.result;
                         setHasMore(has_more);
-                        onUpdate(update_community_guide);
+                        onUpdate?.(update_community_guide);
                         page === 1 && waterfallWrapper.current?.clear?.();
                         setData((prev) => (page === 1 ? items : prev.concat(items)));
                         tip && setTip(tip);

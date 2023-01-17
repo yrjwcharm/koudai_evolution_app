@@ -295,7 +295,8 @@ class TradeBuy extends Component {
                     'slide'
                 );
             } else {
-                resolve(true);
+                Toast.show(res.message);
+                resolve(false);
             }
         });
         if (!flag) {
