@@ -733,7 +733,7 @@ const Recommend = forwardRef(({isLogin, list = [], refreshNews, showType, tabs =
                 </TouchableOpacity>
             </View>
             <ScrollableTabView
-                initialPage={0}
+                initialPage={tabs?.findIndex((_i) => _i.type == init_type)}
                 onChangeTab={({i}) => setCurrent(i)}
                 renderTabBar={false}
                 ref={scrollTab}
