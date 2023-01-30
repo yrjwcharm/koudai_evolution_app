@@ -2,7 +2,7 @@
  * @Date: 2022-06-13 11:04:13
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-12 17:33:49
+ * @LastEditTime: 2023-01-30 11:20:45
  * @Description:
  */
 import React, {useState} from 'react';
@@ -63,6 +63,7 @@ const styles = StyleSheet.create({
         paddingLeft: px(6),
         borderBottomColor: Colors.lineColor,
         borderBottomWidth: 0.5,
+        backgroundColor: '#fff',
     },
     inputCon: {
         flex: 1,

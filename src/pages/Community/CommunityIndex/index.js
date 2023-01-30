@@ -604,7 +604,10 @@ export const WaterfallFlowList = forwardRef(
                     },
                     ref: waterfallFlow,
                     refreshing,
-                    style: {paddingHorizontal: listType === 'list' ? 0 : px(5) / 2, backgroundColor: Colors.bgColor},
+                    style: {
+                        paddingHorizontal: listType === 'list' ? 0 : px(5) / 2,
+                        backgroundColor: Colors.bgColor,
+                    },
                     ...rest,
                 }}
                 data={data}
@@ -615,7 +618,12 @@ export const WaterfallFlowList = forwardRef(
                 renderItem={renderItem}
             />
         ) : (
-            <View style={wrapper === 'Recommend' ? [Style.flexCenter, {flex: 1}] : {paddingTop: px(280)}}>
+            <View
+                style={
+                    wrapper === 'Recommend'
+                        ? [Style.flexCenter, {flex: 1}]
+                        : {paddingTop: px(280), flex: 1, backgroundColor: Colors.bgColor}
+                }>
                 {loading ? (
                     <ActivityIndicator color={'#ddd'} />
                 ) : (

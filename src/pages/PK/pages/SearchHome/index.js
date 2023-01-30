@@ -270,7 +270,7 @@ const Index = ({navigation, route}) => {
 export default Index;
 
 const styles = StyleSheet.create({
-    con: {backgroundColor: '#fff', flex: 1},
+    con: {backgroundColor: '#fff', flex: 1, opacity: 0.99},
     line: {height: 0.5, backgroundColor: '#eee', marginVertical: Space.marginVertical},
     title_text: {
         fontSize: px(16),
