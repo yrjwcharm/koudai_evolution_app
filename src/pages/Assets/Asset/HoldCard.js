@@ -158,6 +158,7 @@ const HoldCard = ({data, reload, showEye}) => {
                 reload={reload}
                 expand={expand}
                 onExpand={() => {
+                    global.LogTool('button_click', expand ? 'ZK' : 'SQ');
                     setExpand((prev) => !prev);
                 }}
             />

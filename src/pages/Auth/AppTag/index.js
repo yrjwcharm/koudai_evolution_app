@@ -36,6 +36,7 @@ const Index = ({navigation, route}) => {
         };
     }, []);
     useEffect(() => {
+        global.LogTool('jump', '', '', 'AppTag1');
         getData();
     }, []);
     //type多选  选中取消选中
@@ -66,9 +67,13 @@ const Index = ({navigation, route}) => {
             });
             return tmp;
         });
-        current == 0 && setCurrent((pre) => ++pre);
+        if (current == 0) {
+            global.LogTool('jump', '', '', 'AppTag2');
+            setCurrent((pre) => ++pre);
+        }
     };
     const goNextPage = async () => {
+        global.LogTool('next_click', '', '', `AppTag${current + 1}`);
         if (current == data.length - 1) {
             //答完题目
             const toast = Toast.showLoading();
@@ -80,10 +85,12 @@ const Index = ({navigation, route}) => {
                 else navigation.goBack();
             }, 500);
         } else {
+            global.LogTool('jump', '', '', 'AppTag3');
             setCurrent((pre) => ++pre);
         }
     };
     const onSkip = () => {
+        global.LogTool('jump_click', '', '', 'AppTag1');
         http.post('/preference/doskip/20220928').then((res) => {
             if (res.code === '000000') {
                 dispatch(getUserInfo());
@@ -158,7 +165,12 @@ const Index = ({navigation, route}) => {
                     <View style={styles.header}>
                         <TouchableOpacity
                             activeOpacity={0.8}
-                            onPress={() => setCurrent((pre) => --pre)}
+                            onPress={() => {
+                                setCurrent((pre) => {
+                                    global.LogTool('previous_click', '', '', `AppTag${pre + 1}`);
+                                    return --pre;
+                                });
+                            }}
                             style={Style.flexRow}>
                             <AntDesign name="left" size={px(16)} />
                             <Text>上一步</Text>
