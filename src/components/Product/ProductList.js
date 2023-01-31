@@ -256,7 +256,9 @@ const ProductList = ({data = [], logParams, slideLogParams, style, drag, type = 
                                         <View style={{flex: 1}}>
                                             <View>
                                                 <View style={Style.flexRow}>
-                                                    <Text style={styles.name}>{name}</Text>
+                                                    <Text numberOfLines={1} style={[styles.name, styles.lengthLimit]}>
+                                                        {name}
+                                                    </Text>
                                                     {item.signal_info?.title ? (
                                                         <>
                                                             <Image
@@ -726,6 +728,9 @@ const styles = StyleSheet.create({
         lineHeight: px(17),
         color: Colors.defaultColor,
         fontWeight: Font.weightMedium,
+    },
+    lengthLimit: {
+        maxWidth: px(160),
     },
     label: {
         fontSize: Font.textSm,
