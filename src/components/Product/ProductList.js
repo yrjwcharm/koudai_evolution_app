@@ -14,6 +14,7 @@ import {useJump} from '~/components/hooks';
 import HTML from '~/components/RenderHtml';
 import Tabbar from '~/components/TabBar';
 import {px} from '~/utils/appUtil';
+import plusSign from '~/assets/img/plus-sign.png';
 
 const DelayChart = ({chart}) => {
     const [showChart, setShowChart] = useState(false);
@@ -247,6 +248,99 @@ const ProductList = ({data = [], logParams, slideLogParams, style, drag, type = 
                                             </TouchableOpacity>
                                         ) : null}
                                     </View>
+                                );
+                            case 108:
+                                return (
+                                    <>
+                                        <LeftPart {...item} />
+                                        <View style={{flex: 1}}>
+                                            <View>
+                                                <View style={Style.flexRow}>
+                                                    <Text style={styles.name}>{name}</Text>
+                                                    {item.signal_info?.title ? (
+                                                        <>
+                                                            <Image
+                                                                source={plusSign}
+                                                                style={{
+                                                                    width: px(12),
+                                                                    height: px(12),
+                                                                    marginRight: px(4),
+                                                                    marginLeft: px(4),
+                                                                }}
+                                                            />
+                                                            <Text style={styles.name}>{item.signal_info.title}</Text>
+                                                        </>
+                                                    ) : null}
+                                                </View>
+                                                {tags?.length > 0 && (
+                                                    <View style={[Style.flexRow, {marginTop: px(4)}]}>
+                                                        {tags.map((tag, i) => (
+                                                            <View key={tag + i} style={styles.tagBox}>
+                                                                <Text style={styles.tagText}>{tag}</Text>
+                                                            </View>
+                                                        ))}
+                                                    </View>
+                                                )}
+                                            </View>
+                                            <View
+                                                style={{
+                                                    flexDirection: 'row',
+                                                    alignItems: 'center',
+                                                    marginTop: px(10),
+                                                }}>
+                                                {profit ? (
+                                                    <View style={{}}>
+                                                        <HTML html={profit} style={styles.bigProfit} />
+                                                        <Text style={[styles.profitLabel, {marginTop: px(3)}]}>
+                                                            {profit_desc}
+                                                        </Text>
+                                                    </View>
+                                                ) : null}
+                                                {item.signal_info ? (
+                                                    <LinearGradient
+                                                        start={{x: 0, y: 0}}
+                                                        end={{x: 0, y: 1}}
+                                                        colors={['#fff0f1', '#fff']}
+                                                        style={styles.linearSignal}>
+                                                        <View style={Style.flexRow}>
+                                                            <Image
+                                                                source={{uri: item.signal_info.yield_icon1}}
+                                                                style={styles.signalIcon}
+                                                            />
+                                                            <HTML
+                                                                style={styles.signalRate}
+                                                                html={item.signal_info.yield}
+                                                            />
+                                                        </View>
+                                                        <View style={[Style.flexRow, {marginTop: px(5)}]}>
+                                                            <Image
+                                                                source={{uri: item.signal_info.yield_icon2}}
+                                                                style={styles.signalIcon}
+                                                            />
+                                                            <Text style={styles.signalText}>
+                                                                {item.signal_info.yield_name}
+                                                            </Text>
+                                                        </View>
+                                                    </LinearGradient>
+                                                ) : null}
+                                            </View>
+                                        </View>
+                                        {edit_button ? (
+                                            <TouchableOpacity
+                                                activeOpacity={1}
+                                                onPress={() => {
+                                                    jump(edit_button.url);
+                                                }}
+                                                style={styles.editBtnFloat}>
+                                                {[1, 2, 3].map((i) => (
+                                                    <View
+                                                        style={[styles.editBtnIcon, {marginTop: i > 1 ? px(4) : 0}]}
+                                                        key={i}
+                                                    />
+                                                ))}
+                                            </TouchableOpacity>
+                                        ) : null}
+                                    </>
                                 );
                             default:
                                 return (
@@ -857,6 +951,29 @@ const styles = StyleSheet.create({
         fontSize: px(11),
         lineHeight: px(15),
         color: '#fff',
+    },
+    linearSignal: {
+        marginLeft: px(8),
+        borderRadius: px(3),
+        paddingVertical: px(4),
+        paddingHorizontal: px(6),
+    },
+    signalIcon: {
+        width: px(11),
+        height: px(11),
+        marginRight: px(3),
+    },
+    signalText: {
+        fontSize: px(12),
+        color: '#e74949',
+        lineHeight: px(13),
+    },
+    signalRate: {
+        fontSize: px(12),
+        fontFamily: Font.numFontFamily,
+        fontWeight: '400',
+        color: '#e74949',
+        lineHeight: px(14),
     },
 });
 
