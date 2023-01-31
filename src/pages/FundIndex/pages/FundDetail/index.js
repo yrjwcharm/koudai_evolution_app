@@ -210,48 +210,48 @@ const Index = ({navigation, route}) => {
     return (
         <View style={styles.container}>
             <ShareModal ref={shareModal} title={share_info?.title} shareContent={share_info || {}} />
-            <ScrollView bounces={false} scrollIndicatorInsets={{right: 1}} style={{flex: 1}}>
-                <View style={{height: webviewHeight}}>
-                    <WebView
-                        allowsFullscreenVideo
-                        bounces={false}
-                        javaScriptEnabled
-                        onError={(syntheticEvent) => {
-                            const {nativeEvent} = syntheticEvent;
-                            console.warn('WebView error: ', nativeEvent);
-                        }}
-                        onHttpError={(syntheticEvent) => {
-                            const {nativeEvent} = syntheticEvent;
-                            console.warn('WebView received error status code: ', nativeEvent.statusCode);
-                        }}
-                        onLoadEnd={async () => {
-                            const loginStatus = await Storage.get('loginStatus');
-                            // console.log(loginStatus);
-                            webview.current.postMessage(
-                                JSON.stringify({
-                                    ...loginStatus,
-                                    did: global.did,
-                                    timeStamp: timeStamp.current + '',
-                                    ver: global.ver,
-                                })
-                            );
-                        }}
-                        onMessage={onMessage}
-                        originWhitelist={['*']}
-                        ref={webview}
-                        renderLoading={Platform.select({android: () => <Loading />, ios: undefined})}
-                        source={{
-                            uri: URI(`${SERVER_URL[global.env].H5}/fundDetail/${code}`)
-                                .addQuery({timeStamp: timeStamp.current})
-                                .valueOf(),
-                        }}
-                        startInLoadingState
-                        style={{flex: 1, opacity: 0.9999}}
-                        textZoom={100}
-                    />
-                </View>
-                <BottomDesc />
-            </ScrollView>
+            {/* <ScrollView bounces={false} scrollIndicatorInsets={{right: 1}} style={{flex: 1}}> */}
+            <View style={{flex: 1}}>
+                <WebView
+                    allowsFullscreenVideo
+                    bounces={false}
+                    javaScriptEnabled
+                    onError={(syntheticEvent) => {
+                        const {nativeEvent} = syntheticEvent;
+                        console.warn('WebView error: ', nativeEvent);
+                    }}
+                    onHttpError={(syntheticEvent) => {
+                        const {nativeEvent} = syntheticEvent;
+                        console.warn('WebView received error status code: ', nativeEvent.statusCode);
+                    }}
+                    onLoadEnd={async () => {
+                        const loginStatus = await Storage.get('loginStatus');
+                        // console.log(loginStatus);
+                        webview.current.postMessage(
+                            JSON.stringify({
+                                ...loginStatus,
+                                did: global.did,
+                                timeStamp: timeStamp.current + '',
+                                ver: global.ver,
+                            })
+                        );
+                    }}
+                    onMessage={onMessage}
+                    originWhitelist={['*']}
+                    ref={webview}
+                    renderLoading={Platform.select({android: () => <Loading />, ios: undefined})}
+                    source={{
+                        uri: URI(`${SERVER_URL[global.env].H5}/fundDetail/${code}`)
+                            .addQuery({timeStamp: timeStamp.current})
+                            .valueOf(),
+                    }}
+                    startInLoadingState
+                    style={{flex: 1, opacity: 0.9999}}
+                    textZoom={100}
+                />
+            </View>
+            {/* <BottomDesc /> */}
+            {/* </ScrollView> */}
             <View style={[Style.flexRow, styles.bottomBtns]}>
                 {icon_btns?.map((btn, i, arr) => {
                     const {icon, subs, title} = btn;
