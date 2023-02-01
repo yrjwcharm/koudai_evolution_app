@@ -380,7 +380,10 @@ const SpecialDetail = ({navigation, route}) => {
                         ]}>
                         {data?.icon_btns?.map?.((item, idx) => (
                             <TouchableOpacity
-                                style={[{alignItems: 'center'}, item.event_id === 'optional' ? {flex: 1} : {}]}
+                                style={[
+                                    {alignItems: 'center'},
+                                    item.event_id === 'intro' ? {width: px(50)} : {flex: 1},
+                                ]}
                                 activeOpacity={0.8}
                                 key={idx}
                                 onPress={() => handlerIconBtnClick(item)}>
@@ -498,9 +501,9 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     ocrBtn: {
-        marginLeft: px(22),
+        marginLeft: px(15),
         borderRadius: Space.borderRadius,
-        width: px(210),
+        width: px(200),
         height: px(40),
     },
     ocrIcon: {
