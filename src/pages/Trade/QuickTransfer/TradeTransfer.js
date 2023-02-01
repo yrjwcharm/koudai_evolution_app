@@ -22,13 +22,14 @@ import transfer from '../../../assets/img/trade/transfer.png';
 import {Colors, Font, Space, Style} from '../../../common/commonStyle';
 import {FixedButton} from '../../../components/Button';
 import {useJump} from '../../../components/hooks';
-import {Modal} from '../../../components/Modal';
+import {Modal, VerifyCodeModal} from '../../../components/Modal';
 import {PasswordModal} from '../../../components/Password';
 import HTML from '../../../components/RenderHtml';
 import Toast from '../../../components/Toast';
 import withPageLoading from '../../../components/withPageLoading';
 import {formaNum, isIphoneX, px} from '../../../utils/appUtil';
 import {getTransferPreData, transfetCalc, transferConfirm} from './services';
+import http from '~/services';
 
 const weightMedium = Platform.select({android: '700', ios: '500'});
 
@@ -184,12 +185,18 @@ const Index = ({navigation, route, setLoading}) => {
     const [calcData, setCalcData] = useState();
     const [calculating, setCalculating] = useState(false);
     const [errMsg, setErrMsg] = useState('');
+    const [isSign, setSign] = useState(false);
+    const [codeSignObj, setCodeSignObj] = useState({});
     const inputRef = useRef();
     const timer = useRef();
     const passwordModal = useRef();
+    const verifyCodeModal = React.useRef(null);
+    const signFlag = useRef(false);
 
     /** @name 点击确认转换 */
-    const onSubmit = () => {
+    const onSubmit = async () => {
+        let next = await handlerCodeSign();
+        if (!next) return;
         global.LogTool('PortfolioTransition_PercentSet_go', JSON.stringify(route.params || {}));
         if (btn.action === 'password') {
             passwordModal.current?.show();
@@ -214,6 +221,88 @@ const Index = ({navigation, route, setLoading}) => {
             .finally(() => {
                 Toast.hide(loading);
             });
+    };
+
+    const handlerCodeSign = () => {
+        return new Promise((resolve) => {
+            const loading = Toast.showLoading();
+            http.get('/transfer/paymethod/resign/20230131', {
+                from_poid: data.from.poid,
+                from_gateway: data.from.gateway,
+                percent: value,
+            })
+                .then((res) => {
+                    if (res.code !== '000000') {
+                        resolve(false);
+                        return;
+                    }
+                    setCodeSignObj({data: res.result, resolve});
+                    verifyCodeModal.current.show();
+                })
+                .catch((_) => {
+                    resolve(false);
+                })
+                .finally(() => {
+                    Toast.hide(loading);
+                });
+        });
+    };
+
+    const modalCancelCallBack = useCallback(() => {
+        let content = codeSignObj.data?.back_info?.content;
+        setTimeout(() => {
+            Modal.show({
+                content: content,
+                confirmText: '立即签约',
+                confirmCallBack: () => {
+                    verifyCodeModal.current.show(true, 0);
+                },
+                onCloseCallBack: () => {
+                    setTimeout(() => {
+                        codeSignObj.resolve(true);
+                    }, 300);
+                },
+            });
+        }, 500);
+    }, [codeSignObj]);
+    const buttonCallBack = (code) => {
+        if (signFlag.current) return;
+        signFlag.current = true;
+        http.post('/transfer/paymethod/sendcode/confirm/20230131', {
+            from_poid: data.from.poid,
+            from_gateway: data.from.gateway,
+            percent: value,
+            code,
+        }).then((res) => {
+            setTimeout(() => {
+                signFlag.current = false;
+            }, 300);
+            if (res.code === '000000') {
+                setSign(true);
+                setTimeout(() => {
+                    codeSignObj.resolve(true);
+                }, 300);
+                verifyCodeModal.current.hide();
+            } else {
+                verifyCodeModal.current.toastShow(res.message);
+            }
+        });
+    };
+
+    //重新发送验证码
+    const signSendAgain = () => {
+        http.get('/transfer/paymethod/sendcode/20230131', {
+            from_poid: data.from.poid,
+            from_gateway: data.from.gateway,
+            percent: value,
+        }).then((res) => {
+            verifyCodeModal.current.toastShow(res.message);
+            if (res.code === '000000') {
+                verifyCodeModal.current.show();
+            } else {
+                verifyCodeModal.current.show(false);
+            }
+        });
     };
 
     useEffect(() => {
@@ -349,6 +438,17 @@ const Index = ({navigation, route, setLoading}) => {
                     />
                 </>
             ) : null}
+            <VerifyCodeModal
+                scene={'sign'}
+                ref={verifyCodeModal}
+                desc={codeSignObj.data?.content || ''}
+                modalCancelCallBack={modalCancelCallBack}
+                isSign={isSign}
+                validateLength={6}
+                buttonCallBack={buttonCallBack}
+                buttonText={'立即签约'}
+                getCode={signSendAgain}
+            />
         </View>
     ) : null;
 };
