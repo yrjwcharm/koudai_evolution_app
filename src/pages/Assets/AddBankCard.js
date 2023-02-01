@@ -1,33 +1,33 @@
 /*
  * @Date: 2021-02-23 16:31:24
- * @Author: dx
- * @LastEditors: dx
- * @LastEditTime: 2021-12-10 16:54:23
  * @Description: 添加新银行卡/更换绑定银行卡
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {px as text, px, isIphoneX} from '../../utils/appUtil.js';
-import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import http from '../../services/index.js';
-import {formCheck} from '../../utils/validator';
+import {px as text, px, isIphoneX} from '~/utils/appUtil.js';
+import {Colors, Font, Space, Style} from '~/common/commonStyle';
+import http from '~/services';
+import {formCheck} from '~/utils/validator';
 import InputView from './components/input';
-import Agreements from '../../components/Agreements';
-import {Button} from '../../components/Button';
-import Toast from '../../components/Toast';
-import {BankCardModal, Modal, PageModal} from '../../components/Modal';
+import Agreements from '~/components/Agreements';
+import {Button} from '~/components/Button';
+import Toast from '~/components/Toast';
+import {BankCardModal, Modal, PageModal} from '~/components/Modal';
 import {useSelector} from 'react-redux';
-import Notice from '../../components/Notice';
-import HTML from '../../components/RenderHtml';
-import CheckBox from '../../components/CheckBox';
-import {useJump} from '../../components/hooks';
+import Notice from '~/components/Notice';
+import HTML from '~/components/RenderHtml';
+import CheckBox from '~/components/CheckBox';
+import {useCountdown, useJump} from '~/components/hooks';
 import _ from 'lodash';
-import {PasswordModal} from '../../components/Password';
+import {PasswordModal} from '~/components/Password';
 const AddBankCard = ({navigation, route}) => {
     const userInfo = useSelector((store) => store.userInfo);
-    const [, setSecond] = useState(0);
     const [codeText, setCodeText] = useState('发送验证码');
+    const {countdown, start} = useCountdown(() => {
+        btnClick.current = true;
+        setCodeText('重新获取');
+    });
     const btnClick = useRef(true);
     const timerRef = useRef('');
     const [bankList, setBankList] = useState([]);
@@ -43,11 +43,11 @@ const AddBankCard = ({navigation, route}) => {
     const getBank = useRef(true);
     const msgSeq = useRef('');
     const orderNo = useRef('');
-    const [aggrement, setAggrement] = useState({});
+    const [agreement, setAgreement] = useState({});
     const signModal = useRef(null);
     const [signTimer, setSignTimer] = useState(8);
     const [signSelectData, setSignSelectData] = useState([]);
-    const intervalt_timer = useRef('');
+    const interval_timer = useRef('');
     const passwordRef = useRef(null);
     const jump = useJump();
     const onInputCardNum = useCallback(
@@ -63,7 +63,7 @@ const AddBankCard = ({navigation, route}) => {
                         if (res.code === '000000') {
                             setBankName(res.result.bank_name);
                             bankCode.current = res.result.bank_code;
-                            setAggrement(res.result?.agreements);
+                            setAgreement(res.result?.agreements);
                         }
                     });
                 }
@@ -80,10 +80,10 @@ const AddBankCard = ({navigation, route}) => {
         [route.params]
     );
     const getCode = useCallback(() => {
-        global.LogTool('click', 'getCode');
         if (!btnClick.current) {
             return false;
         }
+        global.LogTool('click', 'getCode');
         const checkData = [
             {
                 field: cardNum,
@@ -118,14 +118,14 @@ const AddBankCard = ({navigation, route}) => {
                     msgSeq.current = res.result?.msg_seq || '';
                     orderNo.current = res.result?.order_no || '';
                     Toast.show(res.message);
-                    timer();
+                    start();
                 } else {
                     Toast.show(res.message);
                     btnClick.current = true;
                 }
             });
         }
-    }, [bankCode, cardNum, phone, route.params, timer]);
+    }, [cardNum, phone]);
     const onSelectBank = (value) => {
         if (value.alert_msg) {
             Modal.show({
@@ -134,34 +134,16 @@ const AddBankCard = ({navigation, route}) => {
                 confirmCallBack: () => {
                     bankCode.current = value.bank_code;
                     setBankName(value.bank_name);
-                    setAggrement(value?.agreements);
+                    setAgreement(value?.agreements);
                 },
                 content: value.alert_msg,
             });
         } else {
             bankCode.current = value.bank_code;
             setBankName(value.bank_name);
-            setAggrement(value?.agreements);
+            setAgreement(value?.agreements);
         }
     };
-    const timer = useCallback(() => {
-        setSecond(60);
-        setCodeText('60秒后可重发');
-        btnClick.current = false;
-        timerRef.current = setInterval(() => {
-            setSecond((prev) => {
-                if (prev === 1) {
-                    clearInterval(timerRef.current);
-                    setCodeText('重新获取');
-                    btnClick.current = true;
-                    return prev;
-                } else {
-                    setCodeText(prev - 1 + '秒后可重发');
-                    return prev - 1;
-                }
-            });
-        }, 1000);
-    }, []);
     // 完成添加银行卡
     const submit = useCallback(() => {
         global.LogTool('click', 'submit');
@@ -226,12 +208,12 @@ const AddBankCard = ({navigation, route}) => {
                     } else {
                         //签约
                         setTimeout(() => {
-                            intervalt_timer.current = setInterval(() => {
+                            interval_timer.current = setInterval(() => {
                                 setSignTimer((time) => {
                                     if (time > 0) {
                                         return --time;
                                     } else {
-                                        intervalt_timer.current && clearInterval(intervalt_timer.current);
+                                        interval_timer.current && clearInterval(interval_timer.current);
                                         return time;
                                     }
                                 });
@@ -302,7 +284,7 @@ const AddBankCard = ({navigation, route}) => {
         }).then((res) => {
             if (res.code === '000000') {
                 setBankList(res.result);
-                setAggrement(res?.result[0]?.agreements);
+                setAgreement(res?.result[0]?.agreements);
             }
         });
     }, [route.params, userInfo]);
@@ -313,7 +295,7 @@ const AddBankCard = ({navigation, route}) => {
             navigation.setOptions({title: '更换绑定银行卡'});
         }
         http.get('/adviser/bind/bank/signs/20211206').then((sign) => {
-            if (sign.code == '000000') {
+            if (sign.code === '000000') {
                 setSignTimer(sign?.result?.countdown);
                 setSignData(sign.result);
             }
@@ -379,12 +361,12 @@ const AddBankCard = ({navigation, route}) => {
                     title={'验证码'}
                     value={code}>
                     <Text style={styles.inputRightText} onPress={getCode}>
-                        {codeText}
+                        {countdown > 0 ? `${countdown}秒后可重发` : codeText}
                     </Text>
                 </InputView>
                 {route.params?.action === 'add' && (
                     <View style={{paddingTop: Space.padding, paddingHorizontal: Space.padding}}>
-                        <Agreements onChange={(checked) => setCheck(checked)} data={aggrement?.list} />
+                        <Agreements onChange={(checked) => setCheck(checked)} data={agreement?.list} />
                     </View>
                 )}
                 <Button
@@ -399,7 +381,7 @@ const AddBankCard = ({navigation, route}) => {
                     height={text(600)}
                     title={signData?.title}
                     onClose={() => {
-                        intervalt_timer.current && clearInterval(intervalt_timer.current);
+                        interval_timer.current && clearInterval(interval_timer.current);
                         navigation.goBack();
                     }}>
                     <View style={{flex: 1, paddingBottom: px(20)}}>
@@ -445,7 +427,7 @@ const AddBankCard = ({navigation, route}) => {
                                 <View style={[Style.flexBetween, {marginTop: text(12)}, styles.border_bottom]}>
                                     <View style={Style.flexRow}>
                                         <CheckBox
-                                            checked={signSelectData?.length == signData?.plan_list?.length}
+                                            checked={signSelectData?.length === signData?.plan_list?.length}
                                             style={{marginRight: text(6)}}
                                             onChange={(value) => {
                                                 checkBoxClick(value);
@@ -497,9 +479,9 @@ const AddBankCard = ({navigation, route}) => {
                                                                     }}>
                                                                     {link?.text}
                                                                     {item?.link_list?.length > 1 &&
-                                                                    _index == item?.link_list?.length - 2
+                                                                    _index === item?.link_list?.length - 2
                                                                         ? '和'
-                                                                        : _index == item?.link_list?.length - 1
+                                                                        : _index === item?.link_list?.length - 1
                                                                         ? ''
                                                                         : '、'}
                                                                 </Text>
