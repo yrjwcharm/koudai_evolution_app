@@ -236,6 +236,10 @@ const Index = ({navigation, route, setLoading}) => {
                         resolve(false);
                         return;
                     }
+                    if (!res.result?.content) {
+                        resolve(true);
+                        return;
+                    }
                     setCodeSignObj({data: res.result, resolve});
                     verifyCodeModal.current.show();
                 })
