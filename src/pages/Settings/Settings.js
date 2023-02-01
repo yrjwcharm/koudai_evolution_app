@@ -1,30 +1,27 @@
 /*
  * @Date: 2021-02-03 11:26:45
- * @Author: dx
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-07 15:50:52
  * @Description: 个人设置
  */
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, Linking, AppState} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {px as text, isIphoneX} from '../../utils/appUtil.js';
-import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import Http from '../../services/index.js';
-import {useJump} from '../../components/hooks';
-import {Modal, ShareModal} from '../../components/Modal';
-import Storage from '../../utils/storage';
-import Toast from '../../components/Toast';
-import {InputModal} from '../../components/Modal';
+import {isIphoneX, px} from '~/utils/appUtil.js';
+import {Colors, Font, Space, Style} from '~/common/commonStyle';
+import {useJump} from '~/components/hooks';
+import {Modal, ShareModal} from '~/components/Modal';
+import Storage from '~/utils/storage';
+import Toast from '~/components/Toast';
+import {InputModal} from '~/components/Modal';
 import {useDispatch, useSelector} from 'react-redux';
-import {resetVision} from '../../redux/actions/visionData';
-import {getUserInfo, updateUserInfo} from '../../redux/actions/userInfo';
-import {updateAccount} from '../../redux/actions/accountInfo.js';
-import {deleteModal} from '../../redux/actions/modalInfo';
-import {cleanProduct} from '../../redux/actions/pk/pkProducts';
-import {pinningProduct} from '../../redux/actions/pk/pkPinning';
-import http from '../../services/index.js';
+import {resetVision} from '~/redux/actions/visionData';
+import {getUserInfo, updateUserInfo} from '~/redux/actions/userInfo';
+import {updateAccount} from '~/redux/actions/accountInfo';
+import {deleteModal} from '~/redux/actions/modalInfo';
+import {cleanProduct} from '~/redux/actions/pk/pkProducts';
+import {pinningProduct} from '~/redux/actions/pk/pkPinning';
+import http from '~/services';
 import {resetAudio} from '../Community/components/audioService/SetUpService.js';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 const Settings = ({navigation}) => {
     const userInfo = useSelector((store) => store.userInfo);
     const dispatch = useDispatch();
@@ -38,110 +35,95 @@ const Settings = ({navigation}) => {
     const [inviteCode, setInviteCode] = useState('');
     const inviteCodeRef = useRef('');
     const [showCircle, setShowCircle] = useState(false);
-    const onPress = useCallback(
-        (item) => {
-            // if (item.type === 'about') {
-            //     jump({
-            //         type: 1,
-            //         path: 'WebView',
-            //         params: {
-            //             link: 'http://192.168.88.111:3000/portfolioBabyDetail/15',
-            //             title: '百万宝贝计划',
-            //         },
-            //     });
-            //     return false;
-            // }
-            global.LogTool('click', item.type);
-            if (item.type === 'bind_invitor') {
-                setInviteCode('');
-                setModalProps({
-                    confirmClick,
-                    placeholder: '请输入邀请码',
-                    title: '填写邀请码',
-                });
-                setTimeout(() => {
-                    inputRef?.current?.focus();
-                }, 200);
-            } else if (item.type === 'share_mofang') {
-                shareModal.current.show();
-            } else if (item.type === 'logout') {
-                Modal.show({
-                    title: '退出登录',
-                    content: '退出后，日收益和投资产品列表将不再展示，是否确认退出？',
-                    confirm: true,
-                    confirmCallBack: () => {
-                        Http.post('/auth/user/logout/20210101').then(async (res) => {
-                            if (res.code === '000000') {
-                                await Storage.delete('loginStatus');
-                                await Storage.delete('AD');
-                                dispatch(resetVision());
-                                dispatch(getUserInfo());
-                                global.pkEntry = '2';
-                                dispatch(cleanProduct());
-                                dispatch(pinningProduct(null));
-                                dispatch(
-                                    updateUserInfo({
-                                        phone: '',
-                                        selectBank: '',
-                                        bank_no: '',
-                                        second: 60,
-                                        name: '',
-                                        id_no: '',
-                                        show_audit_center: '',
-                                        show_manage_center: '',
-                                    })
-                                );
-                                dispatch(
-                                    updateAccount({
-                                        name: '',
-                                        id_no: '',
-                                    })
-                                );
-                                resetAudio();
-                                dispatch(deleteModal());
-                                global.layerOptions = null;
-                                Modal.hideLayer();
-                                navigation.replace('Login');
+    const onPress = (item) => {
+        global.LogTool('click', item.type);
+        if (item.type === 'bind_invitor') {
+            setInviteCode('');
+            setModalProps({
+                confirmClick,
+                placeholder: '请输入邀请码',
+                title: '填写邀请码',
+            });
+            setTimeout(() => {
+                inputRef?.current?.focus();
+            }, 200);
+        } else if (item.type === 'share_mofang') {
+            shareModal.current.show();
+        } else if (item.type === 'logout') {
+            Modal.show({
+                title: '退出登录',
+                content: '退出后，日收益和投资产品列表将不再展示，是否确认退出？',
+                confirm: true,
+                confirmCallBack: () => {
+                    http.post('/auth/user/logout/20210101').then(async (res) => {
+                        if (res.code === '000000') {
+                            await Storage.delete('loginStatus');
+                            await Storage.delete('AD');
+                            dispatch(resetVision());
+                            dispatch(getUserInfo());
+                            global.pkEntry = '2';
+                            dispatch(cleanProduct());
+                            dispatch(pinningProduct(null));
+                            dispatch(
+                                updateUserInfo({
+                                    phone: '',
+                                    selectBank: '',
+                                    bank_no: '',
+                                    second: 60,
+                                    name: '',
+                                    id_no: '',
+                                    show_audit_center: '',
+                                    show_manage_center: '',
+                                })
+                            );
+                            dispatch(
+                                updateAccount({
+                                    name: '',
+                                    id_no: '',
+                                })
+                            );
+                            resetAudio();
+                            dispatch(deleteModal());
+                            global.layerOptions = null;
+                            Modal.hideLayer();
+                            navigation.replace('Login');
+                        }
+                    });
+                },
+            });
+        } else if (item.type === 'encourage') {
+            global.LogTool('Grade');
+            Linking.canOpenURL(item.url.path)
+                .then((res) => {
+                    if (res) {
+                        Linking.openURL(item.url.path);
+                    } else if (item.url.path !== item.url.params.default_url) {
+                        Linking.canOpenURL(item.url.params.default_url).then((r) => {
+                            if (r) {
+                                Linking.openURL(item.url.params.default_url);
                             }
                         });
-                    },
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
                 });
-            } else if (item.type === 'encourage') {
-                global.LogTool('Grade');
-                Linking.canOpenURL(item.url.path)
-                    .then((res) => {
-                        if (res) {
-                            Linking.openURL(item.url.path);
-                        } else if (item.url.path !== item.url.params.default_url) {
-                            Linking.canOpenURL(item.url.params.default_url).then((r) => {
-                                if (r) {
-                                    Linking.openURL(item.url.params.default_url);
-                                }
-                            });
-                        }
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                    });
-                http.post('/mapi/set/encourage/20220412').then((res) => {
-                    console.log(res);
+            http.post('/mapi/set/encourage/20220412').then((res) => {
+                console.log(res);
+            });
+        } else {
+            if (item.type === 'about') {
+                setShowCircle((prev) => {
+                    if (prev) {
+                        Storage.save('version' + userInfo.toJS().latest_version + 'setting_page', true);
+                        return false;
+                    }
                 });
-            } else {
-                if (item.type == 'about') {
-                    setShowCircle((prev) => {
-                        if (prev) {
-                            Storage.save('version' + userInfo.toJS().latest_version + 'setting_page', true);
-                            return false;
-                        }
-                    });
-                }
-                jump(item.url);
             }
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [navigation, jump, dispatch, confirmClick]
-    );
-    const confirmClick = useCallback(() => {
+            jump(item.url);
+        }
+    };
+    const confirmClick = () => {
         if (!inviteCodeRef.current) {
             inputRef?.current?.blur();
             inputModal.current.toastShow('邀请码不能为空', 2000, {
@@ -154,7 +136,7 @@ const Settings = ({navigation}) => {
             return false;
         }
         inputModal.current.hide();
-        Http.post('/polaris/bind_invite_code/20210101', {
+        http.post('/polaris/bind_invite_code/20210101', {
             invited_code: inviteCodeRef.current,
         }).then((res) => {
             if (res.code === '000000') {
@@ -162,11 +144,11 @@ const Settings = ({navigation}) => {
                 dispatch(getUserInfo());
                 Modal.show({
                     confirm: true,
-                    confirmCallBack: () => navigation.navigate('Find'),
+                    confirmCallBack: () => (res.result.url ? jump(res.result.url) : navigation.navigate('Find')),
                     content: res.result.nick_name,
                     title: '绑定成功',
                 });
-                Http.get('/mapi/config/20210101').then((resp) => {
+                http.get('/mapi/config/20210101').then((resp) => {
                     if (resp.code === '000000') {
                         setData(resp.result);
                     }
@@ -175,7 +157,7 @@ const Settings = ({navigation}) => {
                 Toast.show(res.message);
             }
         });
-    }, [dispatch, navigation]);
+    };
 
     useEffect(() => {
         Storage.get('version' + userInfo.toJS().latest_version + 'setting_page').then((res) => {
@@ -185,7 +167,7 @@ const Settings = ({navigation}) => {
         });
         const handlerData = () => {
             if (AppState.currentState === 'active') {
-                Http.get('/mapi/config/20210101').then((res) => {
+                http.get('/mapi/config/20210101').then((res) => {
                     if (res.code === '000000') {
                         setData(res.result);
                     }
@@ -193,7 +175,7 @@ const Settings = ({navigation}) => {
             }
         };
         handlerData();
-        Http.get('/share/common/info/20210101', {scene: 'share_lcmf'}).then((res) => {
+        http.get('/share/common/info/20210101', {scene: 'share_lcmf'}).then((res) => {
             if (res.code === '000000') {
                 setShareContent(res.result);
             }
@@ -202,7 +184,6 @@ const Settings = ({navigation}) => {
         return () => {
             AppState.removeEventListener('change', handlerData);
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     useEffect(() => {
         if (Object.keys(modalProps).length > 0) {
@@ -221,7 +202,7 @@ const Settings = ({navigation}) => {
                             autoCapitalize={'none'}
                             autoCompleteType={'off'}
                             autoCorrect={false}
-                            clearButtonMode={'while-editing'}
+                            clearButtonMode={'never'}
                             contextMenuHidden
                             enablesReturnKeyAutomatically
                             keyboardType={'default'}
@@ -233,6 +214,11 @@ const Settings = ({navigation}) => {
                         />
                         {`${inviteCode}`.length === 0 && (
                             <Text style={styles.placeholder}>{modalProps?.placeholder}</Text>
+                        )}
+                        {`${inviteCode}`.length > 0 && (
+                            <TouchableOpacity activeOpacity={0.8} onPress={() => setInviteCode('')}>
+                                <AntDesign name={'closecircle'} color={'#CDCDCD'} size={px(16)} />
+                            </TouchableOpacity>
                         )}
                     </View>
                 </View>
@@ -249,31 +235,39 @@ const Settings = ({navigation}) => {
                                     : {},
                             ]}>
                             {part.map((item, i) => {
+                                const {desc, show_circle, text, type, url} = item;
                                 return (
-                                    <View key={item.text} style={[i === 0 ? {} : styles.borderTop]}>
+                                    <View key={text} style={[i === 0 ? {} : styles.borderTop]}>
                                         <TouchableOpacity
                                             activeOpacity={0.8}
-                                            style={[Style.flexBetween, {height: text(56)}]}
+                                            disabled={type === 'text'}
+                                            style={[Style.flexBetween, {height: px(56)}]}
                                             onPress={() => onPress(item)}>
-                                            <Text style={styles.title}>{item.text}</Text>
+                                            <Text style={styles.title}>{text}</Text>
                                             <View style={Style.flexRow}>
-                                                {item.desc ? (
+                                                {desc ? (
                                                     <Text
                                                         style={[
                                                             styles.title,
                                                             {
-                                                                marginRight: item.url ? text(8) : 0,
+                                                                marginRight: url ? px(8) : 0,
                                                                 color: Colors.lightGrayColor,
                                                             },
                                                         ]}>
-                                                        {item.desc}
+                                                        {desc}
                                                     </Text>
                                                 ) : null}
 
-                                                {(item.type == 'about' && showCircle) || item.show_circle ? (
+                                                {(type === 'about' && showCircle) || show_circle ? (
                                                     <View style={styles.circle} />
                                                 ) : null}
-                                                <Icon name={'angle-right'} size={20} color={Colors.lightGrayColor} />
+                                                {item.type === 'text' ? null : (
+                                                    <Icon
+                                                        name={'angle-right'}
+                                                        size={20}
+                                                        color={Colors.lightGrayColor}
+                                                    />
+                                                )}
                                             </View>
                                         </TouchableOpacity>
                                     </View>
@@ -310,20 +304,20 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: Font.textH2,
-        lineHeight: text(20),
+        lineHeight: px(20),
         color: Colors.lightBlackColor,
     },
     inputContainer: {
-        marginVertical: text(32),
+        marginVertical: px(32),
         marginHorizontal: Space.marginAlign,
-        paddingBottom: text(12),
+        paddingBottom: px(12),
         borderBottomWidth: Space.borderWidth,
         borderColor: Colors.borderColor,
     },
     input: {
         flex: 1,
-        fontSize: text(35),
-        lineHeight: text(42),
+        fontSize: px(35),
+        lineHeight: px(42),
         color: Colors.defaultColor,
         padding: 0,
         fontFamily: Font.numMedium,
@@ -331,17 +325,17 @@ const styles = StyleSheet.create({
     placeholder: {
         position: 'absolute',
         left: 0,
-        top: text(3.5),
-        fontSize: text(26),
-        lineHeight: text(37),
+        top: px(3.5),
+        fontSize: px(26),
+        lineHeight: px(37),
         color: Colors.placeholderColor,
     },
     circle: {
-        height: text(6),
-        width: text(6),
-        borderRadius: text(6),
+        height: px(6),
+        width: px(6),
+        borderRadius: px(6),
         backgroundColor: Colors.red,
-        marginRight: text(8),
+        marginRight: px(8),
     },
 });
 
