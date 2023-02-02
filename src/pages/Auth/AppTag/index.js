@@ -14,6 +14,7 @@ import {FixedButton} from '~/components/Button';
 import {getUserInfo} from '~/redux/actions/userInfo';
 import Toast from '~/components/Toast';
 import http from '~/services';
+import {CommonActions} from '@react-navigation/native';
 const Index = ({navigation, route}) => {
     const {popNum = 0} = route.params || {};
     const dispatch = useDispatch();
@@ -83,7 +84,16 @@ const Index = ({navigation, route}) => {
                 Toast.hide(toast);
                 if (res.result.callback_jump) {
                     let {path, params} = res.result.callback_jump;
-                    navigation.navigate(path, params);
+                    navigation.dispatch((state) => {
+                        // Remove the home route from the stack
+                        const routes = [state.routes[0], state.routes[state.routes.length - 1]];
+                        return CommonActions.reset({
+                            ...state,
+                            routes,
+                            index: 1,
+                        });
+                    });
+                    navigation.replace(path, params);
                 } else if (popNum) navigation.pop(popNum);
                 else navigation.goBack();
             }, 500);
@@ -99,7 +109,15 @@ const Index = ({navigation, route}) => {
                 dispatch(getUserInfo());
                 if (res.result.callback_jump) {
                     let {path, params} = res.result.callback_jump;
-                    navigation.navigate(path, params);
+                    navigation.dispatch((state) => {
+                        const routes = [state.routes[0], state.routes[state.routes.length - 1]];
+                        return CommonActions.reset({
+                            ...state,
+                            routes,
+                            index: 1,
+                        });
+                    });
+                    navigation.replace(path, params);
                 } else if (popNum) {
                     navigation.pop(popNum);
                 } else navigation.goBack();

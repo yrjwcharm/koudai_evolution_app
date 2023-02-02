@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 10:40:08
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-02 11:06:34
+ * @LastEditTime: 2023-02-02 16:00:31
  * @Description:设置登录密码
  */
 import React, {Component} from 'react';
@@ -96,7 +96,15 @@ class SetLoginPassword extends Component {
                     this.props.getVerifyGesture(true);
                     if (this.props.route?.params?.callback_jump) {
                         let {path, params} = this.props.route?.params?.callback_jump;
-                        this.props.navigation.navigate(path, params);
+                        this.props.navigation.dispatch((state) => {
+                            const routes = [state.routes[0], state.routes[state.routes.length - 1]];
+                            return CommonActions.reset({
+                                ...state,
+                                routes,
+                                index: 1,
+                            });
+                        });
+                        this.props.navigation.replace(path, params);
                     } else if (this.props.route?.params?.fr) {
                         this.props.navigation.pop(4);
                     } else {
@@ -127,7 +135,15 @@ class SetLoginPassword extends Component {
                         this.props.navigation.replace(path, params);
                     } else if (this.props.route?.params.callback_jump) {
                         let {path, params} = this.props.route?.params?.callback_jump;
-                        this.props.navigation.navigate(path, params);
+                        this.props.navigation.dispatch((state) => {
+                            const routes = [state.routes[0], state.routes[state.routes.length - 1]];
+                            return CommonActions.reset({
+                                ...state,
+                                routes,
+                                index: 1,
+                            });
+                        });
+                        this.props.navigation.replace(path, params);
                     } else if (this.props.route?.params?.redirect) {
                         this.props.navigation.dispatch((state) => {
                             // Remove the home route from the stack
