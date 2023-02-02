@@ -13,9 +13,12 @@ import http from '~/services';
 import {Button} from '~/components/Button';
 import Empty from '~/components/EmptyTip';
 import {useJump} from '~/components/hooks';
+import {useNetInfo} from '@react-native-community/netinfo';
+import Toast from '~/components/Toast';
 
 const BankCardList = ({navigation}) => {
     const jump = useJump();
+    const netInfo = useNetInfo();
     const [data, setData] = useState({});
     const [showEmpty, setShowEmpty] = useState(false);
 
@@ -46,6 +49,13 @@ const BankCardList = ({navigation}) => {
                 <Icon name={'angle-right'} size={20} color={Colors.lightGrayColor} />
             </TouchableOpacity>
         );
+    };
+
+    const onPress = () => {
+        if (netInfo.type === 'unknown' || netInfo.isConnected) {
+            global.LogTool('click', 'addBankCard');
+            jump(data?.button?.url);
+        } else Toast.show('当前网络状况差，请稍后再试');
     };
 
     useFocusEffect(
@@ -83,10 +93,7 @@ const BankCardList = ({navigation}) => {
                         <Button
                             title={data?.button?.text || '添加银行卡'}
                             style={{...styles.btn, ...{marginHorizontal: text(4), marginTop: text(86)}}}
-                            onPress={() => {
-                                global.LogTool('click', 'addBankCard');
-                                jump(data?.button?.url || {path: 'AddBankCard', params: {action: 'add'}});
-                            }}
+                            onPress={onPress}
                         />
                     </>
                 ) : null}
@@ -94,14 +101,7 @@ const BankCardList = ({navigation}) => {
             {Object.keys(data).length === 0 ||
             (!data?.xy?.cards && !data?.ym?.cards) ||
             (data?.xy?.cards?.length === 0 && data?.ym?.cards?.length === 0) ? null : data?.button?.text ? (
-                <Button
-                    title={data?.button?.text}
-                    style={styles.btn}
-                    onPress={() => {
-                        global.LogTool('click', 'addBankCard');
-                        jump(data?.button?.url);
-                    }}
-                />
+                <Button title={data?.button?.text || '添加银行卡'} style={styles.btn} onPress={onPress} />
             ) : null}
         </View>
     );
