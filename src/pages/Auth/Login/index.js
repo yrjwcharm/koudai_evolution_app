@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-02 15:58:24
+ * @LastEditTime: 2023-02-02 18:21:03
  * @Description: 登录
  */
 import React, {Component, createRef} from 'react';
@@ -68,7 +68,7 @@ class Login extends Component {
         let toast = Toast.showLoading('正在登录...');
         const url = ['/auth/user/login/20210101', '/auth/user/login_captcha/20220412'][type - 1];
         // 入参
-        const params = {mobile, callback_jump: JSON.stringify(this.props.route?.params.callback_jump)};
+        const params = {mobile, callback_jump: JSON.stringify(this.props.route?.params?.callback_jump)};
         switch (type) {
             case 1:
                 params.password = base64.encode(password);
@@ -95,7 +95,7 @@ class Login extends Component {
                             this.props.navigation.navigate('VerifyLogin', {
                                 fr: this.props.route?.params?.fr,
                                 mobile: mobile,
-                                callback_jump: this.props.route?.params.callback_jump,
+                                callback_jump: this.props.route?.params?.callback_jump,
                             });
                         },
                     });
@@ -126,7 +126,7 @@ class Login extends Component {
                                 option: 'firstSet',
                                 pass: true,
                                 fr: this.props.route.params?.fr || '',
-                                callback_jump: this.props.route?.params.callback_jump,
+                                callback_jump: this.props.route?.params?.callback_jump,
                             });
                         } else if (res.result.app_tag_url) {
                             const {path, params: _params = {}} = res.result.app_tag_url;
@@ -385,13 +385,13 @@ class Login extends Component {
                             if (this.props.route?.params?.fr) {
                                 this.props.navigation.navigate('Register', {
                                     go: this.props.route.params?.go || '',
-                                    callback_jump: this.props.route?.params.callback_jump,
+                                    callback_jump: this.props.route?.params?.callback_jump,
                                 });
                             } else {
                                 this.props.navigation.navigate('Register', {
                                     fr: 'login',
                                     go: this.props.route.params?.go || '',
-                                    callback_jump: this.props.route?.params.callback_jump,
+                                    callback_jump: this.props.route?.params?.callback_jump,
                                 });
                             }
                         }}

@@ -82,7 +82,7 @@ const Index = ({navigation, route}) => {
             dispatch(getUserInfo());
             setTimeout(() => {
                 Toast.hide(toast);
-                if (res.result.callback_jump) {
+                if (res.result?.callback_jump) {
                     let {path, params} = res.result.callback_jump;
                     navigation.dispatch((state) => {
                         // Remove the home route from the stack
@@ -107,7 +107,7 @@ const Index = ({navigation, route}) => {
         http.post('/preference/doskip/20220928').then((res) => {
             if (res.code === '000000') {
                 dispatch(getUserInfo());
-                if (res.result.callback_jump) {
+                if (res.result?.callback_jump) {
                     let {path, params} = res.result.callback_jump;
                     navigation.dispatch((state) => {
                         const routes = [state.routes[0], state.routes[state.routes.length - 1]];

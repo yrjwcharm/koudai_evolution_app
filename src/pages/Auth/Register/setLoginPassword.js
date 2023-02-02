@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 10:40:08
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-02 16:00:31
+ * @LastEditTime: 2023-02-02 18:22:23
  * @Description:设置登录密码
  */
 import React, {Component} from 'react';
@@ -121,7 +121,7 @@ class SetLoginPassword extends Component {
             http.post('/auth/user/register/20210101', {
                 mobile: this.props.route?.params?.mobile,
                 verify_code: code,
-                callback_jump: JSON.stringify(this.props.route?.params.callback_jump),
+                callback_jump: JSON.stringify(this.props.route?.params?.callback_jump),
             }).then((res) => {
                 Toast.hide(toast);
                 if (res.code === '000000') {
@@ -133,7 +133,7 @@ class SetLoginPassword extends Component {
                         const {path, params = {}} = res.result.url;
                         params.popNum = this.props.route.params?.fr ? 3 : 2;
                         this.props.navigation.replace(path, params);
-                    } else if (this.props.route?.params.callback_jump) {
+                    } else if (this.props.route?.params?.callback_jump) {
                         let {path, params} = this.props.route?.params?.callback_jump;
                         this.props.navigation.dispatch((state) => {
                             const routes = [state.routes[0], state.routes[state.routes.length - 1]];

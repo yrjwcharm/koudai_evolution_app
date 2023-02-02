@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:39
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-02 10:27:53
+ * @LastEditTime: 2023-02-02 18:21:40
  * @Description: 注册
  */
 import React, {Component} from 'react';
@@ -83,19 +83,22 @@ class Index extends Component {
                     mobile,
                     redirect: this.props.route?.params?.redirect,
                     fr: this.props.route?.params?.fr || '',
-                    callback_jump: this.props.route?.params.callback_jump,
+                    callback_jump: this.props.route?.params?.callback_jump,
                 });
             } else {
                 Toast.show(res.message, {
                     onHidden: () => {
                         if (res.code === '10001') {
                             if (this.props.route?.params?.fr) {
-                                this.jumpPage('Login', {mobile, callback_jump: this.props.route?.params.callback_jump});
+                                this.jumpPage('Login', {
+                                    mobile,
+                                    callback_jump: this.props.route?.params?.callback_jump,
+                                });
                             } else {
                                 this.jumpPage('Login', {
                                     fr: 'register',
                                     mobile,
-                                    callback_jump: this.props.route?.params.callback_jump,
+                                    callback_jump: this.props.route?.params?.callback_jump,
                                 });
                             }
                         }
@@ -170,11 +173,11 @@ class Index extends Component {
                         <Text
                             onPress={() => {
                                 if (this.props.route?.params?.fr) {
-                                    this.jumpPage('Login', {callback_jump: this.props.route?.params.callback_jump});
+                                    this.jumpPage('Login', {callback_jump: this.props.route?.params?.callback_jump});
                                 } else {
                                     this.jumpPage('Login', {
                                         fr: 'register',
-                                        callback_jump: this.props.route?.params.callback_jump,
+                                        callback_jump: this.props.route?.params?.callback_jump,
                                     });
                                 }
                             }}

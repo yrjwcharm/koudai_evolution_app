@@ -2,7 +2,7 @@
  * @Date: 2021-01-14 17:10:08
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-02 15:54:37
+ * @LastEditTime: 2023-02-02 19:23:50
  * @Description: 微信登录
  */
 import React from 'react';
@@ -32,7 +32,7 @@ function Wechat(props) {
                         if (response.code) {
                             http.post('/auth/user/login_wx/20210101', {
                                 code: response.code,
-                                callback_jump: route?.params.callback_jump,
+                                callback_jump: JSON.stringify(route?.params?.callback_jump),
                             }).then((res) => {
                                 if (res.code == '000000') {
                                     if (res.result.bind_mobile) {
@@ -64,7 +64,7 @@ function Wechat(props) {
                                                         option: 'firstSet',
                                                         pass: true,
                                                         fr: route.params?.fr || '',
-                                                        callback_jump: route?.params.callback_jump,
+                                                        callback_jump: route?.params?.callback_jump,
                                                     });
                                                 } else if (res.result.app_tag_url) {
                                                     navigation.dispatch((state) => {
@@ -97,7 +97,7 @@ function Wechat(props) {
                                             nickname: res.result.nickname,
                                             muid: res.result.muid,
                                             fr: route.params?.fr || '',
-                                            callback_jump: route?.params.callback_jump,
+                                            callback_jump: route?.params?.callback_jump,
                                         });
                                     }
                                 }

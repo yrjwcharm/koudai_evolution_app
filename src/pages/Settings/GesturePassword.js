@@ -287,7 +287,7 @@ export default function GesturePassword({option}) {
                     onPress={() =>
                         navigation.navigate('Login', {
                             go: 'forgotGesPwd',
-                            callback_jump: route?.params.callback_jump,
+                            callback_jump: route?.params?.callback_jump,
                         })
                     }>
                     <Text style={{marginRight: text(4)}}>{'忘记手势密码'}</Text>

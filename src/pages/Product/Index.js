@@ -358,6 +358,7 @@ const styles = StyleSheet.create({
     othersWrap: {
         backgroundColor: '#f5f6f8',
         paddingHorizontal: px(16),
+        marginTop: -1,
     },
     emptyWrap: {
         justifyContent: 'center',
