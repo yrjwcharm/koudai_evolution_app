@@ -58,7 +58,7 @@ import NavBar from '~/components/NavBar';
  * @returns {JSX.Element}
  * @constructor
  */
-const BindModalContent = ({data = {}, id_no, name, rcode, rname}) => {
+const BindModalContent = ({close, data = {}, id_no, name, rcode, rname}) => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const route = useRoute();
@@ -109,6 +109,7 @@ const BindModalContent = ({data = {}, id_no, name, rcode, rname}) => {
                     await Storage.save('loginStatus', auth_info);
                     dispatch(getUserInfo());
                     Modal.close();
+                    close?.();
                     if (url) navigation.replace(url.path, url.params);
                     else navigation.navigate('BankInfo', {...route.params, id_no, name, rcode, rname});
                 }
@@ -506,13 +507,15 @@ class IdAuth extends Component {
                 <NavBar leftIcon="chevron-left" title="基金交易安全开户" />
                 {modalVisible && (
                     <KeyboardAvoidingView
+                        accessibilityViewIsModal={true}
                         behavior={Platform.select({android: 'height', ios: 'padding'})}
+                        importantForAccessibility="yes"
                         keyboardVerticalOffset={-px(80)}
                         style={styles.modalContainer}>
                         <TouchableWithoutFeedback onPress={() => this.setState({modalVisible: false})}>
                             <View style={styles.mask} />
                         </TouchableWithoutFeedback>
-                        <BindModalContent data={modalData} id_no={id_no} name={name} rcode={rcode} rname={rname} />
+                        <BindModalContent close={() => this.setState({modalVisible: false})} data={modalData} id_no={id_no} name={name} rcode={rcode} rname={rname} />
                     </KeyboardAvoidingView>
                 )}
                 <KeyboardAwareScrollView extraScrollHeight={px(100)} style={styles.con}>
@@ -724,18 +727,18 @@ const styles = StyleSheet.create({
     modalContainer: {
         position: 'absolute',
         top: 0,
+        right: 0,
+        bottom: 0,
         left: 0,
-        width: deviceWidth,
-        height: deviceHeight,
-        zIndex: 1,
+        zIndex: 10,
         ...Style.flexCenter,
     },
     mask: {
         position: 'absolute',
         top: 0,
+        right: 0,
+        bottom: 0,
         left: 0,
-        width: deviceWidth,
-        height: deviceHeight,
         backgroundColor: 'rgba(0, 0, 0, 0.6)',
     },
     modalContent: {
