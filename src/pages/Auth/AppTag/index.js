@@ -77,11 +77,14 @@ const Index = ({navigation, route}) => {
         if (current == data.length - 1) {
             //答完题目
             const toast = Toast.showLoading();
-            await handleDone();
+            let res = await handleDone();
             dispatch(getUserInfo());
             setTimeout(() => {
                 Toast.hide(toast);
-                if (popNum) navigation.pop(popNum);
+                if (res.result.callback_jump) {
+                    let {path, params} = res.result.callback_jump;
+                    navigation.navigate(path, params);
+                } else if (popNum) navigation.pop(popNum);
                 else navigation.goBack();
             }, 500);
         } else {
@@ -94,7 +97,12 @@ const Index = ({navigation, route}) => {
         http.post('/preference/doskip/20220928').then((res) => {
             if (res.code === '000000') {
                 dispatch(getUserInfo());
-                popNum ? navigation.pop(popNum) : navigation.goBack();
+                if (res.result.callback_jump) {
+                    let {path, params} = res.result.callback_jump;
+                    navigation.navigate(path, params);
+                } else if (popNum) {
+                    navigation.pop(popNum);
+                } else navigation.goBack();
             }
         });
     };
