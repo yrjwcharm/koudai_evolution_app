@@ -253,6 +253,8 @@ android {
         VIVO {}
         OPPO {}
         MEIZU {}
+        FUNDTOOLTEST {}
+        TOUFANG {}
         // huanliang {}
         // yingyongbaocpd {}
         sanxing {}
