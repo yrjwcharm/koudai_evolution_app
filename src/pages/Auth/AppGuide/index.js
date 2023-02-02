@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 16:51:48
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-11-04 18:54:13
+ * @LastEditTime: 2023-02-02 16:43:26
  * @Description:app引导页
  */
 
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     },
 });
 
-const image1 = require('../../../assets/img/appGuide/largeslider1.jpg');
+const image1 = require('../../../assets/img/appGuide/fundSlider.png');
 const image2 = require('../../../assets/img/appGuide/largeslider2.jpg');
 const image4 = require('../../../assets/img/appGuide/largeslider4.jpg');
 const image5 = require('../../../assets/img/appGuide/largeslider5.jpg');
@@ -34,14 +34,14 @@ export default function AppGuide({navigation}) {
     return (
         <Swiper style={styles.wrapper} loop={false} activeDotStyle={{width: px(21), backgroundColor: '#0051CC'}}>
             <View style={{flex: 1, backgroundColor: '#fff'}}>
-                <FastImage source={image1} style={styles.imgage} resizeMode={FastImage.resizeMode.contain} />
+                <FastImage source={image1} style={styles.imgage} />
             </View>
-            <View style={{flex: 1, backgroundColor: '#fff'}}>
+            {/* <View style={{flex: 1, backgroundColor: '#fff'}}>
                 <FastImage source={image2} style={styles.imgage} resizeMode={FastImage.resizeMode.contain} />
             </View>
             <View style={{flex: 1, backgroundColor: '#fff'}}>
                 <FastImage source={image4} style={styles.imgage} resizeMode={FastImage.resizeMode.contain} />
-            </View>
+            </View> */}
             <TouchableOpacity
                 activeOpacity={0.9}
                 style={{flex: 1, backgroundColor: '#fff'}}
