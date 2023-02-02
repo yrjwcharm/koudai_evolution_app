@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-01-15 10:40:35
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2021-04-19 14:52:48
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-02-02 14:35:11
  * @Description:微信登录
  */
 import React, {Component} from 'react';
@@ -40,6 +40,7 @@ export default class WechatLogin extends Component {
                     avatar: this.props.route?.params?.avatar,
                     nickname: this.props.route?.params?.nickname,
                     fr: this.props.route?.params?.fr,
+                    callback_jump: this.props.route?.params.callback_jump,
                 });
             } else {
                 Toast.show(res.message);
