@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 16:51:48
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-02 19:14:55
+ * @LastEditTime: 2023-02-02 19:45:00
  * @Description:app引导页
  */
 
@@ -33,18 +33,9 @@ export default function AppGuide({navigation}) {
     }, []);
     return (
         <Swiper style={styles.wrapper} loop={false} activeDotStyle={{width: px(21), backgroundColor: '#0051CC'}}>
-            <View style={{flex: 1, backgroundColor: '#C6322C'}}>
-                <FastImage source={image1} style={styles.imgage} />
-            </View>
-            {/* <View style={{flex: 1, backgroundColor: '#fff'}}>
-                <FastImage source={image2} style={styles.imgage} resizeMode={FastImage.resizeMode.contain} />
-            </View>
-            <View style={{flex: 1, backgroundColor: '#fff'}}>
-                <FastImage source={image4} style={styles.imgage} resizeMode={FastImage.resizeMode.contain} />
-            </View> */}
+            <FastImage source={image5} style={styles.imgage} resizeMode={FastImage.resizeMode.contain} />
             <TouchableOpacity
                 activeOpacity={0.9}
-                style={{flex: 1, backgroundColor: '#fff'}}
                 onPress={_.debounce(
                     () => {
                         Storage.save('AppGuide', true);
@@ -52,9 +43,16 @@ export default function AppGuide({navigation}) {
                     },
                     500,
                     {leading: true, trailing: false}
-                )}>
-                <FastImage source={image5} style={styles.imgage} resizeMode={FastImage.resizeMode.contain} />
+                )}
+                style={{flex: 1, backgroundColor: '#C6322C'}}>
+                <FastImage source={image1} style={styles.imgage} />
             </TouchableOpacity>
+            {/* <View style={{flex: 1, backgroundColor: '#fff'}}>
+                <FastImage source={image2} style={styles.imgage} resizeMode={FastImage.resizeMode.contain} />
+            </View>
+            <View style={{flex: 1, backgroundColor: '#fff'}}>
+                <FastImage source={image4} style={styles.imgage} resizeMode={FastImage.resizeMode.contain} />
+            </View> */}
         </Swiper>
     );
 }
