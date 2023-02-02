@@ -503,7 +503,7 @@ const styles = StyleSheet.create({
     ocrBtn: {
         marginLeft: px(15),
         borderRadius: Space.borderRadius,
-        width: px(200),
+        width: px(185),
         height: px(40),
     },
     ocrIcon: {
