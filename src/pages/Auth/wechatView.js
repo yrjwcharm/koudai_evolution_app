@@ -2,14 +2,14 @@
  * @Date: 2021-01-14 17:10:08
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-02 14:43:25
+ * @LastEditTime: 2023-02-02 15:54:37
  * @Description: 微信登录
  */
 import React from 'react';
 import {Style, Colors} from '../../common/commonStyle';
 import {px as text, px} from '../../utils/appUtil';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {CommonActions, useNavigation, useRoute} from '@react-navigation/native';
 import * as WeChat from 'react-native-wechat-lib';
 import Toast from '../../components/Toast';
 import Storage from '../../utils/storage';
@@ -67,6 +67,17 @@ function Wechat(props) {
                                                         callback_jump: route?.params.callback_jump,
                                                     });
                                                 } else if (res.result.app_tag_url) {
+                                                    navigation.dispatch((state) => {
+                                                        const routes = [
+                                                            state.routes[0],
+                                                            state.routes[state.routes.length - 1],
+                                                        ];
+                                                        return CommonActions.reset({
+                                                            ...state,
+                                                            routes,
+                                                            index: 1,
+                                                        });
+                                                    });
                                                     const {path, params} = res.result.app_tag_url;
                                                     navigation.replace(path, params);
                                                 } else if (

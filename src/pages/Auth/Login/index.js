@@ -2,7 +2,7 @@
  * @Date: 2021-01-13 16:52:27
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-02 11:34:35
+ * @LastEditTime: 2023-02-02 15:58:24
  * @Description: 登录
  */
 import React, {Component, createRef} from 'react';
@@ -34,6 +34,7 @@ import memoize from 'memoize-one';
 import {HeaderHeightContext} from '@react-navigation/stack';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {baseURL} from '../../../services/config';
+import {CommonActions} from '@react-navigation/native';
 class Login extends Component {
     constructor(props) {
         super(props);
@@ -129,8 +130,14 @@ class Login extends Component {
                             });
                         } else if (res.result.app_tag_url) {
                             const {path, params: _params = {}} = res.result.app_tag_url;
-                            const {fr = ''} = this.props.route.params || {};
-                            _params.popNum = fr === 'login' || fr === 'register' ? 2 : 1;
+                            this.props.navigation.dispatch((state) => {
+                                const routes = [state.routes[0], state.routes[state.routes.length - 1]];
+                                return CommonActions.reset({
+                                    ...state,
+                                    routes,
+                                    index: 1,
+                                });
+                            });
                             this.props.navigation.replace(path, _params);
                         } else if (
                             this.props.route?.params?.fr == 'register' ||
