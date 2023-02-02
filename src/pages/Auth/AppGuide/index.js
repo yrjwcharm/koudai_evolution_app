@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 16:51:48
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-02 16:43:26
+ * @LastEditTime: 2023-02-02 19:14:55
  * @Description:app引导页
  */
 
@@ -33,7 +33,7 @@ export default function AppGuide({navigation}) {
     }, []);
     return (
         <Swiper style={styles.wrapper} loop={false} activeDotStyle={{width: px(21), backgroundColor: '#0051CC'}}>
-            <View style={{flex: 1, backgroundColor: '#fff'}}>
+            <View style={{flex: 1, backgroundColor: '#C6322C'}}>
                 <FastImage source={image1} style={styles.imgage} />
             </View>
             {/* <View style={{flex: 1, backgroundColor: '#fff'}}>
