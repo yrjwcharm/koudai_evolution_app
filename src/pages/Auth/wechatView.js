@@ -2,7 +2,7 @@
  * @Date: 2021-01-14 17:10:08
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-02 14:28:51
+ * @LastEditTime: 2023-02-02 14:43:25
  * @Description: 微信登录
  */
 import React from 'react';
@@ -66,6 +66,9 @@ function Wechat(props) {
                                                         fr: route.params?.fr || '',
                                                         callback_jump: route?.params.callback_jump,
                                                     });
+                                                } else if (res.result.app_tag_url) {
+                                                    const {path, params} = res.result.app_tag_url;
+                                                    navigation.replace(path, params);
                                                 } else if (
                                                     route.params?.fr == 'register' ||
                                                     route.params?.fr == 'login'
