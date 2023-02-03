@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 16:51:48
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-03 12:11:06
+ * @LastEditTime: 2023-02-03 14:26:11
  * @Description:app引导页
  */
 
@@ -34,7 +34,7 @@ export default function AppGuide({navigation}) {
     }, []);
     return (
         <Swiper style={styles.wrapper} loop={false} activeDotStyle={{width: px(21), backgroundColor: '#0051CC'}}>
-            <View style={{flex: 1, backgroundColor: '#C6322C'}}>
+            <View style={{flex: 1, backgroundColor: '#fff'}}>
                 <FastImage source={image1_1} style={styles.imgage} />
             </View>
             <TouchableOpacity
