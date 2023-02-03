@@ -44,7 +44,7 @@ import {launchImageLibrary} from 'react-native-image-picker';
 import {useCountdown} from '~/components/hooks';
 import Storage from '~/utils/storage';
 import {getUserInfo} from '~/redux/actions/userInfo';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {CommonActions, useNavigation, useRoute} from '@react-navigation/native';
 import NavBar from '~/components/NavBar';
 
 /**
@@ -105,13 +105,31 @@ const BindModalContent = ({close, data = {}, id_no, name, rcode, rname}) => {
                 Toast.hide(loading);
                 Toast.show(res.message);
                 if (res.code === '000000') {
-                    const {auth_info, url} = res.result;
+                    const {auth_info, fr = '', url} = res.result;
                     await Storage.save('loginStatus', auth_info);
                     dispatch(getUserInfo());
                     Modal.close();
                     close?.();
-                    if (url) navigation.replace(url.path, url.params);
-                    else navigation.navigate('BankInfo', {...route.params, id_no, name, rcode, rname});
+                    fr &&
+                        navigation.dispatch((state) => {
+                            const {routes} = state;
+                            routes[routes.length - 1].params.fr = fr;
+                            return CommonActions.reset({
+                                ...state,
+                                routes,
+                            });
+                        });
+                    setTimeout(() => {
+                        if (url) navigation.replace(url.path, url.params);
+                        else
+                            navigation.navigate('BankInfo', {
+                                ...route.params,
+                                id_no,
+                                name,
+                                rcode,
+                                rname,
+                            });
+                    });
                 }
             })
             .finally(() => {
@@ -515,7 +533,14 @@ class IdAuth extends Component {
                         <TouchableWithoutFeedback onPress={() => this.setState({modalVisible: false})}>
                             <View style={styles.mask} />
                         </TouchableWithoutFeedback>
-                        <BindModalContent close={() => this.setState({modalVisible: false})} data={modalData} id_no={id_no} name={name} rcode={rcode} rname={rname} />
+                        <BindModalContent
+                            close={() => this.setState({modalVisible: false})}
+                            data={modalData}
+                            id_no={id_no}
+                            name={name}
+                            rcode={rcode}
+                            rname={rname}
+                        />
                     </KeyboardAvoidingView>
                 )}
                 <KeyboardAwareScrollView extraScrollHeight={px(100)} style={styles.con}>

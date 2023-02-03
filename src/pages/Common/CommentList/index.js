@@ -23,21 +23,22 @@ export const CommentModal = ({article_id = '', modalProps = {}, params = {}, pos
 
     //发布评论
     const publish = () => {
-        (postMethod ? postMethod({...params, content}) : publishNewComment({article_id, ...params, content})).then(
-            (res) => {
-                if (res.code === '000000') {
-                    global.LogTool({event: 'content_comment', oid: article_id});
-                    inputModal.current?.cancel?.();
-                    setContent('');
-                    Modal.show({
-                        title: '提示',
-                        content: res.result.message,
-                    });
-                } else {
-                    Toast.show(res.message);
-                }
+        (postMethod
+            ? postMethod({article_id, ...params, content})
+            : publishNewComment({article_id, ...params, content})
+        ).then((res) => {
+            if (res.code === '000000') {
+                global.LogTool({event: 'content_comment', oid: article_id});
+                inputModal.current?.cancel?.();
+                setContent('');
+                Modal.show({
+                    title: '提示',
+                    content: res.result.message,
+                });
+            } else {
+                Toast.show(res.message);
             }
-        );
+        });
     };
 
     useImperativeHandle(_ref, () => ({

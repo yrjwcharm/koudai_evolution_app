@@ -726,7 +726,11 @@ const ArticleDetail = ({navigation, route}) => {
                             </>
                         )}
                     </LogView.Wrapper>
-                    <CommentModal article_id={article_id} _ref={commentModal} />
+                    <CommentModal
+                        article_id={article_id}
+                        postMethod={(params) => http.post('/community/article/comment/add/20210101', params)}
+                        _ref={commentModal}
+                    />
                     {/* footer */}
                     <View style={[styles.footer, Style.flexRow]}>
                         <TouchableOpacity
