@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 16:51:48
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-02 19:14:55
+ * @LastEditTime: 2023-02-03 12:08:16
  * @Description:app引导页
  */
 
@@ -27,6 +27,7 @@ const image1 = require('../../../assets/img/appGuide/fundSlider.png');
 const image2 = require('../../../assets/img/appGuide/largeslider2.jpg');
 const image4 = require('../../../assets/img/appGuide/largeslider4.jpg');
 const image5 = require('../../../assets/img/appGuide/largeslider5.jpg');
+const image1_1 = require('../../../assets/img/appGuide/largeslider1_1.jpg');
 export default function AppGuide({navigation}) {
     useEffect(() => {
         SplashScreen.hide();
@@ -34,7 +35,7 @@ export default function AppGuide({navigation}) {
     return (
         <Swiper style={styles.wrapper} loop={false} activeDotStyle={{width: px(21), backgroundColor: '#0051CC'}}>
             <View style={{flex: 1, backgroundColor: '#C6322C'}}>
-                <FastImage source={image1} style={styles.imgage} />
+                <FastImage source={image1_1} style={styles.imgage} />
             </View>
             {/* <View style={{flex: 1, backgroundColor: '#fff'}}>
                 <FastImage source={image2} style={styles.imgage} resizeMode={FastImage.resizeMode.contain} />
