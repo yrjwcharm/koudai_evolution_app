@@ -2,7 +2,7 @@
  * @Date: 2021-01-15 16:51:48
  * @Author: yhc
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-03 12:08:16
+ * @LastEditTime: 2023-02-03 12:11:06
  * @Description:app引导页
  */
 
@@ -37,15 +37,8 @@ export default function AppGuide({navigation}) {
             <View style={{flex: 1, backgroundColor: '#C6322C'}}>
                 <FastImage source={image1_1} style={styles.imgage} />
             </View>
-            {/* <View style={{flex: 1, backgroundColor: '#fff'}}>
-                <FastImage source={image2} style={styles.imgage} resizeMode={FastImage.resizeMode.contain} />
-            </View>
-            <View style={{flex: 1, backgroundColor: '#fff'}}>
-                <FastImage source={image4} style={styles.imgage} resizeMode={FastImage.resizeMode.contain} />
-            </View> */}
             <TouchableOpacity
                 activeOpacity={0.9}
-                style={{flex: 1, backgroundColor: '#fff'}}
                 onPress={_.debounce(
                     () => {
                         Storage.save('AppGuide', true);
@@ -53,9 +46,16 @@ export default function AppGuide({navigation}) {
                     },
                     500,
                     {leading: true, trailing: false}
-                )}>
-                <FastImage source={image5} style={styles.imgage} resizeMode={FastImage.resizeMode.contain} />
+                )}
+                style={{flex: 1, backgroundColor: '#C6322C'}}>
+                <FastImage source={image1} style={styles.imgage} />
             </TouchableOpacity>
+            {/* <View style={{flex: 1, backgroundColor: '#fff'}}>
+                <FastImage source={image2} style={styles.imgage} resizeMode={FastImage.resizeMode.contain} />
+            </View>
+            <View style={{flex: 1, backgroundColor: '#fff'}}>
+                <FastImage source={image4} style={styles.imgage} resizeMode={FastImage.resizeMode.contain} />
+            </View> */}
         </Swiper>
     );
 }
