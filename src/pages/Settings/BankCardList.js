@@ -52,7 +52,7 @@ const BankCardList = ({navigation}) => {
     };
 
     const onPress = () => {
-        if (netInfo.type === 'unknown' || netInfo.isConnected) {
+        if (data?.button?.url) {
             global.LogTool('click', 'addBankCard');
             jump(data?.button?.url);
         } else Toast.show('当前网络状况差，请稍后再试');
