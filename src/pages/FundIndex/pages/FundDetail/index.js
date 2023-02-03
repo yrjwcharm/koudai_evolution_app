@@ -3,31 +3,28 @@
  * @Description: 基金详情
  */
 import React, {useCallback, useRef, useState} from 'react';
-import {Linking, Platform, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Linking, Platform, StatusBar, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useDispatch} from 'react-redux';
 import Image from 'react-native-fast-image';
 import {WebView} from 'react-native-webview';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
-import BottomDesc from '~/components/BottomDesc';
 import {useJump} from '~/components/hooks';
 import {BottomModal, Modal, ShareModal} from '~/components/Modal';
 import HTML from '~/components/RenderHtml';
 import Toast from '~/components/Toast';
 import {addProduct} from '~/redux/actions/pk/pkProducts';
 import Loading from '~/pages/Portfolio/components/PageLoading';
-import {deviceHeight, isIphoneX, px} from '~/utils/appUtil';
+import {isIphoneX, px} from '~/utils/appUtil';
 import Storage from '~/utils/storage';
 import {getPageData} from './services';
 import {SERVER_URL} from '~/services/config';
 import {followAdd, followCancel} from '~/pages/Attention/Index/service';
 import URI from 'urijs';
 import {useFocusEffect} from '@react-navigation/native';
-import {useHeaderHeight} from '@react-navigation/stack';
 
 const Index = ({navigation, route}) => {
     const dispatch = useDispatch();
     const jump = useJump();
-    const headerHeight = useHeaderHeight();
     const {code} = route.params;
     const bottomModal = useRef();
     const shareModal = useRef();
@@ -37,7 +34,6 @@ const Index = ({navigation, route}) => {
     const playTime = useRef();
     const [data, setData] = useState({});
     const {bottom_btns: {icon_btns = [], simple_btns = []} = {}, share_button: {share_info} = {}} = data;
-    const [webviewHeight, setHeight] = useState(deviceHeight - headerHeight);
 
     const init = () => {
         getPageData(route.params || {})
@@ -56,10 +52,7 @@ const Index = ({navigation, route}) => {
     const onMessage = (event) => {
         const _data = event.nativeEvent.data;
         // console.log('RN端接收到消息，消息内容=' + event.nativeEvent.data);
-        if (_data?.indexOf('height=') > -1) {
-            const height = JSON.parse(_data?.split('height=')[1]);
-            height && setHeight(height);
-        } else if (_data?.indexOf('logParams=') > -1) {
+        if (_data?.indexOf('logParams=') > -1) {
             const logParams = JSON.parse(_data?.split('logParams=')[1] || []);
             global.LogTool(...logParams);
         } else if (_data?.indexOf('url=') > -1) {
@@ -210,48 +203,43 @@ const Index = ({navigation, route}) => {
     return (
         <View style={styles.container}>
             <ShareModal ref={shareModal} title={share_info?.title} shareContent={share_info || {}} />
-            <ScrollView bounces={false} scrollIndicatorInsets={{right: 1}} style={{flex: 1}}>
-                <View style={{height: webviewHeight}}>
-                    <WebView
-                        allowsFullscreenVideo
-                        bounces={false}
-                        javaScriptEnabled
-                        onError={(syntheticEvent) => {
-                            const {nativeEvent} = syntheticEvent;
-                            console.warn('WebView error: ', nativeEvent);
-                        }}
-                        onHttpError={(syntheticEvent) => {
-                            const {nativeEvent} = syntheticEvent;
-                            console.warn('WebView received error status code: ', nativeEvent.statusCode);
-                        }}
-                        onLoadEnd={async () => {
-                            const loginStatus = await Storage.get('loginStatus');
-                            // console.log(loginStatus);
-                            webview.current.postMessage(
-                                JSON.stringify({
-                                    ...loginStatus,
-                                    did: global.did,
-                                    timeStamp: timeStamp.current + '',
-                                    ver: global.ver,
-                                })
-                            );
-                        }}
-                        onMessage={onMessage}
-                        originWhitelist={['*']}
-                        ref={webview}
-                        renderLoading={Platform.select({android: () => <Loading />, ios: undefined})}
-                        source={{
-                            uri: URI(`${SERVER_URL[global.env].H5}/fundDetail/${code}`)
-                                .addQuery({timeStamp: timeStamp.current})
-                                .valueOf(),
-                        }}
-                        startInLoadingState
-                        style={{flex: 1, opacity: 0.9999}}
-                        textZoom={100}
-                    />
-                </View>
-                <BottomDesc />
-            </ScrollView>
+            <WebView
+                allowsFullscreenVideo
+                bounces={false}
+                javaScriptEnabled
+                onError={(syntheticEvent) => {
+                    const {nativeEvent} = syntheticEvent;
+                    console.warn('WebView error: ', nativeEvent);
+                }}
+                onHttpError={(syntheticEvent) => {
+                    const {nativeEvent} = syntheticEvent;
+                    console.warn('WebView received error status code: ', nativeEvent.statusCode);
+                }}
+                onLoadEnd={async () => {
+                    const loginStatus = await Storage.get('loginStatus');
+                    // console.log(loginStatus);
+                    webview.current.postMessage(
+                        JSON.stringify({
+                            ...loginStatus,
+                            did: global.did,
+                            timeStamp: timeStamp.current + '',
+                            ver: global.ver,
+                        })
+                    );
+                }}
+                onMessage={onMessage}
+                originWhitelist={['*']}
+                ref={webview}
+                renderLoading={Platform.select({android: () => <Loading />, ios: undefined})}
+                source={{
+                    uri: URI(`${SERVER_URL[global.env].H5}/fundDetail/${code}`)
+                        .addQuery({timeStamp: timeStamp.current})
+                        .valueOf(),
+                }}
+                startInLoadingState
+                style={{flex: 1, opacity: 0.9999}}
+                textZoom={100}
+            />
             <View style={[Style.flexRow, styles.bottomBtns]}>
                 {icon_btns?.map((btn, i, arr) => {
                     const {icon, subs, title} = btn;
