@@ -164,15 +164,15 @@ const FixedInvestManage = ({navigation, route}) => {
                                                 key={el + ' ' + index}
                                                 onPress={() => {
                                                     global.LogTool(
-                                                        'click',
+                                                        'autoinvestment',
                                                         index == 0
-                                                            ? 'autoinvestment_manegement_all'
+                                                            ? 'all'
                                                             : index == 1
-                                                            ? 'autoinvestment_manegement_fund'
+                                                            ? 'fund'
                                                             : index == 2
-                                                            ? 'autoinvestment_manegement_portfolio'
+                                                            ? 'portfolio'
                                                             : index == 3
-                                                            ? 'Financial_planning'
+                                                            ? 'planning'
                                                             : index == 4
                                                             ? 'Private_equity_funds'
                                                             : index == 5

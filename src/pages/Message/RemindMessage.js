@@ -3,7 +3,7 @@
  * @Date: 2021-02-20 10:33:13
  * @Description:消息中心
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-28 14:30:37
+ * @LastEditTime: 2023-02-06 11:18:41
  */
 import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Platform} from 'react-native';
@@ -102,7 +102,7 @@ export default function RemindMessage({navigation}) {
                             activeOpacity={0.8}
                             style={[styles.im_card_sty, {marginBottom: text(16)}]}
                             onPress={() => {
-                                global.LogTool('investment_adviser');
+                                global.LogTool('MessageCard_Click', 'investment_adviser');
                                 jump(data?.service?.url);
                             }}>
                             <View>
@@ -144,7 +144,7 @@ export default function RemindMessage({navigation}) {
                             activeOpacity={0.8}
                             style={[styles.im_card_sty, {marginBottom: text(16)}]}
                             onPress={() => {
-                                global.LogTool('investment_viewpoint');
+                                global.LogTool('MessageCard_Click', 'investment_viewpoint');
                                 jump(data?.point?.url);
                             }}>
                             <View>
@@ -200,7 +200,7 @@ export default function RemindMessage({navigation}) {
                                         ]}
                                         key={_index + '_item'}
                                         onPress={() => {
-                                            global.LogTool(_item.type);
+                                            global.LogTool('MessageCard_Click', _item.type);
                                             jump(_item.url);
                                         }}>
                                         <View>

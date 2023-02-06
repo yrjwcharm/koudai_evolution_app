@@ -66,10 +66,7 @@ const ProfitDistribution = ({poid = '', differ, type, fund_code = '', headData =
             }
         });
         setTabs([...tabs]);
-        global.LogTool(
-            'click',
-            i == 0 ? 'day_earnings' : i == 1 ? 'month_earnings' : i == 2 ? 'year_earnings' : 'accumlated_earnings'
-        );
+        global.LogTool('EarningsTime_Click', i == 0 ? 'day' : i == 1 ? 'month' : i == 2 ? 'year' : 'accumlated');
     };
     const slideFn = (bool) => {
         scrollRef.current?.setNativeProps({

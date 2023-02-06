@@ -2,23 +2,81 @@
  * @Date: 2022-09-21 10:36:18
  * @Description: 公共评论列表
  */
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useImperativeHandle, useRef, useState} from 'react';
 import {ActivityIndicator, FlatList, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {Colors, Font, Space, Style} from '~/common/commonStyle';
-import {Button} from '~/components/Button';
-import {Modal, PageModal} from '~/components/Modal';
 import Header from '~/components/NavBar';
-import Toast from '~/components/Toast';
 import {isIphoneX, px} from '~/utils/appUtil';
 import CommentItem from '~/pages/Vision/components/CommentItem';
 import {getCommentList, publishNewComment} from './services';
+import {Modal, PageModal} from '~/components/Modal';
+import Toast from '~/components/Toast';
+import {Button} from '~/components/Button';
 
 const inputMaxLength = 500;
-const CommentList = ({navigation, route}) => {
+
+export const CommentModal = ({article_id = '', modalProps = {}, params = {}, postMethod, _ref}) => {
     const inputModal = useRef();
     const inputRef = useRef();
     const [content, setContent] = useState('');
+
+    //发布评论
+    const publish = () => {
+        (postMethod
+            ? postMethod({article_id, ...params, content})
+            : publishNewComment({article_id, ...params, content})
+        ).then((res) => {
+            if (res.code === '000000') {
+                global.LogTool({event: 'content_comment', oid: article_id});
+                inputModal.current?.cancel?.();
+                setContent('');
+                Modal.show({
+                    title: '提示',
+                    content: res.result.message,
+                });
+            } else {
+                Toast.show(res.message);
+            }
+        });
+    };
+
+    useImperativeHandle(_ref, () => ({
+        show: () => {
+            inputModal.current?.show?.();
+            setTimeout(() => {
+                inputRef?.current?.focus();
+            }, 100);
+        },
+    }));
+
+    return (
+        <PageModal ref={inputModal} title="写评论" style={{height: px(360)}} backButtonClose={true} {...modalProps}>
+            <TextInput
+                ref={inputRef}
+                value={content}
+                multiline={true}
+                style={styles.input}
+                onChangeText={(value) => {
+                    setContent(value);
+                }}
+                maxLength={inputMaxLength}
+                textAlignVertical="top"
+                placeholder="我来聊两句..."
+            />
+            <View style={{alignItems: 'flex-end', marginRight: px(20)}}>
+                <View style={Style.flexRow}>
+                    <Text style={{color: '#9AA1B2', fontSize: px(14)}}>
+                        {content.length}/{inputMaxLength}
+                    </Text>
+                    <Button title="发布" disabled={content.length <= 0} style={styles.button} onPress={publish} />
+                </View>
+            </View>
+        </PageModal>
+    );
+};
+const CommentList = ({navigation, route}) => {
+    const commentModal = useRef();
     const [commentList, setCommentList] = useState([]);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(false);
@@ -56,30 +114,11 @@ const CommentList = ({navigation, route}) => {
     };
     // 调起评论输入框
     const commentInput = () => {
-        inputModal?.current?.show();
-        setTimeout(() => {
-            inputRef?.current?.focus();
-        }, 100);
-    };
-    // 发布评论
-    const publish = () => {
-        publishNewComment({...(route.params || {}), content}).then((res) => {
-            if (res.code == '000000') {
-                inputModal.current.cancel();
-                setContent('');
-                Modal.show({
-                    title: '提示',
-                    content: res.result.message,
-                });
-            } else {
-                Toast.show(res.message);
-            }
-        });
+        commentModal?.current?.show?.();
     };
 
     useEffect(() => {
         getData();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [page]);
     useEffect(() => {
         if (comment_id === undefined && show_modal) {
@@ -87,7 +126,6 @@ const CommentList = ({navigation, route}) => {
                 commentInput();
             }, 500);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const ListFooterComponent = () => {
@@ -122,7 +160,7 @@ const CommentList = ({navigation, route}) => {
                 style={styles.con}
                 onRefresh={onRefresh}
                 refreshing={refreshing}
-                renderItem={({item, index}) => {
+                renderItem={({item}) => {
                     return <CommentItem data={item} style={{marginBottom: px(9)}} />;
                 }}
                 ListEmptyComponent={() =>
@@ -147,28 +185,7 @@ const CommentList = ({navigation, route}) => {
                 keyExtractor={(item, index) => index.toString()}
             />
 
-            <PageModal ref={inputModal} title="写评论" style={{height: px(360)}} backButtonClose={true}>
-                <TextInput
-                    ref={inputRef}
-                    value={content}
-                    multiline={true}
-                    style={styles.input}
-                    onChangeText={(value) => {
-                        setContent(value);
-                    }}
-                    maxLength={inputMaxLength}
-                    textAlignVertical="top"
-                    placeholder="我来聊两句..."
-                />
-                <View style={{alignItems: 'flex-end', marginRight: px(20)}}>
-                    <View style={Style.flexRow}>
-                        <Text style={{color: '#9AA1B2', fontSize: px(14)}}>
-                            {content.length}/{inputMaxLength}
-                        </Text>
-                        <Button title="发布" disabled={content.length <= 0} style={styles.button} onPress={publish} />
-                    </View>
-                </View>
-            </PageModal>
+            <CommentModal params={route.params || {}} _ref={commentModal} />
             {/* footer */}
             <TouchableOpacity style={styles.footer} activeOpacity={0.9} onPress={commentInput}>
                 <View style={styles.footer_content}>

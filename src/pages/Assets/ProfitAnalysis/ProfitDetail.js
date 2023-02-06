@@ -94,7 +94,7 @@ const ProfitDetail = ({navigation, route}) => {
                                     initialPage={page}
                                     locked={true}
                                     onChangeTab={({i}) => {
-                                        global.LogTool('changeTab', tabs[i]);
+                                        global.LogTool('EarningsPproduct_Click', tabs[i]?.type);
                                         init(tabs[i].type);
                                     }}>
                                     {tabs.map((el, index) => {

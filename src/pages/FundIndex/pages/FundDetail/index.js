@@ -233,6 +233,7 @@ const Index = ({navigation, route}) => {
                                     did: global.did,
                                     timeStamp: timeStamp.current + '',
                                     ver: global.ver,
+                                    chn: global.channel,
                                 })
                             );
                         }}
