@@ -38,21 +38,14 @@ const Banner = ({bgType, proData}) => {
                                 ...styles.dotStyle,
                             }}
                             onIndexChanged={(index) => {
-                                isFocused &&
-                                    global.LogTool({
-                                        event: 'banner_show',
-                                        ctrl: proData?.banner_list[index]?.id,
-                                    });
+                                isFocused && global.LogTool('guide_show', 'banner', proData?.banner_list[index]?.id);
                             }}>
                             {proData?.banner_list?.map?.((banner, index) => (
                                 <TouchableOpacity
                                     key={index}
                                     activeOpacity={0.9}
                                     onPress={() => {
-                                        global.LogTool({
-                                            event: 'banner',
-                                            ctrl: banner.id,
-                                        });
+                                        global.LogTool('guide_click', 'banner', banner.id);
                                         jump(banner.url);
                                     }}>
                                     <FastImage
@@ -70,10 +63,7 @@ const Banner = ({bgType, proData}) => {
                 <TouchableOpacity
                     activeOpacity={0.9}
                     onPress={() => {
-                        global.LogTool({
-                            event: 'banner',
-                            ctrl: proData?.popular_banner_list?.id,
-                        });
+                        global.LogTool('guide_click', 'banner', proData?.popular_banner_list?.id);
                         jump(proData?.popular_banner_list?.url);
                     }}>
                     <FastImage
