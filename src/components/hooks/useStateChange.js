@@ -344,7 +344,7 @@ function useStateChange({homeShowModal, store}) {
                 }
                 if (popup.log_id) {
                     http.post('/common/layer/click/20210801', {log_id: popup.log_id});
-                    global.LogTool('guide_show', 'app弹窗', popup.log_id);
+                    global.LogTool('guide_show', '弹窗', popup.log_id);
                 }
             } else {
                 navigation[type]?.(url.path, url.params || {});
@@ -426,8 +426,7 @@ function useStateChange({homeShowModal, store}) {
                         } else {
                             jump(modal.confirm?.url || modal.url || '');
                         }
-                        modal.log_id &&
-                            global.LogTool('campaignPopupStart', navigation?.getCurrentRoute?.()?.name, modal.log_id);
+                        modal.log_id && global.LogTool('guide_show_click', '弹窗', modal.log_id);
                     },
                     id: modal.log_id,
                     isTouchMaskToClose: modal.touch_close,
