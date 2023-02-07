@@ -235,6 +235,7 @@ const SpecialDetail = ({navigation, route}) => {
                         timeStamp: timeStamp.current + '',
                         ver: global.ver,
                         navBarHeight: navBarRef.current.navBarHeight,
+                        chn: global.channel,
                     });
                     webview.current?.injectJavaScript(`localStorage.setItem('loginStatus','${loginStatusStr}')`);
                     webview2.current?.injectJavaScript(`localStorage.setItem('loginStatus','${loginStatusStr}')`);
@@ -244,6 +245,7 @@ const SpecialDetail = ({navigation, route}) => {
                             did: global.did,
                             timeStamp: timeStamp.current + '',
                             ver: global.ver,
+                            chn: global.channel,
                         })
                     );
                     webview.current.postMessage(
@@ -252,6 +254,7 @@ const SpecialDetail = ({navigation, route}) => {
                             did: global.did,
                             timeStamp: timeStamp.current + '',
                             ver: global.ver,
+                            chn: global.channel,
                             navBarHeight: navBarRef.current.navBarHeight,
                         })
                     );
@@ -261,6 +264,7 @@ const SpecialDetail = ({navigation, route}) => {
                             did: global.did,
                             timeStamp: timeStamp.current + '',
                             ver: global.ver,
+                            chn: global.channel,
                             navBarHeight: navBarRef.current.navBarHeight,
                         })
                     );
