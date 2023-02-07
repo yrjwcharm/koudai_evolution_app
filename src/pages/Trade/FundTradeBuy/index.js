@@ -48,7 +48,7 @@ import {
     postQuestionAnswer,
 } from './services';
 import http from '~/services';
-import {debounce} from 'lodash';
+import {debounce, findLastIndex} from 'lodash';
 
 export const Questionnaire = ({callback, data = [], summary_id}) => {
     const [current, setIndex] = useState(0);
@@ -459,6 +459,16 @@ const TradeDetail = ({amount, changeList, data = {}, setCanBuy}) => {
         return list?.reduce?.((prev, curr) => prev + (curr.select ? Number(curr.percent) : 0), 0) || 0;
     }, [list]);
 
+    const canBuy = useMemo(
+        () =>
+            list?.every?.((item) => {
+                const {max_amount, min_amount, percent, select} = item;
+                const _amount = (amount * percent) / 100;
+                return select ? _amount >= min_amount && (max_amount ? _amount <= max_amount : true) : true;
+            }) && totalPercent === 100,
+        [amount, list, totalPercent]
+    );
+
     const selectAll = () => {
         setList((prev) => {
             const next = [...prev];
@@ -491,14 +501,8 @@ const TradeDetail = ({amount, changeList, data = {}, setCanBuy}) => {
     };
 
     useEffect(() => {
-        const canBuy =
-            list?.every?.((item) => {
-                const {max_amount, min_amount, percent, select} = item;
-                const _amount = (amount * percent) / 100;
-                return select ? _amount >= min_amount && (max_amount ? _amount <= max_amount : true) : true;
-            }) && totalPercent === 100;
         setCanBuy?.(canBuy);
-    }, [amount, list, totalPercent]);
+    }, [canBuy]);
 
     useEffect(() => {
         changeList?.(list.filter((item) => item.select));
@@ -563,7 +567,17 @@ const TradeDetail = ({amount, changeList, data = {}, setCanBuy}) => {
                     </View>
                     {list?.map?.((item, index) => {
                         const {code, max_amount, min_amount, name, percent, select} = item;
-                        const _amount = (amount * percent) / 100;
+                        const lastSelectedIndex = findLastIndex(list, (itm) => itm.select);
+                        const otherAmount = list?.reduce(
+                            (prev, curr, currIndex) =>
+                                prev +
+                                (curr.select && currIndex !== lastSelectedIndex
+                                    ? ((amount * curr.percent) / 100).toFixed(2) * 1
+                                    : 0),
+                            0
+                        );
+                        const _amount =
+                            canBuy && index === lastSelectedIndex ? amount - otherAmount : (amount * percent) / 100;
                         const hasAmount = `${amount}`.length > 0;
                         const errTip =
                             hasAmount && select
