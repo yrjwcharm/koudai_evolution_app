@@ -4,7 +4,7 @@
  * @Description:路由表
  */
 import React from 'react';
-import {Platform, Keyboard} from 'react-native';
+import {Keyboard, Platform} from 'react-native';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import Feather from 'react-native-vector-icons/Feather';
 import TabScreen from './Tabbar';
@@ -232,7 +232,6 @@ import CommonCommentList from '~/pages/Common/CommentList'; // 公共评论列�
 import ToolListManage from '~/pages/Assets/ToolListManage/ToolList'; //全部工具列表
 import PortfolioAssetList from '~/pages/Assets/PortfolioAssetList/PortfolioAssetList';
 import ProductMoreMenu from '~/pages/FundIndex/pages/ProductMoreMenu'; // 更多分类
-
 import CommunityHome from '~/pages/Community/CommunityHome/CommunityHome';
 import CommunityPersonalHome from '~/pages/Community/CommunityHome/CommunityPersonalHome'; //社区个人主页
 import CommunityVideo from '~/pages/Community/CommunityVideo/CommunityVideo'; //社区音频
@@ -268,15 +267,12 @@ import CommunityCollection from '~/pages/CreatorCenter/CommunityCollection'; // 
 import MenuList from '~/pages/Common/MenuList'; // 菜单列表
 import AddProductStep1 from '~/pages/CreatorCenter/AddProductStep1'; // 添加产品步骤1
 import AddProductStep2 from '~/pages/CreatorCenter/AddProductStep2'; // 添加产品步骤2
-
 // 专题创建
 import SpecialModifyBgImage from '~/pages/CreatorCenter/Special/Create/SpecialModifyBgImage.js'; // 专题创建-选择之前的图片
-
 import SpecialCreateBaseInfo from '~/pages/CreatorCenter/Special/Create/SpecialCreateBaseInfo.js'; // 专题创建-基础信息
 import SpecailSortContent from '~/pages/CreatorCenter/Special/Create/SpecailSortContent.js'; // 专题创建-内容排序
 import SpecailModifyContent from '~/pages/CreatorCenter/Special/Create/SpecailModifyContent.js'; // 专题创建/修改-内容
 import SpecialSubmitCheck from '~/pages/CreatorCenter/Special/Create/SpecialSubmitCheck.js'; // 专题创建-提交审核成功
-
 // 专题修改
 import SpecialModifyEntry from '~/pages/CreatorCenter/Special/Modify/SpecialModifyEntry.js'; // 专题修改入口
 import SpecialModifyBaseInfo from '~/pages/CreatorCenter/Special/Modify/SpecialModifyBaseInfo.js'; // 专题修改-基础信息
@@ -286,10 +282,8 @@ import SpecialModifyRecommend from '~/pages/CreatorCenter/Special/Modify/Special
 import SpecialPreviewRecommend from '~/pages/CreatorCenter/Special/Modify/SpecialPreviewRecommend.js'; // 专题修改-推广位样式
 import SpecialModifyProductInfo from '~/pages/CreatorCenter/Special/Modify/SpecialModifyProductInfo.js'; // 专题修改-推广位-产品信息填写
 import SpecialModifyProductItem from '~/pages/CreatorCenter/Special/Modify/SpecialModifyProductItem.js'; // 专题修改-推广位-产品信息填写-选择产品
-
 import EditProduct from '~/pages/CreatorCenter/EditProduct'; // 修改产品
 import SelectProduct from '~/pages/CreatorCenter/SelectProduct'; // 添加产品
-
 import ProfitDetail from '~/pages/Assets/ProfitAnalysis/ProfitDetail'; //收益明细
 import FixedInvestManage from '~/pages/Assets/FixedInvestment/FixedInvestManage'; //定投管理
 import TerminatedFixedInvest from '~/pages/Assets/FixedInvestment/TerminatedFixedInvest'; //已终止定投
@@ -308,7 +302,6 @@ import CommunityMyFollow from '~/pages/Community/CommunityMyFollow'; // 我的�
 import CommunityArticleCreate from '~/pages/Community/CommunityArticleCreate'; // 写文章
 import CommunityPersonalPrivacy from '~/pages/Community/CommunityPersonalPrivacy'; // 社区个人隐私管理
 import PreviewArticle from '~/pages/Community/PreviewArticle'; // 预览文章
-
 // 审核中心
 import CreatorAuthHome from '~/pages/CreatorCenter/Auth/Home/CreatorAuthHome.js'; // 创作者-审核主页
 import SpecialDetailDraft from '~/pages/CreatorCenter/SpecialDetailDraft'; // 专题草稿
@@ -911,7 +904,7 @@ export default function AppStack() {
                 <Stack.Screen name="AuthorityManage" component={AuthorityManage} options={{title: '权限管理'}} />
                 <Stack.Screen name="AboutApp" component={AboutApp} options={{title: '关于理财魔方'}} />
                 <Stack.Screen name="WeChatNotice" component={WeChatNotice} options={{title: '开启微信通知'}} />
-                <Stack.Screen name="IdAuth" component={IdAuth} options={{title: '基金交易安全开户'}} />
+                <Stack.Screen name="IdAuth" component={IdAuth} options={{headerShown: false}} />
                 <Stack.Screen name="VerifyLogin" component={VerifyLogin} options={{title: ''}} />
                 <Stack.Screen
                     name="AdvisorPortfolio"

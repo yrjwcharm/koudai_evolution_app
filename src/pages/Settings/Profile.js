@@ -1,9 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /*
  * @Date: 2021-02-04 11:39:29
- * @Author: dx
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-21 12:20:52
  * @Description: 个人资料
  */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -23,17 +20,17 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Picker from 'react-native-picker';
 import * as WeChat from 'react-native-wechat-lib';
-import {px as text, isIphoneX, formaNum, onlyNumber, px} from '../../utils/appUtil.js';
-import {Colors, Font, Space, Style} from '../../common/commonStyle';
-import http from '../../services/index.js';
-import HTML from '../../components/RenderHtml';
-import Mask from '../../components/Mask';
-import {InputModal} from '../../components/Modal';
-import Toast from '../../components/Toast';
-import {useJump} from '../../components/hooks';
+import {formaNum, isIphoneX, onlyNumber, px} from '~/utils/appUtil.js';
+import {Colors, Font, Space, Style} from '~/common/commonStyle';
+import http from '~/services';
+import HTML from '~/components/RenderHtml';
+import Mask from '~/components/Mask';
+import {InputModal, Modal} from '~/components/Modal';
+import Toast from '~/components/Toast';
+import {useJump} from '~/components/hooks';
 import {useDispatch} from 'react-redux';
-import {getUserInfo} from '../../redux/actions/userInfo';
-import {NativeSignManagerEmitter, MethodObj} from '../PE/PEBridge.js';
+import {getUserInfo} from '~/redux/actions/userInfo';
+import {MethodObj, NativeSignManagerEmitter} from '../PE/PEBridge.js';
 
 const Profile = ({navigation}) => {
     const dispatch = useDispatch();
@@ -60,7 +57,8 @@ const Profile = ({navigation}) => {
         useCallback(() => {
             const listener = NativeSignManagerEmitter.addListener(MethodObj.signFileSuccess, (res) => {
                 const toast = Toast.showLoading();
-                http.post('/file_sign/sign_done/20220510', {file_id: res.fileId}).then((resp) => {
+                const {fileId} = res;
+                http.post('/file_sign/sign_done/20220510', {file_id: fileId}).then((resp) => {
                     Toast.hide(toast);
                     if (resp.code === '000000') {
                         Toast.show(resp.message || '签署成功');
@@ -81,130 +79,147 @@ const Profile = ({navigation}) => {
             };
         }, [])
     );
-    const onPress = useCallback(
-        (item) => {
-            const {id, key, val: {jump_url, options, text: txt, type} = {}} = item;
-            global.LogTool('click', key);
-            if (type === 'jump') {
-                if (key === '绑定微信') {
-                    WeChat.isWXAppInstalled().then((isInstalled) => {
-                        if (isInstalled) {
-                            const scope = 'snsapi_userinfo';
-                            const state = '_' + +new Date();
-                            try {
-                                WeChat.sendAuthRequest(scope, state).then((response) => {
-                                    // console.log(response.code);
-                                    if (response.code) {
-                                        http.post('/auth/bind_wx/20210101', {code: response.code}).then((res) => {
-                                            Toast.show(res.message);
-                                            if (res.code === '000000') {
-                                                global.LogTool('bindWX', 'success');
-                                                dispatch(getUserInfo());
-                                                init();
-                                            }
-                                        });
-                                    }
-                                });
-                            } catch (e) {
-                                if (e instanceof WeChat.WechatError) {
-                                    console.error(e.stack);
-                                } else {
-                                    throw e;
+    const onPress = (item) => {
+        const {id, key, val: {confirm_pop, jump_url, options, text: txt, type} = {}} = item;
+        global.LogTool('click', key);
+        if (type === 'jump') {
+            if (key === '绑定微信') {
+                WeChat.isWXAppInstalled().then((isInstalled) => {
+                    if (isInstalled) {
+                        const scope = 'snsapi_userinfo';
+                        const state = '_' + +new Date();
+                        try {
+                            WeChat.sendAuthRequest(scope, state).then((response) => {
+                                // console.log(response.code);
+                                if (response.code) {
+                                    http.post('/auth/bind_wx/20210101', {code: response.code}).then((res) => {
+                                        Toast.show(res.message);
+                                        if (res.code === '000000') {
+                                            global.LogTool('bindWX', 'success');
+                                            dispatch(getUserInfo());
+                                            init();
+                                        }
+                                    });
                                 }
+                            });
+                        } catch (e) {
+                            if (e instanceof WeChat.WechatError) {
+                                console.error(e.stack);
+                            } else {
+                                throw e;
                             }
-                        } else {
-                            Toast.show('请安装微信');
                         }
-                    });
-                } else {
-                    jump(jump_url);
-                }
-            } else if (type === 'select') {
-                Keyboard.dismiss();
-                setShowMask(true);
-                Picker.init({
-                    pickerTitleColor: [31, 36, 50, 1],
-                    pickerTitleText: `请选择${key}`,
-                    pickerCancelBtnText: '取消',
-                    pickerConfirmBtnText: '确定',
-                    pickerBg: [255, 255, 255, 1],
-                    pickerToolBarBg: [249, 250, 252, 1],
-                    pickerData: options?.map((option) => option.val),
-                    pickerFontColor: [33, 33, 33, 1],
-                    pickerRowHeight: 36,
-                    pickerConfirmBtnColor: [0, 81, 204, 1],
-                    pickerCancelBtnColor: [128, 137, 155, 1],
-                    pickerTextEllipsisLen: 100,
-                    selectedValue: [txt],
-                    wheelFlex: [1, 1],
-                    onPickerCancel: () => setShowMask(false),
-                    onPickerConfirm: (pickedValue, pickedIndex) => {
-                        setShowMask(false);
-                        http.post('/mapi/update/user_info/20210101', {
-                            id: id,
-                            ...(options[pickedIndex] || {}),
-                        }).then((res) => {
-                            if (res.code === '000000') {
-                                global.LogTool('select', key);
-                                init();
-                            }
-                        });
-                    },
+                    } else {
+                        Toast.show('请安装微信');
+                    }
                 });
-                Picker.show();
-            } else if (['input', 'textarea'].includes(type)) {
-                setIptVal(txt);
-                setModalProps({
-                    confirmClick: () => confirmClick(item),
-                    inputProps: {
-                        keyboardType: type === 'textarea' ? 'default' : 'decimal-pad',
-                        maxLength: 30,
-                        multiline: type === 'textarea' ? true : false,
-                        placeholder: `请输入${key}`,
-                    },
-                    title: key,
-                });
-                setTimeout(() => {
-                    inputRef?.current?.focus();
-                }, 200);
+            } else {
+                jump(jump_url);
             }
-        },
-        [init, confirmClick, jump, dispatch]
-    );
+        } else if (type === 'select') {
+            Keyboard.dismiss();
+            setShowMask(true);
+            Picker.init({
+                pickerTitleColor: [31, 36, 50, 1],
+                pickerTitleText: `请选择${key}`,
+                pickerCancelBtnText: '取消',
+                pickerConfirmBtnText: '确定',
+                pickerBg: [255, 255, 255, 1],
+                pickerToolBarBg: [249, 250, 252, 1],
+                pickerData: options?.map((option) => option.val),
+                pickerFontColor: [33, 33, 33, 1],
+                pickerRowHeight: 36,
+                pickerConfirmBtnColor: [0, 81, 204, 1],
+                pickerCancelBtnColor: [128, 137, 155, 1],
+                pickerTextEllipsisLen: 100,
+                selectedValue: [txt],
+                wheelFlex: [1, 1],
+                onPickerCancel: () => setShowMask(false),
+                onPickerConfirm: (pickedValue, pickedIndex) => {
+                    setShowMask(false);
+                    const fun = () =>
+                        http
+                            .post('/mapi/update/user_info/20210101', {
+                                id: id,
+                                ...(options[pickedIndex] || {}),
+                            })
+                            .then((res) => {
+                                Toast.show(res.message);
+                                if (res.code === '000000') {
+                                    global.LogTool('select', key);
+                                    init();
+                                }
+                            });
+                    if (confirm_pop?.content) {
+                        const {cancel_action, confirm_action, content} = confirm_pop;
+                        Modal.show({
+                            backButtonClose: false,
+                            cancelText: cancel_action?.text,
+                            confirm: !!cancel_action?.text,
+                            confirmCallBack: fun,
+                            confirmText: confirm_action?.text,
+                            content,
+                            onCloseCallBack: () => {
+                                setTimeout(() => {
+                                    setShowMask(true);
+                                    Picker.show();
+                                }, 300);
+                            },
+                        });
+                    } else {
+                        fun();
+                    }
+                },
+            });
+            Picker.show();
+        } else if (['input', 'textarea'].includes(type)) {
+            setIptVal(txt);
+            setModalProps({
+                confirmClick: () => confirmClick(item),
+                inputProps: {
+                    keyboardType: type === 'textarea' ? 'default' : 'decimal-pad',
+                    maxLength: 30,
+                    multiline: type === 'textarea',
+                    placeholder: `请输入${key}`,
+                },
+                title: key,
+            });
+            setTimeout(() => {
+                inputRef?.current?.focus();
+            }, 200);
+        }
+    };
     // 隐藏选择器
-    const hidePicker = useCallback(() => {
+    const hidePicker = () => {
         Picker.hide();
         setShowMask(false);
-    }, []);
+    };
 
-    const confirmClick = useCallback(
-        (item) => {
-            // console.log(iptValRef.current);
-            if (!iptValRef.current) {
-                inputRef?.current?.blur();
-                inputModal.current.toastShow(`${item.key}不能为空`, 2000, {
-                    onHidden: () => {
-                        setTimeout(() => {
-                            inputRef?.current?.focus();
-                        }, 100);
-                    },
-                });
-                return false;
-            }
-            inputModal.current.hide();
-            http.post('/mapi/update/user_info/20210101', {
-                id: item.id,
-                val: iptValRef.current,
-            }).then((res) => {
-                Toast.show(res.message);
-                if (res.code === '000000') {
-                    global.LogTool('input', item.key);
-                    init();
-                }
+    const confirmClick = (item) => {
+        // console.log(iptValRef.current);
+        if (!iptValRef.current) {
+            inputRef?.current?.blur();
+            inputModal.current.toastShow(`${item.key}不能为空`, 2000, {
+                onHidden: () => {
+                    setTimeout(() => {
+                        inputRef?.current?.focus();
+                    }, 100);
+                },
             });
-        },
-        [init]
-    );
+            return false;
+        }
+        inputModal.current.hide();
+        http.post('/mapi/update/user_info/20210101', {
+            id: item.id,
+            val: iptValRef.current,
+        }).then((res) => {
+            Toast.show(res.message);
+            if (res.code === '000000') {
+                global.LogTool('input', item.key);
+                init();
+            }
+        });
+    };
 
     useFocusEffect(
         useCallback(() => {
