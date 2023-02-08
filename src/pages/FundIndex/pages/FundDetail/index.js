@@ -203,6 +203,7 @@ const Index = ({navigation, route}) => {
     return (
         <View style={styles.container}>
             <ShareModal ref={shareModal} title={share_info?.title} shareContent={share_info || {}} />
+
             <WebView
                 allowsFullscreenVideo
                 bounces={false}
@@ -224,6 +225,7 @@ const Index = ({navigation, route}) => {
                             did: global.did,
                             timeStamp: timeStamp.current + '',
                             ver: global.ver,
+                            chn: global.channel,
                         })
                     );
                 }}
@@ -240,6 +242,7 @@ const Index = ({navigation, route}) => {
                 style={{flex: 1, opacity: 0.9999}}
                 textZoom={100}
             />
+
             <View style={[Style.flexRow, styles.bottomBtns]}>
                 {icon_btns?.map((btn, i, arr) => {
                     const {icon, subs, title} = btn;

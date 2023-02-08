@@ -1,8 +1,8 @@
 /*
  * @Date: 2021-10-20 14:16:19
  * @Author: yhc
- * @LastEditors: yhc
- * @LastEditTime: 2022-03-09 16:45:34
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-02-02 18:21:26
  * @Description: 验证码登陆
  */
 /*
@@ -81,6 +81,7 @@ class VerifyLogin extends Component {
                                 option: 'firstSet',
                                 pass: true,
                                 fr: this.props.route.params?.fr || '',
+                                callback_jump: this.props.route?.params?.callback_jump,
                             });
                         } else if (
                             this.props.route?.params?.fr == 'register' ||

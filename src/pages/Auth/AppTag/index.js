@@ -14,6 +14,7 @@ import {FixedButton} from '~/components/Button';
 import {getUserInfo} from '~/redux/actions/userInfo';
 import Toast from '~/components/Toast';
 import http from '~/services';
+import {CommonActions} from '@react-navigation/native';
 const Index = ({navigation, route}) => {
     const {popNum = 0} = route.params || {};
     const dispatch = useDispatch();
@@ -77,11 +78,23 @@ const Index = ({navigation, route}) => {
         if (current == data.length - 1) {
             //答完题目
             const toast = Toast.showLoading();
-            await handleDone();
+            let res = await handleDone();
             dispatch(getUserInfo());
             setTimeout(() => {
                 Toast.hide(toast);
-                if (popNum) navigation.pop(popNum);
+                if (res.result?.callback_jump) {
+                    let {path, params} = res.result.callback_jump;
+                    navigation.dispatch((state) => {
+                        // Remove the home route from the stack
+                        const routes = [state.routes[0], state.routes[state.routes.length - 1]];
+                        return CommonActions.reset({
+                            ...state,
+                            routes,
+                            index: 1,
+                        });
+                    });
+                    navigation.replace(path, params);
+                } else if (popNum) navigation.pop(popNum);
                 else navigation.goBack();
             }, 500);
         } else {
@@ -94,7 +107,20 @@ const Index = ({navigation, route}) => {
         http.post('/preference/doskip/20220928').then((res) => {
             if (res.code === '000000') {
                 dispatch(getUserInfo());
-                popNum ? navigation.pop(popNum) : navigation.goBack();
+                if (res.result?.callback_jump) {
+                    let {path, params} = res.result.callback_jump;
+                    navigation.dispatch((state) => {
+                        const routes = [state.routes[0], state.routes[state.routes.length - 1]];
+                        return CommonActions.reset({
+                            ...state,
+                            routes,
+                            index: 1,
+                        });
+                    });
+                    navigation.replace(path, params);
+                } else if (popNum) {
+                    navigation.pop(popNum);
+                } else navigation.goBack();
             }
         });
     };

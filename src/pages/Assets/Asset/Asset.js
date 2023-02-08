@@ -160,18 +160,16 @@ const Index = ({navigation}) => {
                                     showChart={holding?.show_chart}>
                                     <Eye onChange={(_data) => setShowEye(_data)} size={px(14)} />
                                 </AssetHeaderCard>
-                                {/* 运营位 */}
-                                {data?.ad_info && <AdInfo ad_info={data?.ad_info} />}
                             </LinearGradient>
                         )}
                     </View>
                 ) : null}
-                {/* 工具菜单 */}
-                {data?.tool_list && (
-                    <View style={{marginTop: holding?.login_card ? px(-57) : 0}}>
-                        <ToolMenus data={data?.tool_list} />
-                    </View>
-                )}
+                <View style={{marginTop: holding?.login_card ? px(-57) : 0}}>
+                    {/* 工具菜单 */}
+                    {data?.tool_list && <ToolMenus data={data?.tool_list} />}
+                    {/* 运营位 */}
+                    {data?.ad_info && <AdInfo ad_info={data?.ad_info} />}
+                </View>
                 {/* 投顾观点 */}
                 {data?.point_info ? <PointCard data={data?.point_info} /> : null}
                 {/* 持仓列表 */}
