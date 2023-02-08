@@ -186,6 +186,18 @@ const SpecialDetail = ({navigation, route}) => {
             });
     }, []);
 
+    const ocrBtnTimer = useRef(true);
+    const handlerOcrBtnClick = useCallback(() => {
+        if (!ocrBtnTimer.current) return;
+        ocrBtnTimer.current = false;
+
+        identifyToTrade.current?.handler?.();
+
+        setTimeout(() => {
+            ocrBtnTimer.current = true;
+        }, 1500);
+    }, []);
+
     const genWebView = (androidHardwareAccelerationDisabled) => {
         return token ? (
             <RNWebView
@@ -392,7 +404,7 @@ const SpecialDetail = ({navigation, route}) => {
                             <TouchableOpacity
                                 activeOpacity={0.8}
                                 disabled={data?.ocr_btn?.avail === 0}
-                                onPress={() => identifyToTrade.current?.handler?.()}
+                                onPress={handlerOcrBtnClick}
                                 style={[
                                     Style.flexCenter,
                                     styles.ocrBtn,
