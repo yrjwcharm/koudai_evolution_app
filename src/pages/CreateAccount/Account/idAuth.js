@@ -524,24 +524,25 @@ class IdAuth extends Component {
             <>
                 <NavBar leftIcon="chevron-left" title="基金交易安全开户" />
                 {modalVisible && (
-                    <KeyboardAvoidingView
-                        accessibilityViewIsModal={true}
-                        behavior={Platform.select({android: 'height', ios: 'padding'})}
-                        importantForAccessibility="yes"
-                        keyboardVerticalOffset={-px(80)}
-                        style={styles.modalContainer}>
+                    <View style={styles.modalContainer}>
                         <TouchableWithoutFeedback onPress={() => this.setState({modalVisible: false})}>
                             <View style={styles.mask} />
                         </TouchableWithoutFeedback>
-                        <BindModalContent
-                            close={() => this.setState({modalVisible: false})}
-                            data={modalData}
-                            id_no={id_no}
-                            name={name}
-                            rcode={rcode}
-                            rname={rname}
-                        />
-                    </KeyboardAvoidingView>
+                        <KeyboardAvoidingView
+                            accessibilityViewIsModal={true}
+                            behavior="position"
+                            importantForAccessibility="yes"
+                            keyboardVerticalOffset={Platform.select({android: -px(320), ios: 0})}>
+                            <BindModalContent
+                                close={() => this.setState({modalVisible: false})}
+                                data={modalData}
+                                id_no={id_no}
+                                name={name}
+                                rcode={rcode}
+                                rname={rname}
+                            />
+                        </KeyboardAvoidingView>
+                    </View>
                 )}
                 <KeyboardAwareScrollView extraScrollHeight={px(100)} style={styles.con}>
                     {showMask && <Mask onClick={this.closePicker} />}

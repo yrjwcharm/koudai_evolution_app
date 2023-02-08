@@ -727,6 +727,7 @@ const Index = ({navigation, route}) => {
     } = data;
     const timer = useRef();
     const selectFundService = useRef();
+    const buyBtnClick = useRef(true);
     const userInfo = useSelector((state) => state.userInfo)?.toJS?.() || {};
 
     const onChange = (val) => {
@@ -790,10 +791,11 @@ const Index = ({navigation, route}) => {
 
     /** @name 点击购买/定投按钮 */
     const buyClick = () => {
+        if (!buyBtnClick.current) return false;
         const method = isLarge ? large_pay_method : pay_methods[bankSelectIndex];
         global.LogTool({ctrl: `${method.pay_method},${amount}`, event: 'buy_button_click', oid: code});
         Keyboard.dismiss();
-        passwordModal.current.show();
+        passwordModal.current?.show?.();
     };
 
     const handlerQuestion = async (password) => {
@@ -840,9 +842,11 @@ const Index = ({navigation, route}) => {
 
     /** @name 输入完交易密码确认交易 */
     const onSubmit = async (password) => {
+        buyBtnClick.current = false;
         let flag = await handlerQuestion(password);
         if (!flag) {
             // navigation.goBack();
+            buyBtnClick.current = true;
             return;
         }
         const method = isLarge ? large_pay_method : pay_methods[bankSelectIndex];
@@ -891,7 +895,10 @@ const Index = ({navigation, route}) => {
                 }
             })
             .finally(() => {
-                Toast.hide(toast);
+                setTimeout(() => {
+                    buyBtnClick.current = true;
+                    Toast.hide(toast);
+                }, 1000);
             });
     };
 

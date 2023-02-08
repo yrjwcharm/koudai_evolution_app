@@ -3,7 +3,7 @@
  * @Autor: wxp
  * @Date: 2022-12-22 15:07:51
  */
-import React, {useImperativeHandle, useState} from 'react';
+import React, {useImperativeHandle, useRef, useState} from 'react';
 import {Text, StyleSheet, TouchableOpacity, Image, Modal, ActivityIndicator} from 'react-native';
 import {px} from '~/utils/appUtil';
 import identifyTradeIcon from '~/assets/img/identify-trade.png';
@@ -13,26 +13,34 @@ const IdentifyToTrade = ({style, onStart, onIdentify, onError, showFloatIcon = t
     const [uri, setUri] = useState('');
     const [floatIconVisible, setFloatIconVisible] = useState(true);
     const [identifyModalVisible, setIdentifyModalVisible] = useState(false);
+    const flag = useRef(true);
+
     const handler = async () => {
+        if (!flag.current) return false;
+        flag.current = false;
         setFloatIconVisible(false);
         await onStart();
         captureScreen({
             format: 'jpg',
             quality: 0.8,
-        }).then(
-            (_uri) => {
-                setUri(_uri);
-                setIdentifyModalVisible(true);
-                onIdentify(() => setIdentifyModalVisible(false));
-                setFloatIconVisible(true);
-            },
-            (error) => {
-                console.log(error);
-                setIdentifyModalVisible(false);
-                onError(error);
-                setFloatIconVisible(true);
-            }
-        );
+        })
+            .then(
+                (_uri) => {
+                    setUri(_uri);
+                    setIdentifyModalVisible(true);
+                    onIdentify(() => setIdentifyModalVisible(false));
+                    setFloatIconVisible(true);
+                },
+                (error) => {
+                    console.log(error);
+                    setIdentifyModalVisible(false);
+                    onError(error);
+                    setFloatIconVisible(true);
+                }
+            )
+            .finally(() => {
+                flag.current = true;
+            });
     };
     useImperativeHandle(_ref, () => ({
         handler,
