@@ -186,6 +186,18 @@ const SpecialDetail = ({navigation, route}) => {
             });
     }, []);
 
+    const ocrBtnTimer = useRef(true);
+    const handlerOcrBtnClick = useCallback(() => {
+        if (!ocrBtnTimer.current) return;
+        ocrBtnTimer.current = false;
+
+        identifyToTrade.current?.handler?.();
+
+        setTimeout(() => {
+            ocrBtnTimer.current = true;
+        }, 1500);
+    }, []);
+
     const genWebView = (androidHardwareAccelerationDisabled) => {
         return token ? (
             <RNWebView
@@ -235,6 +247,7 @@ const SpecialDetail = ({navigation, route}) => {
                         timeStamp: timeStamp.current + '',
                         ver: global.ver,
                         navBarHeight: navBarRef.current.navBarHeight,
+                        chn: global.channel,
                     });
                     webview.current?.injectJavaScript(`localStorage.setItem('loginStatus','${loginStatusStr}')`);
                     webview2.current?.injectJavaScript(`localStorage.setItem('loginStatus','${loginStatusStr}')`);
@@ -244,6 +257,7 @@ const SpecialDetail = ({navigation, route}) => {
                             did: global.did,
                             timeStamp: timeStamp.current + '',
                             ver: global.ver,
+                            chn: global.channel,
                         })
                     );
                     webview.current.postMessage(
@@ -252,6 +266,7 @@ const SpecialDetail = ({navigation, route}) => {
                             did: global.did,
                             timeStamp: timeStamp.current + '',
                             ver: global.ver,
+                            chn: global.channel,
                             navBarHeight: navBarRef.current.navBarHeight,
                         })
                     );
@@ -261,6 +276,7 @@ const SpecialDetail = ({navigation, route}) => {
                             did: global.did,
                             timeStamp: timeStamp.current + '',
                             ver: global.ver,
+                            chn: global.channel,
                             navBarHeight: navBarRef.current.navBarHeight,
                         })
                     );
@@ -380,7 +396,7 @@ const SpecialDetail = ({navigation, route}) => {
                         ]}>
                         {data?.icon_btns?.map?.((item, idx) => (
                             <TouchableOpacity
-                                style={[{alignItems: 'center'}, item.event_id === 'optional' ? {flex: 1} : {}]}
+                                style={[{alignItems: 'center'}, {flex: 1}]}
                                 activeOpacity={0.8}
                                 key={idx}
                                 onPress={() => handlerIconBtnClick(item)}>
@@ -392,7 +408,7 @@ const SpecialDetail = ({navigation, route}) => {
                             <TouchableOpacity
                                 activeOpacity={0.8}
                                 disabled={data?.ocr_btn?.avail === 0}
-                                onPress={() => identifyToTrade.current?.handler?.()}
+                                onPress={handlerOcrBtnClick}
                                 style={[
                                     Style.flexCenter,
                                     styles.ocrBtn,
@@ -482,9 +498,10 @@ const styles = StyleSheet.create({
         height: px(36),
         backgroundColor: '#F3F5F8',
         borderRadius: px(322),
-        width: px(255),
+        width: px(240),
         paddingLeft: px(16),
         justifyContent: 'center',
+        marginRight: px(3),
     },
     actionIcon: {
         width: px(20),
@@ -498,9 +515,9 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     ocrBtn: {
-        marginLeft: px(22),
+        marginLeft: px(10),
         borderRadius: Space.borderRadius,
-        width: px(210),
+        width: px(190),
         height: px(40),
     },
     ocrIcon: {

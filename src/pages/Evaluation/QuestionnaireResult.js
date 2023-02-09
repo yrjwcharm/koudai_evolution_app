@@ -2,7 +2,7 @@
  * @Date: 2021-07-05 18:09:25
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-04 18:45:45
+ * @LastEditTime: 2023-02-08 17:40:54
  * @Description: 传统风险评测结果页
  */
 import React, {useCallback, useEffect, useState} from 'react';
@@ -60,7 +60,10 @@ const QuestionnaireResult = () => {
     return (
         <ScrollView style={styles.container}>
             {Object.keys(data).length > 0 && (
-                <ImageBackground source={require('../../assets/img/evaluate/wrap.png')} style={styles.cardWrap}>
+                <ImageBackground
+                    source={require('../../assets/img/evaluate/wrap.png')}
+                    style={[styles.cardWrap, {minHeight: data?.bottom_tip_content ? px(580) : px(520)}]}
+                    resizeMode="stretch">
                     <Text style={styles.titleWrap}>{data.risk_title}</Text>
                     <Text style={styles.descWrap}>{data.risk_name}</Text>
                     <View style={styles.contentBox}>
@@ -91,6 +94,26 @@ const QuestionnaireResult = () => {
                             <HTML html={data?.tips} style={{fontSize: text(11), lineHeight: text(17)}} />
                         </View>
                     ) : null}
+
+                    {data?.bottom_tip_content ? (
+                        <View
+                            style={{
+                                marginHorizontal: px(32),
+                                marginTop: px(20),
+                                borderTopColor: Colors.lineColor,
+                                borderTopWidth: 0.5,
+                                paddingTop: px(20),
+                            }}>
+                            <Text style={styles.tipTitle}>{data?.bottom_tip_content?.title}</Text>
+                            {data?.bottom_tip_content?.content?.map((item, index) => (
+                                <RenderHtml
+                                    key={index}
+                                    html={item}
+                                    style={{fontSize: px(11), lineHeight: px(16), color: Colors.lightGrayColor}}
+                                />
+                            ))}
+                        </View>
+                    ) : null}
                     {data?.open_account ? (
                         <LinearGradient
                             start={{x: 0, y: 0}}
@@ -118,13 +141,22 @@ const QuestionnaireResult = () => {
                             </Text>
                         </LinearGradient>
                     ) : null}
-                    {data.button?.text ? (
-                        <Button
-                            title={data.button.text}
-                            onPress={() => buttonJump(data?.button?.url)}
-                            style={{position: 'absolute', left: text(32), right: text(32), bottom: text(52)}}
-                        />
-                    ) : null}
+                    <View style={{position: 'absolute', bottom: px(40), width: '100%'}}>
+                        {data.button?.text ? (
+                            <Button
+                                title={data.button.text}
+                                onPress={() => buttonJump(data?.button?.url)}
+                                style={{marginHorizontal: px(42), marginTop: px(20), height: px(42)}}
+                            />
+                        ) : null}
+                        {data?.bottom_botton ? (
+                            <Button
+                                title={data.bottom_botton.text}
+                                onPress={() => handleJump(data.bottom_botton.url)}
+                                style={{marginHorizontal: px(42), marginTop: px(12), height: px(42)}}
+                            />
+                        ) : null}
+                    </View>
                 </ImageBackground>
             )}
         </ScrollView>
@@ -148,7 +180,7 @@ const styles = StyleSheet.create({
     cardWrap: {
         marginTop: Space.marginVertical,
         marginHorizontal: text(3),
-        minHeight: text(520),
+        minHeight: text(580),
         position: 'relative',
     },
     titleWrap: {
@@ -190,6 +222,12 @@ const styles = StyleSheet.create({
         height: px(34),
         borderRadius: px(50),
         marginVertical: px(12),
+    },
+    tipTitle: {
+        textAlign: 'center',
+        fontSize: px(11),
+        color: Colors.lightBlackColor,
+        marginBottom: px(12),
     },
 });
 

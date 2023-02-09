@@ -48,7 +48,7 @@ import {
     postQuestionAnswer,
 } from './services';
 import http from '~/services';
-import {debounce} from 'lodash';
+import {debounce, findLastIndex} from 'lodash';
 
 export const Questionnaire = ({callback, data = [], summary_id}) => {
     const [current, setIndex] = useState(0);
@@ -178,7 +178,7 @@ const InputBox = ({buy_info, errTip, feeData, onChange, rule_button, tipLoading,
                     </TouchableOpacity>
                 )}
             </View>
-            {Object.keys(feeData).length > 0 || errTip ? (
+            {Object.keys(feeData).length > 0 || errTip || tipLoading ? (
                 <View style={styles.tipsBox}>
                     {errTip ? (
                         <HTML html={errTip} style={{...styles.desc, color: Colors.red}} />
@@ -446,7 +446,7 @@ const FundService = ({body, head, onChange}) => {
 };
 
 /** @name 买入/卖出明细 */
-const TradeDetail = ({amount, data = {}, listRef = {}, setCanBuy}) => {
+const TradeDetail = ({amount, changeList, data = {}, setCanBuy}) => {
     const {disable_info, header, items, title, total_info} = data;
     const [list, setList] = useState(items);
     const inputArr = useRef([]);
@@ -459,15 +459,15 @@ const TradeDetail = ({amount, data = {}, listRef = {}, setCanBuy}) => {
         return list?.reduce?.((prev, curr) => prev + (curr.select ? Number(curr.percent) : 0), 0) || 0;
     }, [list]);
 
-    const canBuy = useMemo(() => {
-        return (
+    const canBuy = useMemo(
+        () =>
             list?.every?.((item) => {
                 const {max_amount, min_amount, percent, select} = item;
                 const _amount = (amount * percent) / 100;
                 return select ? _amount >= min_amount && (max_amount ? _amount <= max_amount : true) : true;
-            }) && totalPercent === 100
-        );
-    }, [amount, list, totalPercent]);
+            }) && totalPercent === 100,
+        [amount, list, totalPercent]
+    );
 
     const selectAll = () => {
         setList((prev) => {
@@ -505,7 +505,7 @@ const TradeDetail = ({amount, data = {}, listRef = {}, setCanBuy}) => {
     }, [canBuy]);
 
     useEffect(() => {
-        listRef.current = list.filter((item) => item.select);
+        changeList?.(list.filter((item) => item.select));
     }, [list]);
 
     useEffect(() => {
@@ -567,7 +567,17 @@ const TradeDetail = ({amount, data = {}, listRef = {}, setCanBuy}) => {
                     </View>
                     {list?.map?.((item, index) => {
                         const {code, max_amount, min_amount, name, percent, select} = item;
-                        const _amount = (amount * percent) / 100;
+                        const lastSelectedIndex = findLastIndex(list, (itm) => itm.select);
+                        const otherAmount = list?.reduce(
+                            (prev, curr, currIndex) =>
+                                prev +
+                                (curr.select && currIndex !== lastSelectedIndex
+                                    ? ((amount * curr.percent) / 100).toFixed(2) * 1
+                                    : 0),
+                            0
+                        );
+                        const _amount =
+                            canBuy && index === lastSelectedIndex ? amount - otherAmount : (amount * percent) / 100;
                         const hasAmount = `${amount}`.length > 0;
                         const errTip =
                             hasAmount && select
@@ -683,8 +693,8 @@ const Index = ({navigation, route}) => {
     const {amount: _amount = '', append = '', code, isLargeAmount = false, type = 0} = route.params;
     const bankCardModal = useRef();
     const passwordModal = useRef();
-    const tradeDetailList = useRef();
     const isFocusedRef = useRef(isFocused);
+    const canBuyRef = useRef(true);
     const [amount, setAmount] = useState(_amount);
     const [data, setData] = useState({});
     const [feeData, setFeeData] = useState({});
@@ -695,6 +705,7 @@ const Index = ({navigation, route}) => {
     const [errTip, setErrTip] = useState('');
     const [showMask, setShowMask] = useState(false);
     const [canBuy, setCanBuy] = useState(true);
+    const [tradeDetailList, setTradeDetailList] = useState([]);
     const {
         add_payment_disable = false,
         agreement,
@@ -716,6 +727,7 @@ const Index = ({navigation, route}) => {
     } = data;
     const timer = useRef();
     const selectFundService = useRef();
+    const buyBtnClick = useRef(true);
     const userInfo = useSelector((state) => state.userInfo)?.toJS?.() || {};
 
     const onChange = (val) => {
@@ -739,6 +751,10 @@ const Index = ({navigation, route}) => {
             setErrTip(`起购金额${buy_info.initial_amount}`);
         } else {
             setErrTip('');
+            if (type === 3 && !canBuyRef.current) {
+                setFeeData({});
+                return false;
+            }
             if (type === 0 || type === 3) {
                 setTipLoading(true);
                 timer.current && clearTimeout(timer.current);
@@ -751,7 +767,7 @@ const Index = ({navigation, route}) => {
                     };
                     if (type === 3) {
                         params.fund_ratios = JSON.stringify(
-                            tradeDetailList.current?.map?.((item) => {
+                            tradeDetailList?.map?.((item) => {
                                 const {code: _code, percent} = item;
                                 return {amount: (amount * percent) / 100, code: _code, percent};
                             })
@@ -760,7 +776,7 @@ const Index = ({navigation, route}) => {
                     (type === 0 ? getBuyFee : getBatchBuyFee)(params)
                         .then((res) => {
                             if (res.code === '000000') {
-                                setFeeData(res.result);
+                                setFeeData(canBuyRef.current ? res.result : {});
                             } else {
                                 setErrTip(res.message);
                             }
@@ -775,10 +791,11 @@ const Index = ({navigation, route}) => {
 
     /** @name 点击购买/定投按钮 */
     const buyClick = () => {
+        if (!buyBtnClick.current) return false;
         const method = isLarge ? large_pay_method : pay_methods[bankSelectIndex];
         global.LogTool({ctrl: `${method.pay_method},${amount}`, event: 'buy_button_click', oid: code});
         Keyboard.dismiss();
-        passwordModal.current.show();
+        passwordModal.current?.show?.();
     };
 
     const handlerQuestion = async (password) => {
@@ -825,9 +842,11 @@ const Index = ({navigation, route}) => {
 
     /** @name 输入完交易密码确认交易 */
     const onSubmit = async (password) => {
+        buyBtnClick.current = false;
         let flag = await handlerQuestion(password);
         if (!flag) {
             // navigation.goBack();
+            buyBtnClick.current = true;
             return;
         }
         const method = isLarge ? large_pay_method : pay_methods[bankSelectIndex];
@@ -850,7 +869,7 @@ const Index = ({navigation, route}) => {
         }
         if (type === 3) {
             params.fund_ratios = JSON.stringify(
-                tradeDetailList.current?.map?.((item) => {
+                tradeDetailList?.map?.((item) => {
                     const {code: _code, percent} = item;
                     return {amount: (amount * percent) / 100, code: _code, percent};
                 })
@@ -876,7 +895,10 @@ const Index = ({navigation, route}) => {
                 }
             })
             .finally(() => {
-                Toast.hide(toast);
+                setTimeout(() => {
+                    buyBtnClick.current = true;
+                    Toast.hide(toast);
+                }, 1000);
             });
     };
 
@@ -955,10 +977,11 @@ const Index = ({navigation, route}) => {
             global.LogTool({ctrl: code, event: 'buy_detail_view'});
             (type === 3 ? getBatchBuyInfo : getBuyInfo)({amount, fund_code: code, type}).then((res) => {
                 if (res.code === '000000') {
-                    const {risk_pop, title = '买入'} = res.result;
+                    const {ratio_detail: {items} = {}, risk_pop, title = '买入'} = res.result;
                     risk_pop && isFocusedRef.current && showRiskPop(risk_pop);
                     navigation.setOptions({title});
                     selectFundService.current = res.result.fund_service?.selected || 0;
+                    items && setTradeDetailList(items);
                     setData(res.result);
                 }
             });
@@ -970,10 +993,11 @@ const Index = ({navigation, route}) => {
     }, [isFocused]);
 
     useEffect(() => {
+        canBuyRef.current = canBuy;
         if (pay_methods.length > 0) {
             onInput();
         }
-    }, [amount, bankSelectIndex, code, isLarge, large_pay_method, pay_methods]);
+    }, [amount, bankSelectIndex, canBuy, code, isLarge, large_pay_method, pay_methods, tradeDetailList]);
 
     useEffect(() => {
         return () => {
@@ -1010,7 +1034,7 @@ const Index = ({navigation, route}) => {
                         {tip ? (
                             <View style={styles.topTips}>
                                 <Image source={tips} style={styles.tipsIcon} />
-                                <Text style={styles.desc}>{tip}</Text>
+                                <Text style={[styles.desc, {flex: 1, textAlign: 'justify'}]}>{tip}</Text>
                             </View>
                         ) : null}
                         {money_safe ? (
@@ -1050,8 +1074,8 @@ const Index = ({navigation, route}) => {
                         {ratio_detail ? (
                             <TradeDetail
                                 amount={amount}
+                                changeList={(list) => setTradeDetailList(list)}
                                 data={ratio_detail}
-                                listRef={tradeDetailList}
                                 setCanBuy={setCanBuy}
                             />
                         ) : null}

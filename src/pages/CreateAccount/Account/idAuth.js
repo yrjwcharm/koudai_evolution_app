@@ -6,44 +6,194 @@
  * @Description: 开户身份证认证
  */
 
-import React, {Component} from 'react';
+import React, {Component, useRef, useState} from 'react';
 import {
-    Text,
-    View,
-    StyleSheet,
-    TouchableOpacity,
-    Keyboard,
-    ScrollView,
     DeviceEventEmitter,
+    Keyboard,
+    KeyboardAvoidingView,
     PermissionsAndroid,
     Platform,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    TouchableWithoutFeedback,
+    View,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
-import {px, requestAuth} from '../../../utils/appUtil';
-import {Style, Colors, Space} from '../../../common/commonStyle';
-import Input from '../../../components/Input';
+import {deviceHeight, deviceWidth, px, requestAuth} from '~/utils/appUtil';
+import {Colors, Font, Space, Style} from '~/common/commonStyle';
+import Input from '~/components/Input';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {FixedButton} from '../../../components/Button';
+import {Button, FixedButton} from '~/components/Button';
 import Picker from 'react-native-picker';
-import Mask from '../../../components/Mask';
-import {formCheck} from '../../../utils/validator';
-import http from '../../../services';
-import Toast from '../../../components/Toast';
-import {Modal, BottomModal, SelectModal} from '../../../components/Modal';
-import BottomDesc from '../../../components/BottomDesc';
+import Mask from '~/components/Mask';
+import {formCheck} from '~/utils/validator';
+import http from '~/services';
+import Toast from '~/components/Toast';
+import {BottomModal, Modal, SelectModal} from '~/components/Modal';
+import BottomDesc from '~/components/BottomDesc';
 import _ from 'lodash';
-import {connect} from 'react-redux';
-import {PERMISSIONS, openSettings} from 'react-native-permissions';
-import upload from '../../../services/upload';
-import {updateAccount} from '../../../redux/actions/accountInfo';
+import {connect, useDispatch} from 'react-redux';
+import {openSettings, PERMISSIONS} from 'react-native-permissions';
+import upload from '~/services/upload';
+import {updateAccount} from '~/redux/actions/accountInfo';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {launchImageLibrary} from 'react-native-image-picker';
+import {useCountdown} from '~/components/hooks';
+import Storage from '~/utils/storage';
+import {getUserInfo} from '~/redux/actions/userInfo';
+import {CommonActions, useNavigation, useRoute} from '@react-navigation/native';
+import NavBar from '~/components/NavBar';
+
+/**
+ * 绑定已开户用户
+ * @param data
+ * @param id_no
+ * @param name
+ * @param navigation
+ * @param rcode
+ * @param rname
+ * @returns {JSX.Element}
+ * @constructor
+ */
+const BindModalContent = ({close, data = {}, id_no, name, rcode, rname}) => {
+    const dispatch = useDispatch();
+    const navigation = useNavigation();
+    const route = useRoute();
+    const {mobile, msg, title} = data;
+    const [code, setCode] = useState('');
+    const [codeText, setCodeText] = useState('获取验证码');
+    const {countdown, start} = useCountdown(() => {
+        setCodeText('重发验证码');
+        canSendCode.current = true;
+    });
+    const canSendCode = useRef(true);
+    const input = useRef();
+
+    /**
+     * 发送验证码
+     */
+    const onSendCode = () => {
+        if (canSendCode.current) {
+            canSendCode.current = false;
+            http.post('/passport/send_bind_user_partner_verify_code/20221220', {id_no, name})
+                .then((res) => {
+                    Toast.show(res.message);
+                    if (res.code === '000000') {
+                        start();
+                        setTimeout(() => input.current?.focus?.(), 2000);
+                    }
+                })
+                .finally(() => {
+                    setTimeout(() => {
+                        canSendCode.current = true;
+                    }, 1000);
+                });
+        }
+    };
+
+    /**
+     * 确认绑定
+     */
+    const onBindSubmit = () => {
+        Keyboard.dismiss();
+        const loading = Toast.showLoading('请稍后...');
+        http.post('/passport/bind_user_partner_uid/20221220', {...route.params, code, id_no, name})
+            .then(async (res) => {
+                Toast.hide(loading);
+                Toast.show(res.message);
+                if (res.code === '000000') {
+                    const {auth_info, fr = '', url} = res.result;
+                    await Storage.save('loginStatus', auth_info);
+                    dispatch(getUserInfo());
+                    Modal.close();
+                    close?.();
+                    fr &&
+                        navigation.dispatch((state) => {
+                            const {routes} = state;
+                            routes[routes.length - 1].params.fr = fr;
+                            return CommonActions.reset({
+                                ...state,
+                                routes,
+                            });
+                        });
+                    setTimeout(() => {
+                        if (url) navigation.replace(url.path, url.params);
+                        else
+                            navigation.navigate('BankInfo', {
+                                ...route.params,
+                                id_no,
+                                name,
+                                rcode,
+                                rname,
+                            });
+                    });
+                }
+            })
+            .finally(() => {
+                setTimeout(() => {
+                    Toast.hide(loading);
+                }, 2000);
+            });
+    };
+
+    return (
+        <TouchableWithoutFeedback onPress={() => input.current?.blur?.()}>
+            <View style={styles.modalContent}>
+                <Text style={styles.bigTitle}>{title}</Text>
+                <Text style={styles.msg}>{msg}</Text>
+                <View style={[styles.inputBox, {marginTop: px(20)}]}>
+                    <Text style={styles.inputText}>{mobile}</Text>
+                </View>
+                <View style={styles.inputBox}>
+                    <TextInput
+                        clearButtonMode="while-editing"
+                        keyboardType="number-pad"
+                        maxLength={6}
+                        onChangeText={(val) => setCode(val.replace(/\D/g, ''))}
+                        placeholder="请输入验证码"
+                        placeholderTextColor={Colors.placeholderColor}
+                        ref={input}
+                        style={[styles.inputText, {flex: 1}]}
+                        value={code}
+                    />
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        disabled={countdown > 0}
+                        onPress={onSendCode}
+                        style={[styles.getCodeBtn, {backgroundColor: countdown > 0 ? '#FFCFB9' : '#FF7D41'}]}>
+                        <Text style={[styles.inputText, {color: '#fff', fontWeight: Font.weightMedium}]}>
+                            {countdown > 0 ? `${countdown}秒重发` : codeText}
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+                <Text
+                    onPress={() => {
+                        Modal.close();
+                        navigation.navigate('VerifyCodeQA');
+                    }}
+                    style={styles.canNotGetCode}>
+                    没有收到验证码？
+                </Text>
+                <Button
+                    disabled={code.length < 6}
+                    onPress={onBindSubmit}
+                    style={{marginTop: Space.marginVertical}}
+                    title="完成"
+                />
+            </View>
+        </TouchableWithoutFeedback>
+    );
+};
+
 class IdAuth extends Component {
     constructor(props) {
         super(props);
         this.typeArr = ['从相册中获取', '拍照'];
         this.state = {
-            name: this.props?.accountInfo?.name || '', //姓名
+            name: props?.accountInfo?.name || '', //姓名
             id_no: '', //身份证号
             rname: '', //职业名称
             rcode: '', //职业代码
@@ -53,24 +203,29 @@ class IdAuth extends Component {
             showTypePop: false,
             frontSource: '',
             behindSource: '',
+            modalData: {},
+            modalVisible: false,
         };
     }
+
     componentWillUnmount() {
         this.closePicker();
         this.subscription?.remove();
     }
 
     componentDidMount() {
+        const {navigation, update} = this.props;
+        const {name, showMask} = this.state;
         //页面销毁之前保存信息
-        this.props.navigation.addListener('beforeRemove', (e) => {
+        navigation.addListener('beforeRemove', (e) => {
             e.preventDefault();
-            if (this.state.showMask) {
+            if (showMask) {
                 this.closePicker();
             } else {
-                this.props.update({
-                    name: this.state.name,
+                update({
+                    name,
                 });
-                this.props.navigation.dispatch(e.data.action);
+                navigation.dispatch(e.data.action);
             }
         });
         //获取身份证
@@ -97,12 +252,9 @@ class IdAuth extends Component {
                 // 刷新界面等
             }, 500)
         );
-        // if (this.state.name && this.state.id_no) {
-        //     this.checkData();
-        // }
         http.get('/passport/xy_account/career_list/20210101').then((data) => {
-            var career = data.result.career.filter((item) => {
-                return item.code == data.result.default_career;
+            const career = data.result.career.filter((item) => {
+                return item.code === data.result.default_career;
             });
             this.setState({
                 careerList: data.result.career,
@@ -112,12 +264,13 @@ class IdAuth extends Component {
         });
     }
     jumpPage = (nav) => {
-        this.props.navigation.navigate(nav);
+        const {navigation} = this.props;
+        navigation.navigate(nav);
     };
     checkData = () => {
-        const {name} = this.state;
+        const {behindSource, frontSource, name} = this.state;
 
-        if (name?.length >= 2 && this.state.frontSource && this.state.behindSource) {
+        if (name?.length >= 2 && frontSource && behindSource) {
             this.setState({
                 btnDisable: false,
             });
@@ -135,8 +288,9 @@ class IdAuth extends Component {
     };
     jumpBank = (nav) => {
         global.LogTool('CreateAccountNextStep');
+        const {navigation, route} = this.props;
         const {name, id_no, rcode, rname} = this.state;
-        var checkData = [
+        const checkData = [
             {
                 field: name,
                 text: '姓名不能为空',
@@ -149,10 +303,12 @@ class IdAuth extends Component {
         if (!formCheck(checkData)) {
             return;
         }
+        const loading = Toast.showLoading();
         http.get('/passport/open_account/check/20210101', {
             id_no,
             name,
         }).then((res) => {
+            Toast.hide(loading);
             if (res.code === '000000') {
                 if (res.result.pop?.content) {
                     Modal.show({
@@ -160,22 +316,25 @@ class IdAuth extends Component {
                         isTouchMaskToClose: false,
                         confirmText: '确定',
                         confirmCallBack: () => {
-                            this.props.navigation.goBack();
+                            navigation.goBack();
                         },
                     });
                 } else {
-                    this.props.navigation.navigate(nav, {
+                    navigation.navigate(nav, {
                         name,
                         id_no,
                         rname,
                         rcode,
-                        amount: this.props.route?.params?.amount,
-                        poid: this.props.route?.params?.poid,
-                        fr: this.props.route?.params?.fr || '',
-                        fund_code: this.props.route?.params?.fund_code,
-                        url: this.props.route?.params?.url || '',
+                        amount: route?.params?.amount,
+                        poid: route?.params?.poid,
+                        fr: route?.params?.fr || '',
+                        fund_code: route?.params?.fund_code,
+                        url: route?.params?.url || '',
                     });
                 }
+            } else if (res.code === 'A30001') {
+                Keyboard.dismiss();
+                this.setState({modalData: res.result, modalVisible: true});
             } else {
                 Toast.show(res.message);
             }
@@ -190,10 +349,10 @@ class IdAuth extends Component {
     // 选择图片或相册
     onClickChoosePicture = async () => {
         try {
-            if (Platform.OS == 'android') {
-                requestAuth(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE, this.openPicker, this.blockCal);
+            if (Platform.OS === 'android') {
+                await requestAuth(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE, this.openPicker, this.blockCal);
             } else {
-                requestAuth(PERMISSIONS.IOS.PHOTO_LIBRARY, this.openPicker, this.blockCal);
+                await requestAuth(PERMISSIONS.IOS.PHOTO_LIBRARY, this.openPicker, this.blockCal);
             }
         } catch (err) {
             console.warn(err);
@@ -214,11 +373,12 @@ class IdAuth extends Component {
     // 从相机中选择
     takePic = () => {
         try {
-            if (Platform.OS == 'android') {
+            const {navigation} = this.props;
+            if (Platform.OS === 'android') {
                 requestAuth(
                     PermissionsAndroid.PERMISSIONS.CAMERA,
                     () => {
-                        this.props.navigation.navigate('Camera', {index: this.clickIndex});
+                        navigation.navigate('Camera', {index: this.clickIndex});
                     },
                     this.blockCal
                 );
@@ -226,7 +386,7 @@ class IdAuth extends Component {
                 requestAuth(
                     PERMISSIONS.IOS.CAMERA,
                     () => {
-                        this.props.navigation.navigate('Camera', {index: this.clickIndex});
+                        navigation.navigate('Camera', {index: this.clickIndex});
                     },
                     this.blockCal
                 );
@@ -236,8 +396,8 @@ class IdAuth extends Component {
         }
     };
     showImg = (uri) => {
-        const {clickIndex} = this;
-        if (clickIndex == 1) {
+        const clickIndex = Number(this.clickIndex);
+        if (clickIndex === 1) {
             this.setState({
                 frontSource: uri,
             });
@@ -249,22 +409,22 @@ class IdAuth extends Component {
     };
     //图片上传
     uploadImage = (response) => {
-        const {clickIndex} = this;
+        const clickIndex = Number(this.clickIndex);
         this.toast = Toast.showLoading('正在上传');
 
         upload(
             'mapi/identity/upload/20210101',
             response,
-            [{name: 'desc', data: clickIndex == 1 ? 'front' : 'back'}],
+            [{name: 'desc', data: clickIndex === 1 ? 'front' : 'back'}],
             (res) => {
                 Toast.hide(this.toast);
                 if (res) {
                     this.uri = '';
-                    if (res?.code == '000000') {
+                    if (res?.code === '000000') {
                         this.showImg(response.uri);
                         Toast.show('上传成功');
                         global.LogTool('CreateAccountUploadSuccess');
-                        if (clickIndex == 1) {
+                        if (clickIndex === 1) {
                             this.setState(
                                 {
                                     name: res.result?.name,
@@ -309,8 +469,8 @@ class IdAuth extends Component {
     //职业信息format
     careertData() {
         const {careerList} = this.state;
-        var data = [];
-        for (var obj in careerList) {
+        const data = [];
+        for (let obj in careerList) {
             data.push(careerList[obj].name);
         }
         return data;
@@ -319,6 +479,7 @@ class IdAuth extends Component {
     _showPosition = () => {
         Keyboard.dismiss();
         this.setState({showMask: true});
+        const {careerList} = this.state;
         Picker.init({
             pickerTitleText: '请选择职业信息',
             pickerCancelBtnText: '取消',
@@ -333,7 +494,7 @@ class IdAuth extends Component {
             pickerTextEllipsisLen: 100,
             wheelFlex: [1],
             onPickerConfirm: (pickedValue, pickedIndex) => {
-                this.setState({rname: pickedValue[0], showMask: false, rcode: this.state.careerList[pickedIndex].code});
+                this.setState({rname: pickedValue[0], showMask: false, rcode: careerList[pickedIndex].code});
             },
             onPickerCancel: () => {
                 this.setState({showMask: false});
@@ -346,15 +507,49 @@ class IdAuth extends Component {
         this.setState({showMask: false});
     };
     render() {
-        const {showMask, name, id_no, rname, frontSource, behindSource} = this.state;
+        const {
+            showMask,
+            name,
+            id_no,
+            rcode,
+            rname,
+            frontSource,
+            behindSource,
+            showTypePop,
+            btnDisable,
+            modalData,
+            modalVisible,
+        } = this.state;
         return (
             <>
+                <NavBar leftIcon="chevron-left" title="基金交易安全开户" />
+                {modalVisible && (
+                    <View style={styles.modalContainer}>
+                        <TouchableWithoutFeedback onPress={() => this.setState({modalVisible: false})}>
+                            <View style={styles.mask} />
+                        </TouchableWithoutFeedback>
+                        <KeyboardAvoidingView
+                            accessibilityViewIsModal={true}
+                            behavior="position"
+                            importantForAccessibility="yes"
+                            keyboardVerticalOffset={Platform.select({android: -px(320), ios: 0})}>
+                            <BindModalContent
+                                close={() => this.setState({modalVisible: false})}
+                                data={modalData}
+                                id_no={id_no}
+                                name={name}
+                                rcode={rcode}
+                                rname={rname}
+                            />
+                        </KeyboardAvoidingView>
+                    </View>
+                )}
                 <KeyboardAwareScrollView extraScrollHeight={px(100)} style={styles.con}>
                     {showMask && <Mask onClick={this.closePicker} />}
                     <BottomModal ref={(ref) => (this.bottomModal = ref)} title={'上传要求'}>
                         <View style={{padding: px(16)}}>
                             <FastImage
-                                source={require('../../../assets/img/account/upload_id_tip.png')}
+                                source={require('~/assets/img/account/upload_id_tip.png')}
                                 style={{width: '100%', height: px(200)}}
                                 resizeMode="contain"
                             />
@@ -363,13 +558,13 @@ class IdAuth extends Component {
                     <SelectModal
                         entityList={this.typeArr}
                         callback={(i) => {
-                            if (i == 0) {
+                            if (i === 0) {
                                 this.onClickChoosePicture();
                             } else {
                                 this.takePic();
                             }
                         }}
-                        show={this.state.showTypePop}
+                        show={showTypePop}
                         closeModal={(show) => {
                             this.setState({
                                 showTypePop: show,
@@ -379,13 +574,13 @@ class IdAuth extends Component {
                     <ScrollView style={{paddingHorizontal: px(16)}} keyboardShouldPersistTaps="handled">
                         <FastImage
                             style={styles.pwd_img}
-                            source={require('../../../assets/img/account/first.png')}
+                            source={require('~/assets/img/account/first.png')}
                             resizeMode={FastImage.resizeMode.contain}
                         />
                         <View style={styles.card}>
                             <View style={styles.card_header}>
                                 <FastImage
-                                    source={require('../../../assets/img/account/personalMes.png')}
+                                    source={require('~/assets/img/account/personalMes.png')}
                                     style={{width: px(22), height: px(22), resizeMode: 'contain'}}
                                 />
                                 <Text style={styles.card_head_text}>实名认证</Text>
@@ -411,7 +606,7 @@ class IdAuth extends Component {
                                         source={
                                             frontSource
                                                 ? {uri: frontSource}
-                                                : require('../../../assets/img/account/idfront.png')
+                                                : require('~/assets/img/account/idfront.png')
                                         }
                                         style={[frontSource ? styles.id_large_image : {width: px(108), height: px(68)}]}
                                     />
@@ -431,7 +626,7 @@ class IdAuth extends Component {
                                         source={
                                             behindSource
                                                 ? {uri: behindSource}
-                                                : require('../../../assets/img/account/idback.png')
+                                                : require('~/assets/img/account/idback.png')
                                         }
                                         style={[frontSource ? styles.id_large_image : {width: px(108), height: px(68)}]}
                                     />
@@ -490,7 +685,7 @@ class IdAuth extends Component {
                 </KeyboardAwareScrollView>
                 <FixedButton
                     title={'下一步'}
-                    disabled={this.state.btnDisable}
+                    disabled={btnDisable}
                     onPress={_.debounce(() => {
                         this.jumpBank('BankInfo');
                     }, 500)}
@@ -554,5 +749,67 @@ const styles = StyleSheet.create({
     id_large_image: {
         height: px(83),
         width: px(128),
+    },
+    modalContainer: {
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        zIndex: 10,
+        ...Style.flexCenter,
+    },
+    mask: {
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    },
+    modalContent: {
+        padding: px(20),
+        borderRadius: Space.borderRadius,
+        backgroundColor: '#fff',
+        width: px(280),
+    },
+    bigTitle: {
+        fontSize: px(18),
+        lineHeight: px(25),
+        color: Colors.defaultColor,
+        fontWeight: Font.weightMedium,
+        textAlign: 'center',
+    },
+    msg: {
+        marginTop: px(12),
+        fontSize: Font.textH2,
+        lineHeight: px(22),
+        color: Colors.descColor,
+        textAlign: 'justify',
+    },
+    inputBox: {
+        marginTop: Space.marginVertical,
+        paddingLeft: px(12),
+        borderRadius: Space.borderRadius,
+        backgroundColor: Colors.bgColor,
+        height: px(44),
+        overflow: 'hidden',
+        ...Style.flexRow,
+    },
+    inputText: {
+        fontSize: Font.textH2,
+        color: Colors.defaultColor,
+    },
+    getCodeBtn: {
+        width: px(94),
+        height: '100%',
+        ...Style.flexCenter,
+    },
+    canNotGetCode: {
+        marginTop: px(12),
+        fontSize: Font.textH3,
+        lineHeight: px(18),
+        color: Colors.brandColor,
+        textAlign: 'right',
     },
 });

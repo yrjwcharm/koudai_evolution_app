@@ -346,6 +346,7 @@ export default function Launch({navigation}) {
         });
     };
     const imageLoadEnd = () => {
+        timer.current && clearInterval(timer.current);
         global.LogTool('guide_show', '开屏大图', adMes.id);
         SplashScreen.hide();
         timer.current = setInterval(() => {
@@ -368,7 +369,7 @@ export default function Launch({navigation}) {
                     return;
                 }
                 isNavigating = true;
-                global.LogTool('splashClickStart', adMes.id);
+                global.LogTool('guide_show_click', '开屏', adMes.id);
                 timer.current && clearInterval(timer.current);
                 authLoading(() => {
                     navigation.replace('Tab');
@@ -387,7 +388,7 @@ export default function Launch({navigation}) {
                                 return;
                             }
                             isNavigating = true;
-                            global.LogTool('splashSkipStart');
+                            global.LogTool('guide_show_skip', '开屏', adMes.id);
                             timer.current && clearInterval(timer.current);
                             authLoading();
                         }, 300)}
