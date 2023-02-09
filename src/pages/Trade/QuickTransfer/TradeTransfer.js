@@ -343,7 +343,7 @@ const Index = ({navigation, route, setLoading}) => {
                 <>
                     <View style={styles.borderTop} />
                     <FixedButton
-                        disabled={btn.avail === 0 || calcData?.btn_avail === 0 || !value || !!errMsg}
+                        disabled={btn.avail === 0 || calculating || calcData?.btn_avail === 0 || !value || !!errMsg}
                         onPress={onSubmit}
                         title={btn.text}
                     />
