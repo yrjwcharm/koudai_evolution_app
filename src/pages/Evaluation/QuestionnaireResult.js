@@ -2,11 +2,11 @@
  * @Date: 2021-07-05 18:09:25
  * @Author: dx
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-08 17:40:54
+ * @LastEditTime: 2023-02-09 19:10:23
  * @Description: 传统风险评测结果页
  */
 import React, {useCallback, useEffect, useState} from 'react';
-import {ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Image from 'react-native-fast-image';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {Colors, Font, Space, Style} from '../../common/commonStyle';
@@ -60,12 +60,10 @@ const QuestionnaireResult = () => {
     return (
         <ScrollView style={styles.container}>
             {Object.keys(data).length > 0 && (
-                <ImageBackground
-                    source={require('../../assets/img/evaluate/wrap.png')}
-                    style={[styles.cardWrap, {minHeight: data?.bottom_tip_content ? px(580) : px(520)}]}
-                    resizeMode="stretch">
+                <View style={[styles.cardWrap, {minHeight: px(520)}]}>
                     <Text style={styles.titleWrap}>{data.risk_title}</Text>
                     <Text style={styles.descWrap}>{data.risk_name}</Text>
+                    <View style={styles.dashedLine} />
                     <View style={styles.contentBox}>
                         <HTML html={data.risk_content} style={styles.contentWrap} />
                         <Image
@@ -96,14 +94,7 @@ const QuestionnaireResult = () => {
                     ) : null}
 
                     {data?.bottom_tip_content ? (
-                        <View
-                            style={{
-                                marginHorizontal: px(32),
-                                marginTop: px(20),
-                                borderTopColor: Colors.lineColor,
-                                borderTopWidth: 0.5,
-                                paddingTop: px(20),
-                            }}>
+                        <View style={styles.bottomTipContent}>
                             <Text style={styles.tipTitle}>{data?.bottom_tip_content?.title}</Text>
                             {data?.bottom_tip_content?.content?.map((item, index) => (
                                 <RenderHtml
@@ -141,23 +132,22 @@ const QuestionnaireResult = () => {
                             </Text>
                         </LinearGradient>
                     ) : null}
-                    <View style={{position: 'absolute', bottom: px(40), width: '100%'}}>
-                        {data.button?.text ? (
-                            <Button
-                                title={data.button.text}
-                                onPress={() => buttonJump(data?.button?.url)}
-                                style={{marginHorizontal: px(42), marginTop: px(20), height: px(42)}}
-                            />
-                        ) : null}
-                        {data?.bottom_botton ? (
-                            <Button
-                                title={data.bottom_botton.text}
-                                onPress={() => handleJump(data.bottom_botton.url)}
-                                style={{marginHorizontal: px(42), marginTop: px(12), height: px(42)}}
-                            />
-                        ) : null}
-                    </View>
-                </ImageBackground>
+
+                    {data.button?.text ? (
+                        <Button
+                            title={data.button.text}
+                            onPress={() => buttonJump(data?.button?.url)}
+                            style={{marginHorizontal: px(42), marginTop: px(20), height: px(42)}}
+                        />
+                    ) : null}
+                    {data?.bottom_botton ? (
+                        <Button
+                            title={data.bottom_botton.text}
+                            onPress={() => handleJump(data.bottom_botton.url)}
+                            style={{marginHorizontal: px(42), marginTop: px(12), height: px(42)}}
+                        />
+                    ) : null}
+                </View>
             )}
         </ScrollView>
     );
@@ -179,9 +169,18 @@ const styles = StyleSheet.create({
     },
     cardWrap: {
         marginTop: Space.marginVertical,
-        marginHorizontal: text(3),
         minHeight: text(580),
         position: 'relative',
+        backgroundColor: '#fff',
+        marginHorizontal: px(16),
+        borderRadius: px(8),
+        paddingBottom: px(20),
+    },
+    dashedLine: {
+        borderBottomColor: Colors.lineColor,
+        borderBottomWidth: 0.5,
+        marginTop: px(20),
+        marginHorizontal: px(32),
     },
     titleWrap: {
         fontSize: Font.textH1,
@@ -211,7 +210,8 @@ const styles = StyleSheet.create({
     open_account_con: {
         alignItems: 'center',
         marginTop: px(36),
-        marginHorizontal: px(32),
+        marginHorizontal: px(16),
+        paddingHorizontal: px(12),
         borderRadius: px(6),
         paddingVertical: px(24),
     },
@@ -228,6 +228,13 @@ const styles = StyleSheet.create({
         fontSize: px(11),
         color: Colors.lightBlackColor,
         marginBottom: px(12),
+    },
+    bottomTipContent: {
+        marginHorizontal: px(32),
+        marginTop: px(20),
+        borderTopColor: Colors.lineColor,
+        borderTopWidth: 0.5,
+        paddingTop: px(20),
     },
 });
 
