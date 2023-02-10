@@ -414,8 +414,8 @@ function useStateChange({homeShowModal, store}) {
                 const navigation = navigationRef.current;
                 if (modal.log_id) {
                     http.post('/common/layer/click/20210801', {log_id: modal.log_id});
-                    global.LogTool('guide_show', 'app弹窗', modal.log_id);
                 }
+                global.LogTool('guide_show', 'app弹窗', modal.log_id);
                 let options = {
                     backButtonClose: modal.back_close,
                     confirmCallBack: () => {
@@ -426,7 +426,7 @@ function useStateChange({homeShowModal, store}) {
                         } else {
                             jump(modal.confirm?.url || modal.url || '');
                         }
-                        modal.log_id && global.LogTool('guide_show_click', '弹窗', modal.log_id);
+                        global.LogTool('guide_show_click', '弹窗', modal.log_id);
                     },
                     id: modal.log_id,
                     isTouchMaskToClose: modal.touch_close,
