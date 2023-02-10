@@ -52,6 +52,7 @@ const CommunityVideo = ({navigation, route}) => {
     const [totalCount, setTotalCount] = useState(0);
     const [height, setHeight] = useState(0);
     const [videoPage, setVideoPage] = useState(1);
+    const currentVideo = useRef();
     const getData = async () => {
         let res = await getVideoList({...route?.params, page: videoPage});
         if (videoPage == 1) {
@@ -65,12 +66,6 @@ const CommunityVideo = ({navigation, route}) => {
             });
         }
     };
-    const data = [
-        {
-            media_url: 'https://static.licaimofang.com/wp-content/uploads/2020/10/第十二节.mp4',
-            id: 1,
-        },
-    ];
     const getCommentData = async (_page) => {
         let res = await getCommentList({article_id: videoData?.items[currentItem].id, page: _page});
         setTotalCount(res.result.total_count);
@@ -103,8 +98,9 @@ const CommunityVideo = ({navigation, route}) => {
     }, []);
     const _onViewableItemsChanged = useCallback(
         _.debounce(({viewableItems, changed}) => {
-            console.log(viewableItems[0].index, changed);
+            // console.log(viewableItems[0].index, changed);
             if (viewableItems.length > 0) {
+                global.LogTool('Video_Slide', '', currentVideo.current?.id, '', '', currentVideo.current?.currentTime);
                 setCurrentItem(viewableItems[0].index);
             }
         }, 0),
@@ -139,6 +135,7 @@ const CommunityVideo = ({navigation, route}) => {
     const renderItem = ({item, index}) => {
         return (
             <Video
+                ref={currentVideo}
                 data={item}
                 index={index}
                 pause={index != currentItem}

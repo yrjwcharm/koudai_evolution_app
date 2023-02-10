@@ -13,7 +13,7 @@ import {
     Animated,
     ActivityIndicator,
 } from 'react-native';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {forwardRef, useImperativeHandle, useEffect, useRef, useState} from 'react';
 import Video from 'react-native-video';
 import {Colors, Font, Style} from '~/common/commonStyle';
 import {deviceWidth as WIDTH, isIphoneX, px} from '~/utils/appUtil';
@@ -24,7 +24,7 @@ import {useJump} from '~/components/hooks';
 import {followAdd, followCancel} from '~/pages/Attention/Index/service';
 import {postProgress} from '../CommunityVideo/service';
 const HEIGHT = Dimensions.get('window').height;
-const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment, community_id, muid, height}) => {
+const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment, community_id, muid, height}, ref) => {
     const [paused, setPaused] = useState(true);
     const [currentTime, setCurrentItem] = useState(0); //当前播放时间
     const [duration, setDuration] = useState(0); //总时长
@@ -43,6 +43,10 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
             data.product_type !== 'article_history' &&
             postProgress({article_id: data.id, done_status: data.view_status});
     }, [data, index, currentIndex]);
+    useImperativeHandle(ref, () => ({
+        currentTime,
+        id: data?.id,
+    }));
     //using async is more reliable than setting shouldPlay with state variable
     const onPlayPausePress = () => {
         if (!paused) setShowPause(true);
@@ -120,12 +124,12 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
                                     paused={paused}
                                     volume={7.0}
                                     onLoadStart={(e) => {
-                                        console.log('onLoadStart', e);
+                                        // console.log('onLoadStart', e);
                                         setLoading(true);
                                     }}
                                     onBuffer={(isBuffering) => {
                                         setLoading(isBuffering.isBuffering);
-                                        console.log('isBuffering', isBuffering);
+                                        // console.log('isBuffering', isBuffering);
                                     }}
                                     playInBackground={true}
                                     repeat={true}
@@ -226,7 +230,7 @@ const RenderVideo = ({data, index, pause, currentIndex, animated, handleComment,
     );
 };
 
-export default RenderVideo;
+export default forwardRef(RenderVideo);
 
 const styles = StyleSheet.create({
     timeText: {
