@@ -426,7 +426,10 @@ function useStateChange({homeShowModal, store}) {
                         } else {
                             jump(modal.confirm?.url || modal.url || '');
                         }
-                        global.LogTool('guide_show_click', '弹窗', modal.log_id);
+                        global.LogTool('guide_click', '弹窗', modal.log_id);
+                    },
+                    onCloseCallBack: () => {
+                        global.LogTool('guide_skip', '弹窗', modal.log_id);
                     },
                     id: modal.log_id,
                     isTouchMaskToClose: modal.touch_close,

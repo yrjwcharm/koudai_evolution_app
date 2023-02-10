@@ -97,6 +97,7 @@ export default class MyModal extends Component {
                 isVisible: state,
             });
             if (state == false) {
+                this.props.onCloseCallBack && this.props.onCloseCallBack();
                 this.props.destroy();
             }
         }

@@ -369,7 +369,7 @@ export default function Launch({navigation}) {
                     return;
                 }
                 isNavigating = true;
-                global.LogTool('guide_show_click', '开屏', adMes.id);
+                global.LogTool('guide_click', '开屏', adMes.id);
                 timer.current && clearInterval(timer.current);
                 authLoading(() => {
                     navigation.replace('Tab');
@@ -388,7 +388,7 @@ export default function Launch({navigation}) {
                                 return;
                             }
                             isNavigating = true;
-                            global.LogTool('guide_show_skip', '开屏', adMes.id);
+                            global.LogTool('guide_skip', '开屏', adMes.id);
                             timer.current && clearInterval(timer.current);
                             authLoading();
                         }, 300)}
