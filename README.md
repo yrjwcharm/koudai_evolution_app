@@ -1,4 +1,4 @@
-
+理财魔方app 代码 各大应用市场都可搜索 ，主要是金融理财方面的
 ### 开发规范
   http://wiki.licaimofang.com:8090/pages/viewpage.action?pageId=7148092
 ### git提交规范
