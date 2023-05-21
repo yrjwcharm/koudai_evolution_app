@@ -1,4 +1,7 @@
 理财魔方app 代码 各大应用市场都可搜索 ，主要是金融理财方面的
+
+![WechatIMG8](https://github.com/yrjwcharm/koudai_evolution_app/assets/34397383/217a12c5-66b2-499a-8a2f-66c95fe35f42)
+
 ### 开发规范
   http://wiki.licaimofang.com:8090/pages/viewpage.action?pageId=7148092
 ### git提交规范
