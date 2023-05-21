@@ -1,7 +1,4 @@
 理财魔方app 代码 各大应用市场都可搜索 ，主要是金融理财方面的
-
-![WechatIMG8](https://github.com/yrjwcharm/koudai_evolution_app/assets/34397383/217a12c5-66b2-499a-8a2f-66c95fe35f42)
-
 ### 开发规范
   http://wiki.licaimofang.com:8090/pages/viewpage.action?pageId=7148092
 ### git提交规范
@@ -299,6 +296,13 @@ vscode全局安装eslint插件
     "source.fixAll.eslint": true
   },
 ```
+![WechatIMG8](https://github.com/yrjwcharm/koudai_evolution_app/assets/34397383/217a12c5-66b2-499a-8a2f-66c95fe35f42)
+![WechatIMG9](https://github.com/yrjwcharm/koudai_evolution_app/assets/34397383/5631e981-a7ba-4b77-a30c-e66c279a09d9)
+![WechatIMG10](https://github.com/yrjwcharm/koudai_evolution_app/assets/34397383/d9c3a0d9-1199-4b2a-94cc-c90bff9a189c)
+![WechatIMG11](https://github.com/yrjwcharm/koudai_evolution_app/assets/34397383/01dde5e0-9a02-4b7f-a74e-ccdaab870dcc)
+![WechatIMG12](https://github.com/yrjwcharm/koudai_evolution_app/assets/34397383/fcec2d8d-1d8b-431b-9e6f-342b15a1f129)
+![WechatIMG13](https://github.com/yrjwcharm/koudai_evolution_app/assets/34397383/549d83a7-5f7f-454c-aacb-f91560de5dfd)
+![WechatIMG14](https://github.com/yrjwcharm/koudai_evolution_app/assets/34397383/76e5c96b-e9f1-4f68-b038-e8cc6bf5f783)
 
 
 
